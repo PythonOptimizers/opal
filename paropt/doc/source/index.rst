@@ -1,0 +1,41 @@
+.. ParOpt documentation master file, created by sphinx-quickstart on Thu May 21 22:41:01 2009.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+============================
+ParOpt General Documentation
+============================
+
+:Release: |version|
+:Date: |today|
+
+.. module:: paropt
+
+This is the general documentation for ParOpt, a pure Python package for
+the optimization of algorithmic parameters.
+
+Contents:
+
+.. toctree::
+   :numbered:
+   :maxdepth: 2
+
+   Introduction <introduction>
+
+
+TODO List
+=========
+
+.. Add todo items in the sections of the documentation and they will appear
+.. here.
+
+.. todolist::
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

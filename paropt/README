@@ -1,0 +1,22 @@
+The bare minimum (for now):
+
+1 - REQUIREMENTS
+2 - INSTALL
+3 - FIRST RUN
+-------------------
+
+1 - REQUIREMENTS
+    + Python version 2.6
+
+2 - INSTALL
+    + Unzip the package
+    + Go to the unziped directory
+    + Launch the command: 
+      #shel:> python setup.py install
+
+3 - FIRST RUN
+    The first example of running paropt works on very simple problem.
+    To run paropt with an algorithm, we need 
+    i.   Insert the algorithm description
+    ii.  Insert the test problems description
+    iii. Define the parameter optimization problem

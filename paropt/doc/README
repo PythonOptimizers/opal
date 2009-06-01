@@ -1,0 +1,5 @@
+To build documentation in html format, use 'make html'. The entry point is in
+./build/html/index.html.
+
+To build documentation in PDF format, use 'make latex'. Change directory to
+./build/latex and use 'make all-pdf'. The documentation file is ParOpt.pdf.
