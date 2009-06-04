@@ -14,7 +14,7 @@ class OptimizationTestProblem(TestProblem):
     """
     An abstract class to represent a test problem. Example:
 
-    >>> hs26 = TestProblem(name='HS26', nvar=3, ncon=1)
+    >>> hs26 = OptimizationTestProblem(name='HS26', nvar=3, ncon=1)
     >>> print hs26.name, hs26.nvar, hs26.ncon
     HS26 3 1
     """
