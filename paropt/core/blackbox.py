@@ -28,9 +28,10 @@ class BlackBox:
             self.executableFileName = 'blackbox.py'
         else:
             self.executableFileName = fileName
-        self.nVar = len(modelData.activeParameters)
-        self.mCon = len(modelStructure.constraints)
-        self.initialPoint = [param.value for param in modelData.activeParameters]
+        activeParameters = self.model_data.get_active_parameters()
+        self.nVar = len(activeParameters)
+        self.mCon = len(self.model_structure.constraints)
+        self.initialPoint = [param.value for param in activeParameters]
         pass
 
     def set_options(self,**kwargs):        

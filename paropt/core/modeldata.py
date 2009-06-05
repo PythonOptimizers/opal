@@ -49,13 +49,10 @@ class ModelData:
         self.parameters = algorithm.parameters # Store the parameter for each test,
                                                # this is not parameter description like on problem
                                                # At the first time, is the default values
-        self.activeParameters = activeParameters
-        activeParamNames = [param.name for param in activeParameters]
-        for i in range(len(self.parameters)):
-            #if self.parameters[i]['name'] in relatedParameters:
-            if self.parameters[i].name in activeParamNames:
-                continue
-            self.parameters[i].set_as_const()
+        self.active_parameter_names = [param.name for param in activeParameters]
+        for param in self.parameters:
+            if param.name not in self.active_parameter_names:
+                param.set_as_const()
         
         self.measures = measures
         
@@ -94,6 +91,10 @@ class ModelData:
             self.logFileName  = os.path.join(os.getcwd(), 'test-bed.log')
         return
 
+    #---------------------------------------------
+
+    def get_active_parameters(self):
+        return [param for param in self.parameters if not param.is_const()]
     #---------------------------------------------
 
     def fill_parameter_value(self,values):
