@@ -18,7 +18,10 @@ try:
     CUTEr = pickle.load(f)
     f.close()
 except IOError:
-    CUTEr_factory = CUTErFactory(classifyFile=os.environ['MASTSIF'] + '/problem-classification.list')
+    classfDir = os.environ['MASTSIF']
+    classfName='CLASSF.DB'  # Standard name for CUTEr classify file
+    classfFile = os.path.join(classfDir, classfName)
+    CUTEr_factory = CUTErFactory(classifyFile=classfFile)
     CUTEr =  ProblemCollection(name='CUTEr collection')
     HS = ProblemSet(name='Hock-Schittkowski test problems')
     for prob_name in CUTEr_factory.extract(name='HS\d+'):

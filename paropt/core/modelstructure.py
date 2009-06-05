@@ -8,7 +8,7 @@ class ModelStructure:
     """
     *** THIS IS LACKING DOCUMENTATION ***
     """
-    def __init__(self, objective=None, constraints=None, **kwargs):
+    def __init__(self, objective=None, constraints=[], **kwargs):
         self.objective = MeasureFunction(objective)
         self.constraints = []
         for constraint in constraints:

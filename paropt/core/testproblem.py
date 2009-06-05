@@ -1,28 +1,37 @@
+__docformat__ = 'restructuredText'
+
 class TestProblem:
     """
-    The abstract class to describe a test problem in most general term
+    Abstract class to describe a test problem in general form.
     Every test problem class is a sub-class of this class.
-    The most general class contains only the information about the
-    test problem: the name
-    """
-    def __init__(self,name=None,**kwargs):
-        self.name = name
-        pass
+    The ``TestProblem`` class contains only basic information about the
+    test problem: the problem name and a description (both strings).
+    Example:
 
-    
+    >>> chem=TestProblem(name='Nuke', description='Chemical reactor')
+    >>> print chem.name, chem.description
+    """
+
+    def __init__(self, name=None, description=None, **kwargs):
+        self.name = name
+        self.description = description
+
+
 class OptimizationTestProblem(TestProblem):
     """
-    An abstract class to represent a test problem. Example:
+    An abstract class to represent a test problem in the field of optimization.
+    Example:
 
-    >>> hs26 = TestProblem(name='HS26', nvar=3, ncon=1)
+    >>> hs26 = OptimizationTestProblem(name='HS26', nvar=3, ncon=1)
     >>> print hs26.name, hs26.nvar, hs26.ncon
     HS26 3 1
     """
 
-    def __init__(self, name=None, nvar=0, ncon=0, **kwargs):
-        TestProblem.__init__(self,name,**kwargs)
+    def __init__(self, name=None, description=None, nvar=0, ncon=0, **kwargs):
+        TestProblem.__init__(self, name, description, **kwargs)
         self.nvar = nvar
         self.ncon = ncon
+
     
 class ProblemSet:
     """
@@ -35,8 +44,10 @@ class ProblemSet:
     >>> hs26 = TestProblem(name='HS26', nvar=3, ncon=1)
     >>> HS.add_problem(hs13)
     >>> HS.add_problem(hs26)
-    >>> print [prob.name for prob in HS.problems]
+    >>> print [prob.name for prob in HS]
     ['HS13', 'HS26']
+
+    In the above example, note that a ``ProblemSet`` is iterable.
     """
 
     def __init__(self, name=None, **kwargs):
@@ -47,23 +58,40 @@ class ProblemSet:
         return len(self.problems)
 
     def __getitem__(self,key):
-        item = self.problems[key]
-        return item
+        return self.problems[key]
 
     def __contains__(self,prob):
-        return prob in self.problems
-    
+        return (prob in self.problems)
+
     def add_problem(self, problem):
+        "Add problem to collection."
         if isinstance(problem, TestProblem):
             self.problems.append(problem)
         else:
             raise TypeError, 'Problem must be a TestProblem'
+
+    def remove_problem(self, problem):
+        "Remove problem from collection."
+        if isinstance(problem, TestProblem):
+            try:
+                self.problems.remove(problem)
+            except ValueError:
+                pass  # Silently ignore
+        else:
+            raise TypeError, 'Problem must be a TestProblem'
+
+    def pop_problem(self, i=-1):
+        "Return i-th problem (default: last) and remove it from collection."
+        if isinstance(problem, TestProblem):
+            try:
+                self.problems.pop(i)
+            except IndexError:
+                pass  # Silently ignore
         
     def all_problems(self):
-        """
-        Return a list of all problems in this collection.
-        """
-        return self.problems
+        "Return a list of all problems in this collection."
+        return self.problems.copy()
+
 
 class ProblemCollection:
     """
@@ -96,13 +124,13 @@ class ProblemCollection:
         return len(self.allproblems)
 
     def __getitem__(self,key):
-        item = self.allproblems[key]
-        return item
+        return self.allproblems[key]
 
     def __contains__(self,prob):
-        return prob in self.allproblems
+        return (prob in self.allproblems)
     
     def add_subcollection(self, collection):
+        "Add a subcollection to this collection."
         if isinstance(collection, ProblemSet):
             self.subcollections.append(collection)
         else:
@@ -125,4 +153,3 @@ def _test():
             
 if __name__ == "__main__":
     _test()
-

@@ -10,9 +10,9 @@ The bare minimum (for now):
 
 2 - INSTALL
     + Unzip the package
-    + Go to the unziped directory
+    + Go to the unzipped directory
     + Launch the command: 
-      #shel:> python setup.py install
+      #shell:> python setup.py install
 
 3 - FIRST RUN
     The first example of running paropt works on very simple problem.
