@@ -28,4 +28,3 @@ except IOError:
     f = open(data_file,'w')
     pickle.dump(CUTEr,f)
     f.close()
-

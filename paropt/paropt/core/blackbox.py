@@ -7,18 +7,30 @@ from .modelstructure import ModelEvaluator
 
 
 class BlackBox:
-    def __init__(self, optModel=None, optData=None,
+    """
+    This class represent a black box that encapsulates the 
+    information of a parameter optimization problem.
+    From the parameter problem point of view, this class contains
+    two descriptions: model data and model struture
+    From the black box point of view, this class represents for 
+    an executable file whose I/O methods depend from the specific solver.
+    To create an BlackBox object, users have to specify two mains 
+    component
+    blackbox = BlackBox(modelStructure,modelData)
+    """
+
+    def __init__(self, modelData=None, modelStructure=None,
                  fileName=None,**kwargs):
 
-        self.opt_data = optData
-        self.opt_model = optModel
+        self.model_data = modelData
+        self.model_structure = modelStructure
         if fileName is None:
             self.executableFileName = 'blackbox.py'
         else:
             self.executableFileName = fileName
-        self.nVar = len(optData.activeParameters)
-        self.mCon = len(optModel.constraints)
-        self.initialPoint = [param.value for param in optData.activeParameters]
+        self.nVar = len(modelData.activeParameters)
+        self.mCon = len(modelStructure.constraints)
+        self.initialPoint = [param.value for param in modelData.activeParameters]
         pass
 
     def set_options(self,**kwargs):        
@@ -44,7 +56,7 @@ class BlackBox:
         blackboxFile.write('from ' + rootPackage + '.core import blackbox\n')
         blackboxFile.write('from ' + rootPackage + '.Solvers import ' + self.solver.name + '\n')
         blackboxFile.write('from ' + rootPackage + '.Measures import * \n')
-        #blackboxFile.write('from ' + os.path.basename(self.opt_model.objective.file_name).strip('.py') + ' import ' + self.opt_model.objective.name + '\n')
+        #blackboxFile.write('from ' + os.path.basename(self.model_structure.objective.file_name).strip('.py') + ' import ' + self.model_structure.objective.name + '\n')
         #blackboxFile.write('from ' + self.modelEvaluator.model.moduleName + ' import '+ self.modelEvaluator.model.objFuncName + '\n')
         #for constraint in self.modelEvaluator.model.constraintNames:
         #    blackboxFile.write('from ' + self.modelEvaluator.model.moduleName + ' import '+ constraint + '\n')
@@ -55,7 +67,7 @@ class BlackBox:
         blackboxFile.write('\t blackboxDataFile.close()\n')
         blackboxFile.write('except TypeError:\n')
         blackboxFile.write('\t print "Error in loading"\n')
-        blackboxFile.write('blackbox.opt_data.synchronize_measures()\n')
+        blackboxFile.write('blackbox.model_data.synchronize_measures()\n')
         blackboxFile.write('blackbox.run(sys.argv)\n')
         blackboxFile.write('try:\n')
         blackboxFile.write('\t blackboxDataFile = open("blackbox.dat","w")\n')
@@ -80,12 +92,12 @@ class BlackBox:
         # Get the parameter values from the input of blackbox
 
         paramValues = self.solver.read_input(argv)
-        self.opt_data.run(paramValues)
+        self.model_data.run(paramValues)
         
-        testResult = self.opt_data.get_test_result()
-        #print 'ho ho after getTestResult', self.optData.measures[0],\
-         #      self.optData.measures[0].valuetable
-        modelEvaluator = ModelEvaluator(self.opt_model,self.opt_data.measures)
+        testResult = self.model_data.get_test_result()
+        #print 'ho ho after getTestResult', self.modelData.measures[0],\
+         #      self.modelData.measures[0].valuetable
+        modelEvaluator = ModelEvaluator(self.model_structure,self.model_data.measures)
         (funcObj,constraints) = modelEvaluator.evaluate(testResult)
         self.solver.write_output(funcObj,constraints)
         self.log('test.log')
@@ -109,10 +121,10 @@ class BlackBox:
         return
     
     def log(self,fileName='blackbox.log'):
-        if self.opt_data.log != None:
-            self.opt_data.log(fileName)
-        if self.opt_model.log != None:
-            self.opt_model.log(fileName)
+        if self.model_data.log != None:
+            self.model_data.log(fileName)
+        if self.model_structure.log != None:
+            self.model_structure.log(fileName)
         return
 
 
