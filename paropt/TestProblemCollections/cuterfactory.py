@@ -5,19 +5,14 @@ from ..core.testproblem import *
 
 class CUTErTestProblem(OptimizationTestProblem):
 
-
-    def __init__(self,name=None,nvar=0,ncon=0,paramString=None, classifyStr=None,**kwargs):
-        TestProblem.__init__(self,name=name,nvar=nvar,ncon=ncon,**kwargs)
+    def __init__(self, name=None, description=None, nvar=0, ncon=0,
+                 paramString=None, classifyStr=None, **kwargs):
+        OptimizationTestProblem.__init__(self, name, description, nvar, ncon,
+                                         **kwargs)
         self.paramString = None
         self.classifyStr = None
-        pass
-
-
-#================
-
 
 class Query:
-
 
     def __init__(self,qName=None,
                  name='',
@@ -30,10 +25,10 @@ class Query:
                  problemType="AMR",
                  internalVar='YN',
                  **kwargs):
-        '''
+        """
         An example of a query
         query = Query(name='HS',nMin=0,nMax=10,objectiveType="N",constraintType="U")
-        '''
+        """
         self.name = name
         self.nMin = nMin
         self.nMax = nMax
@@ -88,9 +83,7 @@ class Query:
         #print 'Query is matched'
         return True
 
-
 #==========
-
     
 class CUTErFactory:
     def __init__(self,classifyFile=None,**kwargs):
@@ -117,7 +110,7 @@ class CUTErFactory:
                 #print fields[0], 'is added'
                 queryResult.append(fields[0].strip())
         return queryResult
-                   
+
     def generate_problem(self,problem_name,param=None):      
         decode_cmd = self.decoder
         if param is None:
@@ -140,5 +133,3 @@ class CUTErFactory:
             ncon = ncon + int(number_query.findall(cons_decl)[0])
         problem = CUTErTestProblem(name=problem_name,nvar=nvar,ncon=ncon)
         return problem          
-
-  
