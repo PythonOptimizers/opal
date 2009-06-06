@@ -1,6 +1,5 @@
 from .parameter import Parameter
 from .parameter import ParameterConstraint
-from .driver import Driver
 
   
 class Algorithm:
@@ -71,7 +70,7 @@ class Algorithm:
         # to the file, say, ALGORITHM-PROBLEM.out
         allValues = []
         f = open(self.name + '-' + problemName + '.out')
-        map(lambda l: allValues.extend(l.split(' ')), f.readlines())
+        map(lambda l: allValues.extend(l.strip('\n').split(' ')), f.readlines())
         f.close()
         
         measure_values = {}

@@ -5,7 +5,7 @@ import time
 import shutil
 import log
 
-import utility
+#import utility
 from measure import MeasureValueTable
 from .. import config
 
@@ -32,7 +32,15 @@ class TestResult:
 # =============================
 class ModelData:
     '''
-    Class description
+    This class represents for data generators of parameter optimization problem.
+    The data is the values of the elementary measures that we need to formulate problem.
+    To specify a data generator, we need provide the information:
+    1 - The algorithm 
+    2 - The concerned elementary measure set
+    3 - The parameter set to control
+    4 - Set of the problem
+
+    
     '''
 
     def __init__(self,\
