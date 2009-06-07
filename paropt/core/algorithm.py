@@ -1,3 +1,5 @@
+import pickle
+
 from .parameter import Parameter
 from .parameter import ParameterConstraint
 
@@ -39,8 +41,10 @@ class Algorithm:
         self.executable = executable
         return
 
-    def set_parameter_file(self,parameter_file):
+    def set_parameter_file(self,parameter_file,writting_method=None):
         self.parameter_file = parameter_file
+        if writting_method is not None:
+            self.set_parameter_values = writting_method
         return
 
     def set_parameter_values(self,parameters):
@@ -53,9 +57,11 @@ class Algorithm:
         # algorithm
         # Input: list of parameter whose values are set
         # Output: void
-        f = open(self.parameter_file,'w')
+        paramDict = {}
         for param in parameters:
-            print >> f, param.export_to_dict()
+            paramDict[param.name] = param
+        f = open(self.parameter_file,'w')
+        pickle.dump(paramDict,f)
         f.close()
         return
     
