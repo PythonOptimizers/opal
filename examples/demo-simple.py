@@ -23,10 +23,10 @@ print 'Working with parameters ', [par.name for par in params]
 print 'Testing on problems ', [prb.name for prb in problems]
 
 # Define nonsmooth problem structure and data
-#model = ModelStructure(objective=avg_cpu_time)  # Unconstrained by default
-#data = ModelData(DFO, problems, params, [cpuTime])
+model = ModelStructure(objective=avg_cpu_time)  # Unconstrained by default
+data = ModelData(DFO, problems, params, [cpuTime])
 
 # Define black box model and solve
-#blackbox = BlackBox(model,data)
+blackbox = BlackBox(model,data)
 #NOMAD.set_parameter(name='MAX_BB_EVAL',value=2)
-#blackbox.solve(solver=NOMAD)
+blackbox.solve(solver=NOMAD)

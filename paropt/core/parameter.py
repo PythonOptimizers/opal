@@ -49,21 +49,11 @@ class Parameter:
         return self._default
 
     def set_value(self, value):
-        """
-        Set parameter to a non-default value.
-        """
-        
+        "Set parameter to a non-default value."
         if self.is_real:
             self.value = float(value)
         if self.is_integer:
             self.value = int(value)
-        
-        #if self.is_real and type(value) != type(0.0):
-        #   raise ValueError, 'value must agree with type'
-
-        #if self.is_integer and type(value) != type(0):
-        #    raise ValueError, 'value must agree with type'
-
         self.value = value
         return
 
@@ -72,9 +62,7 @@ class Parameter:
         return
 
     def get_kind(self):
-        """
-        Return parameter kind
-        """
+        "Return parameter kind."
         return self.kind
 
     def is_const(self):

@@ -13,7 +13,8 @@ class ModelStructure:
         self.constraints = []
         for constraint in constraints:
             if type(constraint) != type((1,2)):
-                self.constraints.append(MeasureFunction(constraint[0]),constraint[1])
+                self.constraints.append(MeasureFunction(constraint[0]),
+                                        constraint[1])
             else:
                 self.constraints.append(MeasureFunction(constraint),0)
         self.log = None

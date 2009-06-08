@@ -3,16 +3,17 @@ from ..core.algorithm import Algorithm
 
 # Define new algorithm 
 DFO = Algorithm(name='DFO', purpose='Derivative-free Optimization')
-# Define the executing 
 
+# Register executable for DFO
 DFO.set_executable('python dfo_minimizer.py')
 
+# Register parameter file
 DFO.set_parameter_file('dfo.param')
 
 # Define parameters
 nx = Parameter(kind='integer', default=1, name='NX')
 maxit = Parameter(kind='integer', default=5000, name='MAXIT')
-maxef = Parameter(kind='integer', default=9500, name='MAXEF')
+maxef = Parameter(kind='integer', default=9500, name='MAXNF')
 stpcrtr = Parameter(kind='integer', default=2, name='STPCRTR')
 delmin = Parameter(default=1.0e-3, name='DELMIN')
 stpthr = Parameter(default=1.0e-3, name='STPTHR')

@@ -1,7 +1,7 @@
+import pickle
 from .parameter import Parameter
 from .parameter import ParameterConstraint
-from .driver import Driver
-
+#from .driver import Driver
   
 class Algorithm:
     """
@@ -55,8 +55,11 @@ class Algorithm:
         # Input: list of parameter whose values are set
         # Output: void
         f = open(self.parameter_file,'w')
+        pardict = {}
         for param in parameters:
-            print >> f, param.export_to_dict()
+            #print >> f, param.export_to_dict()
+            pardict[param.name] = param
+        pickle.dump(pardict, f)
         f.close()
         return
     

@@ -5,10 +5,8 @@ import pickle
 from .. import config
 from .modelstructure import ModelEvaluator
 
-
 class BlackBox:
-    def __init__(self, optModel=None, optData=None,
-                 fileName=None,**kwargs):
+    def __init__(self, optModel=None, optData=None, fileName=None,**kwargs):
 
         self.opt_data = optData
         self.opt_model = optModel
@@ -26,6 +24,7 @@ class BlackBox:
     
     def generate_executable_file(self):
         
+        tab = ' '*4
         blackboxFile = open(self.executableFileName,'w')
         # To avoid the error compability of python version (local version intalled by user) and
         # global version (system), we don't turn black box as a executable but call it by
@@ -34,7 +33,7 @@ class BlackBox:
         # or predifine config.python to the used python
         rootPackage = config.__name__.replace('.config','')
         blackboxFile.write(config.python + '\n')
-        #Blackboxfile.write('#!python\n')
+        #blackboxFile.write('#!/usr/bin/env python\n')
         blackboxFile.write('import os\n')
         blackboxFile.write('import sys\n')
         blackboxFile.write('import string\n')
@@ -43,26 +42,26 @@ class BlackBox:
         blackboxFile.write('from ' + rootPackage + '.core import modeldata\n')
         blackboxFile.write('from ' + rootPackage + '.core import blackbox\n')
         blackboxFile.write('from ' + rootPackage + '.Solvers import ' + self.solver.name + '\n')
-        blackboxFile.write('from ' + rootPackage + '.Measures import * \n')
+        blackboxFile.write('from ' + rootPackage + '.Measures import *\n')
         #blackboxFile.write('from ' + os.path.basename(self.opt_model.objective.file_name).strip('.py') + ' import ' + self.opt_model.objective.name + '\n')
         #blackboxFile.write('from ' + self.modelEvaluator.model.moduleName + ' import '+ self.modelEvaluator.model.objFuncName + '\n')
         #for constraint in self.modelEvaluator.model.constraintNames:
         #    blackboxFile.write('from ' + self.modelEvaluator.model.moduleName + ' import '+ constraint + '\n')
         blackboxFile.write('# load the test data\n')
         blackboxFile.write('try:\n')
-        blackboxFile.write('\t blackboxDataFile = open("blackbox.dat","r")\n')
-        blackboxFile.write('\t blackbox = pickle.load(blackboxDataFile)\n')
-        blackboxFile.write('\t blackboxDataFile.close()\n')
+        blackboxFile.write(tab+'blackboxDataFile = open("blackbox.dat","r")\n')
+        blackboxFile.write(tab+'blackbox = pickle.load(blackboxDataFile)\n')
+        blackboxFile.write(tab+'blackboxDataFile.close()\n')
         blackboxFile.write('except TypeError:\n')
-        blackboxFile.write('\t print "Error in loading"\n')
+        blackboxFile.write(tab+'print "Error in loading"\n')
         blackboxFile.write('blackbox.opt_data.synchronize_measures()\n')
         blackboxFile.write('blackbox.run(sys.argv)\n')
         blackboxFile.write('try:\n')
-        blackboxFile.write('\t blackboxDataFile = open("blackbox.dat","w")\n')
-        blackboxFile.write('\t pickle.dump(blackbox,blackboxDataFile)\n')
-        blackboxFile.write('\t blackboxDataFile.close()\n')
+        blackboxFile.write(tab+'blackboxDataFile = open("blackbox.dat","w")\n')
+        blackboxFile.write(tab+'pickle.dump(blackbox,blackboxDataFile)\n')
+        blackboxFile.write(tab+'blackboxDataFile.close()\n')
         blackboxFile.write('except TypeError:\n')
-        blackboxFile.write('\t print "Error in loading"\n')
+        blackboxFile.write(tab+'print "Error in loading"\n')
         #blackboxFile.write('blackboxRunLogFile.close()\n')
         blackboxFile.close()
         os.chmod(self.executableFileName,0755)

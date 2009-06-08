@@ -1,4 +1,4 @@
 
 from Platforms import LINUX as platform
-python = '#!/userdata/users/codan/local/python/bin/python'
+python = '#!/usr/bin/env python'
 #paroptRootPackage = 'dev.paropt'

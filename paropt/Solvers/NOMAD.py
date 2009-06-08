@@ -3,7 +3,7 @@ import os
 
 from ..core.solver import Solver
 from ..core import utility
-from ..core.blackbox import BlackBox as BB
+#from ..core.blackbox import BlackBox as BB
 
 class Parameter:
     def __init__(self,name=None,value=None,**kwargs):
@@ -43,10 +43,9 @@ class NOMADSolver(Solver):
             print ""
         return
     
-    
     def initialize(self,blackbox):
         descriptionFile = open(self.paramFileName,"w")
-        descriptionFile.write('DIMENSION \t' + str(blackbox.nVar) + '\n')
+        descriptionFile.write('DIMENSION ' + str(blackbox.nVar) + '\n')
         descriptionFile.write('DISPLAY_DEGREE 4\n')
         descriptionFile.write('DISPLAY_STATS EVAL& BBE & SOL&  &OBJ \\\\ \n')
         #descriptionFile.write('BB_EXE "$python ' + self.executableFileName + '"\n')

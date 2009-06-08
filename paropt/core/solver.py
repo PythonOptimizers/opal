@@ -13,5 +13,3 @@ class Solver:
                 cmdStr = cmdStr + ' ' + str(argv)
         os.system(cmdStr)
         return
-
-        
