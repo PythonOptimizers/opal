@@ -42,9 +42,29 @@ class Algorithm:
         return
 
     def set_parameter_file(self,parameter_file,writting_method=None):
+        # We consider that the parameter value setting is done through file
+        # This method is to set parameter file name. The writting_method 
+        # represent for the file format. In the default case, writting_method is
+        # set to the set_parameter_value() method. In this case, the parameters are 
+        # dump to a file named by parameter_file by pickle.dump() method
+        # if parameter_file is set to None, we consider that the parameter values 
+        # are transmitted to the executable driver as the arguments
         self.parameter_file = parameter_file
         if writting_method is not None:
             self.set_parameter_values = writting_method
+        return
+
+    def set_measure_file(self,measure_file=None,reading_method=None):
+        # We consider that an executable algorithm has two choices for outputing  
+        # whose content contains the measure values:
+        #  1 - Output the screen, measure_file is None, the output is indirected 
+        #      to a file named by paropt, for example DFO-HS1.out
+        #  2 - Output to a file whose name is specified by measure_file. The measure_file
+        #      may be the naming rule like ABC-[problem]-output.txt.
+        # reading_method specifies how to extract the measure values from the output
+        self.measure_file = measure_file
+        if reading_method is not None:
+            self.get_measure = reading_method
         return
 
     def set_parameter_values(self,parameters):
@@ -107,9 +127,12 @@ class Algorithm:
             raise TypeError, 'Parameter Constraint is a String or ParameterConstraint'
         return
 
-    def verify(self,parameterValues):
+    def are_parameters_valid(self,parameters):
         for constraint in self.constraints:
-            if constraint(parameterValues) is ParameterConstraint.violated:
+            if constraint(parameters) is ParameterConstraint.violated:
                 return ParameterConstraint.violated
-        return not ParameterConstraint.violated
+        for param in parameters:
+            if not param.is_valid():
+                return False
+        return True
     

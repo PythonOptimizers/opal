@@ -119,7 +119,7 @@ class ModelData:
         self.fill_parameter_value(parameter_values)
         self.test_number += 1
         self.test_is_failed = False
-        if not self.algorithm.verify(self.parameters):
+        if not self.algorithm.are_parameters_valid(self.parameters):
             # print 'Parameter values are invalid, test fails'
             self.test_is_failed = True
             return
