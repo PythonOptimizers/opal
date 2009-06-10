@@ -6,7 +6,12 @@ from .parameter import ParameterConstraint
   
 class Algorithm:
     """
-    An abstract class to gather the parameters of an algorithm. Example:
+    An abstract class to gather the parameters of an algorithm. 
+    Each algorithm has two aspect:
+     - Algorithmic aspect: this is the description about the name, purpose, parameter and the constraints 
+       on the parameters
+     - Computational aspect: this is the description how to run algorithm
+    Example:
 
       >>> dfo = Algorithm(name='DFO', purpose='Derivative-free minimization')
       >>> delmin = Parameter(default=1.0e-3, name='DELMIN')
@@ -21,11 +26,13 @@ class Algorithm:
     """
 
     def __init__(self, name=None, purpose=None,**kwargs):
-
+       
+        # Algorithmic description
         self.name = name
         self.purpose = purpose
         self.parameters = [] # List of parameters (of type Parameter)
         self.constraints = []
+        # Computational description
         self.parameter_file = None
         self.executable = None
 

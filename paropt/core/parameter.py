@@ -34,12 +34,16 @@ class Parameter:
             raise ValueError, 'default value must agree with type'
 
         self.kind = kind
-        self.name = name
 
         self.is_real = (kind == 'real')
         self.is_integer = (kind == 'integer')
         self.is_categorical = (kind == 'categorical')
 
+        self.name = name
+        
+        # The attribute value store the value of parameter in run time.
+        # this is a run-time information
+        # The _default is a description
         self._default = default
         self.value = default
         # The bounds of a parameter might be a tuple indicating 
@@ -107,16 +111,24 @@ class Parameter:
         return
 
     def get_bounds(self):
+        # Get the bounds of variables
         return self.bounds
     
-    def is_valid(self):
+    def is_valid(self,value=None):
+        # This method is to verify a value of parameter is valid or not
+        # In the case, the value is not provided, the value of the parameter 
+        # is verified
+        if value is not None:
+            valueToVerify = value
+        else:
+            valueToVerify = self.value
         if self.bounds is None:
             return True
         if self.is_categorical:
-            return self.value in self.bounds
-        if self.bounds[0] is not None and self.value < self.bounds[0]:
+            return valueToVerify in self.bounds
+        if self.bounds[0] is not None and valueToVerify < self.bounds[0]:
             return False
-        if self.bounds[1] is not None and self.value > self.bounds[1]:
+        if self.bounds[1] is not None and valueToVerify > self.bounds[1]:
             return False
         return True
 

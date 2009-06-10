@@ -4,6 +4,7 @@ import types
 import time
 import shutil
 import log
+import copy
 
 #import utility
 from measure import MeasureValueTable
@@ -54,10 +55,18 @@ class ModelData:
         # The core variables
         self.algorithm = algorithm
         self.problems = problems
-        self.parameters = algorithm.parameters # Store the parameter for each test,
-                                               # this is not parameter description like on problem
-                                               # At the first time, is the default values
+        self.parameters = copy.deepcopy(algorithm.parameters) 
+        # Store the parameter for each test,
+        # this is not parameter description like on problem
+        # At the first time, is the default values
+        # The self.parameters is not a reference
+        # to descriptions of algorithm parameter. It is really a
+        # the storage of the parameters in run-time
+        # So create new storage and copy the algorithm.parameters to there.
         self.active_parameter_names = [param.name for param in activeParameters]
+        # active_parameters_names stores the name of parameters that are the variables in
+        # parameter optimization problem.
+        # For the other parameters, we set them as constant
         for param in self.parameters:
             if param.name not in self.active_parameter_names:
                 param.set_as_const()
