@@ -4,8 +4,9 @@ import types
 import time
 import shutil
 import log
+import copy
 
-import utility
+#import utility
 from measure import MeasureValueTable
 from .. import config
 
@@ -32,7 +33,15 @@ class TestResult:
 # =============================
 class ModelData:
     '''
-    Class description
+    This class represents for data generators of parameter optimization problem.
+    The data is the values of the elementary measures that we need to formulate problem.
+    To specify a data generator, we need provide the information:
+    1 - The algorithm 
+    2 - The concerned elementary measure set
+    3 - The parameter set to control
+    4 - Set of the problem
+
+    
     '''
 
     def __init__(self,\
@@ -46,16 +55,21 @@ class ModelData:
         # The core variables
         self.algorithm = algorithm
         self.problems = problems
-        self.parameters = algorithm.parameters # Store the parameter for each test,
-                                               # this is not parameter description like on problem
-                                               # At the first time, is the default values
-        self.activeParameters = activeParameters
-        activeParamNames = [param.name for param in activeParameters]
-        for i in range(len(self.parameters)):
-            #if self.parameters[i]['name'] in relatedParameters:
-            if self.parameters[i].name in activeParamNames:
-                continue
-            self.parameters[i].set_as_const()
+        self.parameters = copy.deepcopy(algorithm.parameters) 
+        # Store the parameter for each test,
+        # this is not parameter description like on problem
+        # At the first time, is the default values
+        # The self.parameters is not a reference
+        # to descriptions of algorithm parameter. It is really a
+        # the storage of the parameters in run-time
+        # So create new storage and copy the algorithm.parameters to there.
+        self.active_parameter_names = [param.name for param in activeParameters]
+        # active_parameters_names stores the name of parameters that are the variables in
+        # parameter optimization problem.
+        # For the other parameters, we set them as constant
+        for param in self.parameters:
+            if param.name not in self.active_parameter_names:
+                param.set_as_const()
         
         self.measures = measures
         
@@ -96,6 +110,10 @@ class ModelData:
 
     #---------------------------------------------
 
+    def get_active_parameters(self):
+        return [param for param in self.parameters if not param.is_const()]
+    #---------------------------------------------
+
     def fill_parameter_value(self,values):
         j = 0
         for i in range(len(self.parameters)):
@@ -110,7 +128,7 @@ class ModelData:
         self.fill_parameter_value(parameter_values)
         self.test_number += 1
         self.test_is_failed = False
-        if not self.algorithm.verify(self.parameters):
+        if not self.algorithm.are_parameters_valid(self.parameters):
             # print 'Parameter values are invalid, test fails'
             self.test_is_failed = True
             return

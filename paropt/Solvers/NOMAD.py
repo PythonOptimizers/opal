@@ -1,9 +1,6 @@
 import sys
 import os
-
 from ..core.solver import Solver
-from ..core import utility
-#from ..core.blackbox import BlackBox as BB
 
 class Parameter:
     def __init__(self,name=None,value=None,**kwargs):
@@ -30,9 +27,9 @@ class NOMADSolver(Solver):
         inputValues = []
         if len(argv) < 1:
             return inputValues
-        inputFile = open(argv[1],'r')
-        inputValues = utility.readwords(inputFile)
-        inputFile.close()
+        f = open(argv[1])
+        map(lambda l: inputValues.extend(l.strip('\n').split(' ')), f.readlines()) # Extract every words from the file and save to a list
+        f.close()
         return inputValues
 
     def write_output(self,objectiveValue,constraintValues):

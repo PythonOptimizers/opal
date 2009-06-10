@@ -23,7 +23,7 @@ class Parameter:
       1.0e-3
     """
 
-    def __init__(self, kind='real', default=0.0, name=None, **kwargs):
+    def __init__(self, kind='real', default=0.0, bounds=None,name=None, **kwargs):
         if kind not in ['real', 'integer', 'categorical']:
             raise TypeError, 'kind must be real, integer or categorical'
 
@@ -34,14 +34,25 @@ class Parameter:
             raise ValueError, 'default value must agree with type'
 
         self.kind = kind
-        self.name = name
 
         self.is_real = (kind == 'real')
         self.is_integer = (kind == 'integer')
         self.is_categorical = (kind == 'categorical')
 
+        self.name = name
+        
+        # The attribute value store the value of parameter in run time.
+        # this is a run-time information
+        # The _default is a description
         self._default = default
         self.value = default
+        # The bounds of a parameter might be a tuple indicating 
+        # the lower and the upper if the parameter has ordered kind 
+        # like integer, real
+        # Otherwise, bounds is a set of feasible values
+        # In the default case, we have not any information about the 
+        # bounds, we set it to None
+        self.bounds = bounds
         return
 
     def get_default(self):
@@ -67,6 +78,47 @@ class Parameter:
 
     def is_const(self):
         return self.kind == 'const'
+
+    def set_bounds(self,bounds):
+        # This method to set the bounds for a parameter
+        # For the ordered parameter:
+        # set_bounds((None,0)) means we don't want to change
+        # the lower bound that may be set before and change the
+        # upper bound to 0.
+        # For the non ordered one, this method is simply reassign
+        # the list of feasible values
+        if self.is_categorical :
+            self.bounds = bounds
+        else:
+            if self.bounds is None:
+                self.bounds = (None,None)
+            if bounds[0] is not None:
+                self.bounds[0] = bounds[0]
+            if bounds[1] is not None:
+                self.bounds[1] = bounds[1]
+        return
+
+    def get_bounds(self):
+        # Get the bounds of variables
+        return self.bounds
+    
+    def is_valid(self,value=None):
+        # This method is to verify a value of parameter is valid or not
+        # In the case, the value is not provided, the value of the parameter 
+        # is verified
+        if value is not None:
+            valueToVerify = value
+        else:
+            valueToVerify = self.value
+        if self.bounds is None:
+            return True
+        if self.is_categorical:
+            return valueToVerify in self.bounds
+        if self.bounds[0] is not None and valueToVerify < self.bounds[0]:
+            return False
+        if self.bounds[1] is not None and valueToVerify > self.bounds[1]:
+            return False
+        return True
 
     def export_to_dict(self):
         return {'kind':self.kind,
