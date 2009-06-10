@@ -57,7 +57,6 @@ class Algorithm:
         f = open(self.parameter_file,'w')
         pardict = {}
         for param in parameters:
-            #print >> f, param.export_to_dict()
             pardict[param.name] = param
         pickle.dump(pardict, f)
         f.close()
