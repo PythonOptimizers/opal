@@ -94,19 +94,11 @@ class Algorithm:
         # algorithm
         # Input: list of parameter whose values are set
         # Output: void
-<<<<<<< HEAD:paropt/core/algorithm.py
         f = open(self.parameter_file,'w')
         pardict = {}
         for param in parameters:
             pardict[param.name] = param
         pickle.dump(pardict, f)
-=======
-        paramDict = {}
-        for param in parameters:
-            paramDict[param.name] = param
-        f = open(self.parameter_file,'w')
-        pickle.dump(paramDict,f)
->>>>>>> fdeb714c5854a84b470ba047dfd4cad64ce26ada:paropt/core/algorithm.py
         f.close()
         return
     
