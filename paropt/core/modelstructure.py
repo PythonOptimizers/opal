@@ -3,7 +3,6 @@ import os.path
 import marshal
 import new
 
-from ..Measures import *
 class ModelStructure:
     """
     *** THIS IS LACKING DOCUMENTATION ***
