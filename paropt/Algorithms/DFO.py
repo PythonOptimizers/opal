@@ -46,5 +46,11 @@ DFO.add_parameter_constraint('CNSTOL <= 0.1')
 DFO.add_parameter_constraint('DELTA >= DELMIN')
 DFO.add_parameter_constraint('PP >= 1')
 
+# Define measures
+cpuTime = Measure(kind='real',name='CPU',description='CPU time usage')
+
+# Register the measures 
+DFO.add_measure(cpuTime)
+
 
 

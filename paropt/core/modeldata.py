@@ -48,7 +48,6 @@ class ModelData:
                  algorithm,\
                  problems,\
                  activeParameters,\
-                 measures,\
                  platform=config.platform,\
                  logging=log.TestLogging(),\
                  **kwargs):
@@ -71,7 +70,7 @@ class ModelData:
             if param.name not in self.active_parameter_names:
                 param.set_as_const()
         
-        self.measures = measures
+        self.measures = copy.deepcopy(algorithm.measures)
         
         # The options
         self.platformName = ''
