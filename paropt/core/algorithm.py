@@ -1,14 +1,15 @@
 import pickle
 from .parameter import Parameter
 from .parameter import ParameterConstraint
+from .measure import Measure
   
 class Algorithm:
     """
     An abstract class to gather the parameters of an algorithm. 
     Each algorithm has two aspect:
-     - Algorithmic aspect: this is the description about the name, purpose, parameter and the constraints 
-       on the parameters
-     - Computational aspect: this is the description how to run algorithm
+     - Algorithmic aspect: this is the description about the name, purpose, parameters, measures and the constraints 
+       on the parameters. The measures represent for the algorithm's output
+     - Computational aspect: this is the description how to run algorithm and what is the output
     Example:
 
       >>> dfo = Algorithm(name='DFO', purpose='Derivative-free minimization')
@@ -16,6 +17,8 @@ class Algorithm:
       >>> dfo.add_param(delmin)
       >>> mxit = Parameter(type='integer', default=100, name='MAXIT')
       >>> dfo.add_param(mxit)
+      >>> cpuTime = Measure(type='real',name='TIME')
+      >>> dfo.add_measure(cpuTime)
       >>> print [param.name for param in dfo.parameters]
       ['DELMIN', 'MAXIT']
       >>> real_params = [param for param in dfo.parameters if param.is_real]
@@ -29,6 +32,7 @@ class Algorithm:
         self.name = name
         self.purpose = purpose
         self.parameters = [] # List of parameters (of type Parameter)
+        self.measures = [] # List of measures (the output of the algorithm)
         self.constraints = []
         # Computational description
         self.parameter_file = None
@@ -42,6 +46,14 @@ class Algorithm:
             raise TypeError, 'param must be a Parameter'
         return
     
+    def add_measure(self, measure):
+        "Add a measure to an algorithm"
+        if isinstance(measure, Measure):
+            self.measures.append(measure)
+        else:
+            raise TypeError, 'measure must be a Measure object'
+        return
+
     def set_executable(self,executable):
         self.executable = executable
         return
