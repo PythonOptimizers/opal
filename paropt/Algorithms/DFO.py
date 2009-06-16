@@ -1,4 +1,5 @@
 from ..core.parameter import *
+from ..core.measure import Measure
 from ..core.algorithm import Algorithm
 
 # Define new algorithm 

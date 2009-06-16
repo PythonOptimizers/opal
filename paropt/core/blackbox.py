@@ -8,17 +8,17 @@ from .modelstructure import ModelEvaluator
 class BlackBox:
     def __init__(self, modelData=None, modelStructure=None,
                  fileName=None,**kwargs):
-    """
-    This class represent a black box that encapsulates the 
-    information of a parameter optimization problem.
-    From the parameter problem point of view, this class contains
-    two descriptions: model data and model struture
-    From the black box point of view, this class represents for 
-    an executable file whose I/O methods depend from the specific solver.
-    To create an BlackBox object, users have to specify two mains 
-    component
-    blackbox = BlackBox(modelStructure,modelData)
-    """
+        """
+        This class represent a black box that encapsulates the 
+        information of a parameter optimization problem.
+        From the parameter problem point of view, this class contains
+        two descriptions: model data and model struture
+        From the black box point of view, this class represents for 
+        an executable file whose I/O methods depend from the specific solver.
+        To create an BlackBox object, users have to specify two mains 
+        component
+        blackbox = BlackBox(modelStructure,modelData)
+        """
 
         self.model_data = modelData
         self.model_structure = modelStructure
@@ -55,13 +55,6 @@ class BlackBox:
         blackboxFile.write('from ' + rootPackage + '.core import modeldata\n')
         blackboxFile.write('from ' + rootPackage + '.core import blackbox\n')
         blackboxFile.write('from ' + rootPackage + '.Solvers import ' + self.solver.name + '\n')
-<<<<<<< HEAD:paropt/core/blackbox.py
-        blackboxFile.write('from ' + rootPackage + '.Measures import *\n')
-        #blackboxFile.write('from ' + os.path.basename(self.opt_model.objective.file_name).strip('.py') + ' import ' + self.opt_model.objective.name + '\n')
-=======
-        blackboxFile.write('from ' + rootPackage + '.Measures import * \n')
-        #blackboxFile.write('from ' + os.path.basename(self.model_structure.objective.file_name).strip('.py') + ' import ' + self.model_structure.objective.name + '\n')
->>>>>>> fdeb714c5854a84b470ba047dfd4cad64ce26ada:paropt/core/blackbox.py
         #blackboxFile.write('from ' + self.modelEvaluator.model.moduleName + ' import '+ self.modelEvaluator.model.objFuncName + '\n')
         #for constraint in self.modelEvaluator.model.constraintNames:
         #    blackboxFile.write('from ' + self.modelEvaluator.model.moduleName + ' import '+ constraint + '\n')
@@ -71,13 +64,8 @@ class BlackBox:
         blackboxFile.write(tab+'blackbox = pickle.load(blackboxDataFile)\n')
         blackboxFile.write(tab+'blackboxDataFile.close()\n')
         blackboxFile.write('except TypeError:\n')
-<<<<<<< HEAD:paropt/core/blackbox.py
         blackboxFile.write(tab+'print "Error in loading"\n')
         blackboxFile.write('blackbox.opt_data.synchronize_measures()\n')
-=======
-        blackboxFile.write('\t print "Error in loading"\n')
-        blackboxFile.write('blackbox.model_data.synchronize_measures()\n')
->>>>>>> fdeb714c5854a84b470ba047dfd4cad64ce26ada:paropt/core/blackbox.py
         blackboxFile.write('blackbox.run(sys.argv)\n')
         blackboxFile.write('try:\n')
         blackboxFile.write(tab+'blackboxDataFile = open("blackbox.dat","w")\n')
