@@ -63,9 +63,9 @@ class Constraint:
 class ModelEvaluator:
 
 
-    def __init__(self,model=None,related_measures=None,**kwargs):
+    def __init__(self,model=None,measures=None,**kwargs):
         self.model = model
-        self.related_measures = related_measures
+        self.measures = measures
         pass
 
     def evaluate(self,testResult):
@@ -79,10 +79,10 @@ class ModelEvaluator:
             measure.get_global_object().set_data(testResult.measure_value_table)
 
         paramValues = [param.value for param in testResult.parameters if not param.is_const()]
-        objValue = self.model.objective(paramValues)
+        objValue = self.model.objective(paramValues,self.measures)
         consValues = []
         for i in range(len(self.model.constraints)):
-            consValues.append(self.model.constraints[i][0](paramValues) - self.model.constraints[i][1]) 
+            consValues.append(self.model.constraints[i][0](paramValues,self.measures) - self.model.constraints[i][1]) 
         return (objValue,consValues)
 
     def log(self,fileName):
