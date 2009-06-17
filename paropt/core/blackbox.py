@@ -65,7 +65,7 @@ class BlackBox:
         blackboxFile.write(tab+'blackboxDataFile.close()\n')
         blackboxFile.write('except TypeError:\n')
         blackboxFile.write(tab+'print "Error in loading"\n')
-        blackboxFile.write('blackbox.opt_data.synchronize_measures()\n')
+        #blackboxFile.write('blackbox.opt_data.synchronize_measures()\n')
         blackboxFile.write('blackbox.run(sys.argv)\n')
         blackboxFile.write('try:\n')
         blackboxFile.write(tab+'blackboxDataFile = open("blackbox.dat","w")\n')
