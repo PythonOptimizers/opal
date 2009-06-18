@@ -26,6 +26,10 @@ class MeasureFunction:
     def __init__(self,function=None):
         if function is None:
             return
+        # It's important to define a function with two arguments: the parameter and the measure
+        # We check if the given function sastifies this constraint:
+        if function.__code__.co_argcount < 2:
+            return
         self.file_name = os.path.dirname(os.path.abspath(function.__code__.co_filename)) + '/' + function.__code__.co_name + '.code'
         f = open(self.file_name,'w')
         marshal.dump(function.__code__,f)
@@ -42,24 +46,6 @@ class MeasureFunction:
     def __call__(self,*args,**kwargs):
         return self.evaluate(*args,**kwargs)
 
-class ObjectiveFunction:
-    def __init__(self,measureTable=None,**kwargs):
-        self. measureTable = measureTable
-        pass
-    
-    def __call__(self,paramValues,**kwargs):
-        return 0
-
-class Constraint:
-    def __init__(self,meauresTable,left,right,**kwargs):
-        self.measureTable = measureTable
-        self.left = left
-        self.right = right
-        pass
-    
-    def __call__(self,paramValues,**kwargs):
-        return self.left(paramValues) - self.right(paramValues)
-
 class ModelEvaluator:
 
 
@@ -75,10 +61,14 @@ class ModelEvaluator:
                 consValues.append(1.0e20)
             return (1.0e20,consValues)
         
-        for measure in self.related_measures:
-            measure.get_global_object().set_data(testResult.measure_value_table)
-
+        # Set the data for the used measures
+        # This setting helps to take the value of the elementary measure
+        for measure in self.measures:
+            measure.set_data(testResult.measure_value_table)
+        
+        # Get the value of parameter vector p
         paramValues = [param.value for param in testResult.parameters if not param.is_const()]
+        # Evaluate the objective function by passing the parameter vector and measure vector
         objValue = self.model.objective(paramValues,self.measures)
         consValues = []
         for i in range(len(self.model.constraints)):

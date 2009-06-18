@@ -63,9 +63,10 @@ class Parameter:
         "Set parameter to a non-default value."
         if self.is_real:
             self.value = float(value)
-        if self.is_integer:
+        elif self.is_integer:
             self.value = int(value)
-        self.value = value
+        else:
+            self.value = value
         return
 
     def set_as_const(self):
@@ -106,18 +107,28 @@ class Parameter:
         # This method is to verify a value of parameter is valid or not
         # In the case, the value is not provided, the value of the parameter 
         # is verified
+       
         if value is not None:
             valueToVerify = value
         else:
             valueToVerify = self.value
+        print self.name, self.value, self.bounds, valueToVerify, type(valueToVerify)
         if self.bounds is None:
             return True
         if self.is_categorical:
             return valueToVerify in self.bounds
-        if self.bounds[0] is not None and valueToVerify < self.bounds[0]:
-            return False
-        if self.bounds[1] is not None and valueToVerify > self.bounds[1]:
-            return False
+        # There is the error in transforming from string to int or float
+        # For example, the value 0.0010000000 (string) in input file is 
+        # 0.00100000000001 after force it as real number
+        # Pay attention to verify the bounds at bounded point
+        if self.bounds[0] is not None:
+            if valueToVerify < self.bounds[0]:
+                print 'Less than lower bound', valueToVerify - self.bounds[0]
+                return False
+        if self.bounds[1] is not None:
+            if valueToVerify > self.bounds[1]:
+                print 'Greater than upper bound', valueToVerify - self.bounds[1]
+                return False
         return True
 
     def export_to_dict(self):
