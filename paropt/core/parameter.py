@@ -112,7 +112,6 @@ class Parameter:
             valueToVerify = value
         else:
             valueToVerify = self.value
-        print self.name, self.value, self.bounds, valueToVerify, type(valueToVerify)
         if self.bounds is None:
             return True
         if self.is_categorical:
@@ -123,11 +122,11 @@ class Parameter:
         # Pay attention to verify the bounds at bounded point
         if self.bounds[0] is not None:
             if valueToVerify < self.bounds[0]:
-                print 'Less than lower bound', valueToVerify - self.bounds[0]
+                #print 'Less than lower bound', valueToVerify - self.bounds[0]
                 return False
         if self.bounds[1] is not None:
             if valueToVerify > self.bounds[1]:
-                print 'Greater than upper bound', valueToVerify - self.bounds[1]
+                #print 'Greater than upper bound', valueToVerify - self.bounds[1]
                 return False
         return True
 
