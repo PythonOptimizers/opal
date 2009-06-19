@@ -3,23 +3,29 @@
 import numpy
 
 class GaussElimination:
+    """
+    This object of this class represents for a Gauss elimination 
+    that is parameterized by pivotting strategy. Example of usage:
+    >>> elimination = GaussElimination(pivottingStrategy=0)
+    >>> elmination.run(A)
+    The method run() will apply the Gauss elimination process over 
+    a matrix A and return the triangular matrix
+    After running, we can get some information about the process like
+    the stability, the number of iteration ...
+    The method run() invokes the Gauss elimiation in batch mode. We 
+    can make in run in interactive mode like:
+    >>> elimination = GaussEliminiation(pivottingStrategy=1)
+    >>> elimination.setData(A)
+    >>> elimination.next(A)
+    pivotting_strategy = 
+    """
+    
+    TRIVIAL_PIVOTTING = 0
+    PARTIAL_PIVOTTING = 1
+    COMPLET_PIVOTTING = 2
+    
     def __init__(self,pivottingStrategy):
-        """
-        This object of this class represents for a Gauss elimination 
-        that is parameterized by pivotting strategy. Example of usage:
-        >>> elimination = GaussElimination(pivottingStrategy=0)
-        >>> elmination.run(A)
-        The method run() will apply the Gauss elimination process over 
-        a matrix A and return the triangular matrix
-        After running, we can get some information about the process like
-        the stability, the number of iteration ...
-        The method run() invokes the Gauss elimiation in batch mode. We 
-        can make in run in interactive mode like:
-        >>> elimination = GaussEliminiation(pivottingStrategy=1)
-        >>> elimination.setData(A)
-        >>> elimination.next(A)
-        """
-        self.pivottingStrategy = pivottingStrategy
+        self.pivotting_strategy = pivottingStrategy
         self.zero = 1.0e-9
         self.verbose = False
         self.iterate = 0
@@ -44,23 +50,23 @@ class GaussElimination:
         del temp
         return
 
-    def setData(self,A):
+    def set_data(self,A):
         self.data = numpy.array(A)
         self.origine = numpy.array(A)
         return
 
-    def getPivot(self,k):
+    def get_pivot(self,k):
         maxVal = abs(self.data[k,k])
         maxIndex = k
         n = self.data.shape[0]
-        if self.pivottingStrategy == 0:
+        if self.pivotting_strategy == self.__class__.TRIVIAL_PIVOTTING:
             if self.data[k,k] == 0:
                 i = k + 1
                 while i < n :
                     if self.data[i,k] != 0:
                         self._swapRows(i,k)
                         break
-        elif self.pivottingStrategy == 1:
+        elif self.pivotting_strategy == self.__class__.PARTIAL_PIVOTTING:
             for i in range(k+1,n):
                 if abs(self.data[i,k]) > maxVal :
                     maxVal = abs(self.data[i,k])
@@ -83,7 +89,7 @@ class GaussElimination:
         return self.data[k,k]
                              
     
-    def getStability(self):
+    def get_stability(self):
         n = self.data.shape[0]
         rho = max(abs(self.data.flatten()))/max(abs(self.origine.flatten()))
         #print abs(self.data[0:n,0:n])
@@ -101,7 +107,7 @@ class GaussElimination:
             return False
         k = self.iterate
         n = self.data.shape[0]
-        p = self.getPivot(k)
+        p = self.get_pivot(k)
         self.data[k,k:n] = self.data[k,k:n]/self.data[k,k]
         for i in range(k+1,n):
             #r = self.data[i,k]/self.data[k,k]
@@ -110,14 +116,12 @@ class GaussElimination:
         return True
 
     def run(self,A):
-        self.setData(A)
+        self.set_data(A)
         self.reset()
         while self.next():
             pass
         return self.data
 
-trivialPivottingGE = GaussElimination(0)
-partialPivottingGE = GaussElimination(1)
-completPivottingGE = GaussElimination(2)
+
 
    

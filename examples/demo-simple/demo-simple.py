@@ -1,10 +1,10 @@
 # Simple demo: tune DFO parameters for CPU time on simple HS problems.
-from dev.paropt.TestProblemCollections import CUTEr
-from dev.paropt.Algorithms import DFO
-from dev.paropt.Solvers import NOMAD
-from dev.paropt import ModelStructure
-from dev.paropt import ModelData
-from dev.paropt import BlackBox
+from paropt.TestProblemCollections import CUTEr
+from paropt.Algorithms import DFO
+from paropt.Solvers import NOMAD
+from paropt import ModelStructure
+from paropt import ModelData
+from paropt import BlackBox
 
 def mu_time(p,measures):
     cpuTime = measures[0]

@@ -138,9 +138,9 @@ class ModelData:
                  str(ltime.tm_hour) + str(ltime.tm_min) + str(ltime.tm_sec)
         # Launches the algorithm routines
         
-        self.algorithm.set_parameter_values(self.parameters)
+        self.algorithm.set_parameter(self.parameters)
         for prob in self.problems:
-            self.platform.execute(self.algorithm.get_call_cmd(self.parameters,prob.name),
+            self.platform.execute(self.algorithm.get_full_executable_command(self.parameters,prob),
                                   self.run_id + '-' + prob.name)
         return 
 

@@ -6,7 +6,7 @@ from ..core.algorithm import Algorithm
 DFO = Algorithm(name='DFO', purpose='Derivative-free Optimization')
 
 # Register executable for DFO
-DFO.set_executable('python dfo_minimizer.py')
+DFO.set_executable_command('python dfo_minimizer.py')
 
 # Register parameter file
 DFO.set_parameter_file('dfo.param')

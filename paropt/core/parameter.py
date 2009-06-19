@@ -117,8 +117,8 @@ class Parameter:
         if self.is_categorical:
             return valueToVerify in self.bounds
         # There is the error in transforming from string to int or float
-        # For example, the value 0.0010000000 (string) in input file is 
-        # 0.00100000000001 after force it as real number
+        # For example, the value 0.0010000000 (in string in input file) is 
+        # 0.00100000000001 after forcing it as real number
         # Pay attention to verify the bounds at bounded point
         if self.bounds[0] is not None:
             if valueToVerify < self.bounds[0]:

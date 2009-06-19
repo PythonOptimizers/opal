@@ -54,7 +54,7 @@ class Algorithm:
             raise TypeError, 'measure must be a Measure object'
         return
 
-    def set_executable(self,executable):
+    def set_executable_command(self,executable):
         self.executable = executable
         return
 
@@ -84,7 +84,7 @@ class Algorithm:
             self.get_measure = reading_method
         return
 
-    def set_parameter_values(self,parameters):
+    def set_parameter(self,parameters):
         # The virtual method determines how to
         # set values for the parameters of the algorithm
         # The way to set values depends from the algorithm
@@ -102,7 +102,7 @@ class Algorithm:
         f.close()
         return
     
-    def get_measure(self,problemName,measures):
+    def get_measure(self,problem,measures):
         # The virtual method determines how to 
         # extract the measure value from the running result
         # Input: List of measures we want to get
@@ -112,7 +112,7 @@ class Algorithm:
         # In the run() method, we will redirect the output
         # to the file, say, ALGORITHM-PROBLEM.out
         allValues = []
-        f = open(self.name + '-' + problemName + '.out')
+        f = open(self.name + '-' + problem.name + '.out')
         map(lambda l: allValues.extend(l.strip('\n').split(' ')), f.readlines())
         f.close()
         
@@ -122,7 +122,7 @@ class Algorithm:
             measure_values[measures[i].name] = converters[measures[i].kind](allValues[i])
         return measure_values
 
-    def get_call_cmd(self,paramValues=None,problem=None):
+    def get_full_executable_command(self,paramValues=None,problem=None):
         # The virtual method determines how to
         # run algorithm
         # Input: List of parameter values
@@ -131,8 +131,8 @@ class Algorithm:
         # By default, we assume that the algorithm is called by
         # the command 
         # ./algorithm paramfile problem
-        output_file_name = self.name + '-' + problem + '.out'
-        executingCmd = self.executable + ' ' + self.parameter_file + ' ' + problem + ' > ' +  output_file_name
+        output_file_name = self.name + '-' + problem.name + '.out'
+        executingCmd = self.executable + ' ' + self.parameter_file + ' ' + problem.name + ' > ' +  output_file_name
         return executingCmd
 
     def add_parameter_constraint(self, paramConstraint):
