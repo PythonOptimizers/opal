@@ -1,4 +1,6 @@
 import pickle
+import copy
+
 from .parameter import Parameter
 from .parameter import ParameterConstraint
 from .measure import Measure
@@ -36,6 +38,8 @@ class Algorithm:
         self.constraints = []
         # Computational description
         self.parameter_file = None
+        self.parameter_writing_method = None
+        self.measure_reading_method = None
         self.executable = None
 
     def add_param(self, param):
@@ -58,17 +62,19 @@ class Algorithm:
         self.executable = executable
         return
 
-    def set_parameter_file(self,parameter_file,writting_method=None):
+    def set_parameter_file(self,parameter_file,writing_method=None):
         # We consider that the parameter value setting is done through file
-        # This method is to set parameter file name. The writting_method 
-        # represent for the file format. In the default case, writting_method is
+        # This method is to set parameter file name. The writing_method 
+        # represent for the file format. In the default case, writing_method is
         # set to the set_parameter_value() method. In this case, the parameters are 
         # dump to a file named by parameter_file by pickle.dump() method
         # if parameter_file is set to None, we consider that the parameter values 
         # are transmitted to the executable driver as the arguments
+        # There is a constraint of defining this method. The method has the form
+        # writing_method(algo,parameters)
+        # where algo represents for the algorithm 
         self.parameter_file = parameter_file
-        if writting_method is not None:
-            self.set_parameter_values = writting_method
+        self.parameter_writing_method = copy.copy(writing_method) 
         return
 
     def set_measure_file(self,measure_file=None,reading_method=None):
@@ -80,8 +86,7 @@ class Algorithm:
         #      may be the naming rule like ABC-[problem]-output.txt.
         # reading_method specifies how to extract the measure values from the output
         self.measure_file = measure_file
-        if reading_method is not None:
-            self.get_measure = reading_method
+        self.measure_reading_method = reading_method
         return
 
     def set_parameter(self,parameters):
@@ -94,12 +99,15 @@ class Algorithm:
         # algorithm
         # Input: list of parameter whose values are set
         # Output: void
-        f = open(self.parameter_file,'w')
-        pardict = {}
-        for param in parameters:
-            pardict[param.name] = param
-        pickle.dump(pardict, f)
-        f.close()
+        if self.parameter_writing_method is not None:
+            self.parameter_writing_method(self,parameters)
+        else:
+            f = open(self.parameter_file,'w')
+            pardict = {}
+            for param in parameters:
+                pardict[param.name] = param
+            pickle.dump(pardict, f)
+            f.close()
         return
     
     def get_measure(self,problem,measures):
@@ -111,6 +119,8 @@ class Algorithm:
         # the measure values to the standard output
         # In the run() method, we will redirect the output
         # to the file, say, ALGORITHM-PROBLEM.out
+        if self.measure_reading_method is not None:
+            return self.measure_reading_method(self,problem,measures)
         allValues = []
         f = open(self.name + '-' + problem.name + '.out')
         map(lambda l: allValues.extend(l.strip('\n').split(' ')), f.readlines())
