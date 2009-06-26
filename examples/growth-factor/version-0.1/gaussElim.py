@@ -61,8 +61,7 @@ class GaussElimination:
         n = self.data.shape[0]
         if self.pivotting_strategy == self.__class__.TRIVIAL_PIVOTTING:
             if self.data[k,k] == 0:
-                i = k + 1
-                while i < n :
+                for i in range(k+1,n):
                     if self.data[i,k] != 0:
                         self._swapRows(i,k)
                         break

@@ -23,7 +23,12 @@ if __name__ == '__main__':
 
     gauss_eliminator = GaussElimination(pivottingStrategy=int(sys.argv[1]))
     matrix = get_matrix(sys.argv[2])
-    #print matrix
+    f = open('GE.log','a')
+    print >> f, matrix
     #print 
-    gauss_eliminator.run(matrix)
+    print >> f, gauss_eliminator.run(matrix)
+    print >> f, gauss_eliminator.get_stability()
+    print >> f, '---------'
+    f.close()
+    #print gauss_eliminator.run(matrix)
     print gauss_eliminator.get_stability()

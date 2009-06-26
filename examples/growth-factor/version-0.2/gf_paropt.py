@@ -10,9 +10,6 @@ from dev.paropt import BlackBox
 
 from dev.paropt.Solvers import NOMAD
 
-from gf_algorithm import GFCompAlg
-
-
 problem = TestProblem(name='GF')
 
 matrix_size = 4
@@ -31,7 +28,7 @@ growth_factor_alg.set_parameter_file('matrix.txt')
 def growth_factor(p,measures):
     growthFactor = measures[0]
     # We have only one test problem, so the first value of vector is itself
-    return growthFactor(p)[0]
+    return -growthFactor(p)[0]
 
     
 # Select all parameter of algorithm
@@ -50,6 +47,6 @@ structure = ModelStructure(objective=growth_factor,constraints=[])  # Unconstrai
 
 blackbox = BlackBox(modelData=data,modelStructure=structure)
     
-NOMAD.set_parameter(name='MAX_BB_EVAL',value=2)
+NOMAD.set_parameter(name='MAX_BB_EVAL',value=50000)
 
 blackbox.solve(solver=NOMAD)

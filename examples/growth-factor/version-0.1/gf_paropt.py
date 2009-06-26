@@ -37,6 +37,6 @@ structure = ModelStructure(objective=growth_factor,constraints=[])  # Unconstrai
 
 blackbox = BlackBox(modelData=data,modelStructure=structure)
     
-NOMAD.set_parameter(name='MAX_BB_EVAL',value=2)
+NOMAD.set_parameter(name='MAX_BB_EVAL',value=50000)
 
 blackbox.solve(solver=NOMAD)

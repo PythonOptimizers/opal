@@ -14,8 +14,8 @@ class GFCompAlg(Algorithm):
         Algorithm.__init__(self,name='GFC',purpose='Compute growth factor of a matrix')
         self.matrix_size = matrixSize
         # Add the parameters, each parameter corresponds to a cell of matrix
-        for i in range(self.matrix_size):
-            self.add_param(Parameter(name='CELL'+str(i),kind='real',default=1.0))
+        for i in range(self.matrix_size*self.matrix_size):
+            self.add_param(Parameter(name='CELL'+str(i),kind='real',default=float(i+1.0)))
         
         # Define the measures
         self.add_measure(Measure(name='GF',kind='real',description='Growth factor of Gaussian Elimination on the matrix'))

@@ -66,8 +66,7 @@ class GaussElimination:
         n = self.data.shape[0]
         if self.pivotting_strategy == self.__class__.TRIVIAL_PIVOTTING:
             if self.data[k,k] == 0:
-                i = k + 1
-                while i < n :
+                for i in range(k+1,n) :
                     if self.data[i,k] != 0:
                         self._swapRows(i,k)
                         break
@@ -146,5 +145,10 @@ if __name__ == '__main__':
     matrix = get_matrix(sys.argv[2])
     #print matrix
     #print 
-    gauss_eliminator.run(matrix)
+    f = open('GE.log','a')
+    print >> f, matrix
+    print >> f, gauss_eliminator.run(matrix)
+    print >> f, gauss_eliminator.get_stability()
+    print >> f, '------------'
+    f.close()
     print gauss_eliminator.get_stability()
