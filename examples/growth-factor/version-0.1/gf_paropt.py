@@ -18,7 +18,7 @@ growth_factor_alg.set_parameter_file('matrix.txt')
 def growth_factor(p,measures):
     growthFactor = measures[0]
     # We have only one test problem, so the first value of vector is itself
-    return growthFactor(p)[0]
+    return -growthFactor(p)[0]
 
     
 # Select all parameter of algorithm
