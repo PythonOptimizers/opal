@@ -112,10 +112,14 @@ class GaussElimination:
         k = self.iterate
         n = self.data.shape[0]
         p = self.get_pivot(k)
-        self.data[k,k:n] = self.data[k,k:n]/self.data[k,k]
+        if p == 0:
+            self.iterate = self.iterate + 1
+            return True
+        self.data[k,k:n] = self.data[k,k:n]/p
         for i in range(k+1,n):
-            #r = self.data[i,k]/self.data[k,k]
-            self.data[i,k:n] = self.data[i,k:n] - self.data[k,k:n]*self.data[i,k]
+            r = self.data[i,k]
+            if r != 0:
+                self.data[i,k:n] = self.data[i,k:n]/r - self.data[k,k:n]
         self.iterate = self.iterate + 1
         return True
 

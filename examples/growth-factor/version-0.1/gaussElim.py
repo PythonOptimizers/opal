@@ -44,9 +44,9 @@ class GaussElimination:
 
     def _swapColumns(self,i,j):
         """Swaps rows i and j of vector or matrix [v]."""
-        temp = self.data[:i].copy()
-        self.data[:i] = self.data[:j]
-        self.data[:j] = temp
+        temp = self.data[:,i].copy()
+        self.data[:,i] = self.data[:,j]
+        self.data[:,j] = temp
         del temp
         return
 
@@ -56,6 +56,8 @@ class GaussElimination:
         return
 
     def get_pivot(self,k):
+        #print "before pivotting"
+        #print self.data
         maxVal = abs(self.data[k,k])
         maxIndex = k
         n = self.data.shape[0]
@@ -85,6 +87,8 @@ class GaussElimination:
                 self._swapRows(maxRowIndex,k)
             if maxColumnIndex != k:
                 self._swapColumns(maxColumnIndex,k)
+        #print self.data
+        #print "Pitvotting", self.data[k,k]
         return self.data[k,k]
                              
     
@@ -107,10 +111,15 @@ class GaussElimination:
         k = self.iterate
         n = self.data.shape[0]
         p = self.get_pivot(k)
-        self.data[k,k:n] = self.data[k,k:n]/self.data[k,k]
+        if p == 0:
+            self.iterate = self.iterate + 1
+            return True
+        self.data[k,k:n] = self.data[k,k:n]/p
+        
         for i in range(k+1,n):
-            #r = self.data[i,k]/self.data[k,k]
-            self.data[i,k:n] = self.data[i,k:n] - self.data[k,k:n]*self.data[i,k]
+            r = self.data[i,k]
+            if r != 0:
+                self.data[i,k:n] = self.data[i,k:n]/r - self.data[k,k:n]
         self.iterate = self.iterate + 1
         return True
 
@@ -118,6 +127,7 @@ class GaussElimination:
         self.set_data(A)
         self.reset()
         while self.next():
+            #print self.data
             pass
         return self.data
 

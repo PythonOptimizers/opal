@@ -20,7 +20,7 @@ for i in range(matrix_size*matrix_size):
         
 # Define the measures
 growth_factor_alg.add_measure(Measure(name='GF',kind='real',description='Growth factor of Gaussian Elimination on the matrix'))
-growth_factor_alg.set_executable_command('/userdata/users/codan/local/python/bin/python gf_computing.py 0')
+growth_factor_alg.set_executable_command('/userdata/users/codan/local/python/bin/python gf_computing.py 2')
 
 growth_factor_alg.set_parameter_file('matrix.txt')
 
