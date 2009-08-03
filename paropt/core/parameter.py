@@ -23,7 +23,7 @@ class Parameter:
       1.0e-3
     """
 
-    def __init__(self, kind='real', default=0.0, bounds=None,name=None, **kwargs):
+    def __init__(self, kind='real', default=0.0, bound=None,name=None, **kwargs):
         if kind not in ['real', 'integer', 'categorical']:
             raise TypeError, 'kind must be real, integer or categorical'
 
@@ -46,13 +46,13 @@ class Parameter:
         # The _default is a description
         self._default = default
         self.value = default
-        # The bounds of a parameter might be a tuple indicating 
+        # The bound of a parameter might be a tuple indicating 
         # the lower and the upper if the parameter has ordered kind 
         # like integer, real
-        # Otherwise, bounds is a set of feasible values
+        # Otherwise, bound is a set of feasible values
         # In the default case, we have not any information about the 
-        # bounds, we set it to None
-        self.bounds = bounds
+        # bound, we set it to None
+        self.bound = bound
         return
 
     def get_default(self):
@@ -80,28 +80,28 @@ class Parameter:
     def is_const(self):
         return self.kind == 'const'
 
-    def set_bounds(self,bounds):
-        # This method to set the bounds for a parameter
+    def set_bound(self,bound):
+        # This method to set the bound for a parameter
         # For the ordered parameter:
-        # set_bounds((None,0)) means we don't want to change
+        # set_bound((None,0)) means we don't want to change
         # the lower bound that may be set before and change the
         # upper bound to 0.
         # For the non ordered one, this method is simply reassign
         # the list of feasible values
         if self.is_categorical :
-            self.bounds = bounds
+            self.bound = bound
         else:
-            if self.bounds is None:
-                self.bounds = (None,None)
-            if bounds[0] is not None:
-                self.bounds[0] = bounds[0]
-            if bounds[1] is not None:
-                self.bounds[1] = bounds[1]
+            if self.bound is None:
+                self.bound = (None,None)
+            if bound[0] is not None:
+                self.bound[0] = bound[0]
+            if bound[1] is not None:
+                self.bound[1] = bound[1]
         return
 
-    def get_bounds(self):
-        # Get the bounds of variables
-        return self.bounds
+    def get_bound(self):
+        # Get the bound of variables
+        return self.bound
     
     def is_valid(self,value=None):
         # This method is to verify a value of parameter is valid or not
@@ -112,21 +112,21 @@ class Parameter:
             valueToVerify = value
         else:
             valueToVerify = self.value
-        if self.bounds is None:
+        if self.bound is None:
             return True
         if self.is_categorical:
-            return valueToVerify in self.bounds
+            return valueToVerify in self.bound
         # There is the error in transforming from string to int or float
         # For example, the value 0.0010000000 (in string in input file) is 
         # 0.00100000000001 after forcing it as real number
-        # Pay attention to verify the bounds at bounded point
-        if self.bounds[0] is not None:
-            if valueToVerify < self.bounds[0]:
-                #print 'Less than lower bound', valueToVerify - self.bounds[0]
+        # Pay attention to verify the bound at bounded point
+        if self.bound[0] is not None:
+            if valueToVerify < self.bound[0]:
+                #print 'Less than lower bound', valueToVerify - self.bound[0]
                 return False
-        if self.bounds[1] is not None:
-            if valueToVerify > self.bounds[1]:
-                #print 'Greater than upper bound', valueToVerify - self.bounds[1]
+        if self.bound[1] is not None:
+            if valueToVerify > self.bound[1]:
+                #print 'Greater than upper bound', valueToVerify - self.bound[1]
                 return False
         return True
 

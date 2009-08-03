@@ -56,41 +56,42 @@ class GaussElimination:
         self.max_value =  max(abs(self.data.flatten()))
         return
 
-    def get_pivot(self,k):
+    def get_pivot(self,k,l):
         #print "before pivotting"
         #print self.data
-        maxVal = abs(self.data[k,k])
-        maxIndex = k
+        maxVal = abs(self.data[k,l])
         n = self.data.shape[0]
+        m = self.data.shape[1]
         if self.pivotting_strategy == self.__class__.TRIVIAL_PIVOTTING:
-            if self.data[k,k] == 0:
+            if self.data[k,l] == 0:
                 for i in range(k+1,n):
                     if self.data[i,k] != 0:
                         self._swapRows(i,k)
                         break
         elif self.pivotting_strategy == self.__class__.PARTIAL_PIVOTTING:
-            for i in range(k+1,n):
-                if abs(self.data[i,k]) > maxVal :
-                    maxVal = abs(self.data[i,k])
+            maxIndex = k
+            for i in range(k,n):
+                if abs(self.data[i,l]) > maxVal :
+                    maxVal = abs(self.data[i,l])
                     maxIndex = i
             if maxIndex != k:
                 self._swapRows(maxIndex,k)
         else:
             maxRowIndex = k
-            maxColumnIndex = k
+            maxColumnIndex = l
             for i in range(k,n):
-                for j in range(k,n):
+                for j in range(l,m):
                     if abs(self.data[i,j]) > maxVal:
                         maxVal = abs(self.data[i,j])
                         maxRowIndex = i
                         maxColumnIndex = j
             if maxRowIndex != k:
                 self._swapRows(maxRowIndex,k)
-            if maxColumnIndex != k:
-                self._swapColumns(maxColumnIndex,k)
+            if maxColumnIndex != l:
+                self._swapColumns(maxColumnIndex,l)
         #print self.data
         #print "Pitvotting", self.data[k,k]
-        return self.data[k,k]
+        return self.data[k,l]
                              
     
     def get_stability(self):
@@ -103,6 +104,8 @@ class GaussElimination:
         del self.data
         self.data = numpy.array(self.origine)
         self.max_value =  max(abs(self.data.flatten()))
+        #print self.data
+        #print self.max_value
         return
     
     def next(self,iteration = 1):
@@ -110,7 +113,7 @@ class GaussElimination:
             return False
         k = self.iterate
         n = self.data.shape[0]
-        p = self.get_pivot(k)
+        p = self.get_pivot(k,k)
         if p == 0:
             self.iterate = self.iterate + 1
             return True
@@ -119,11 +122,13 @@ class GaussElimination:
         for i in range(k+1,n):
             r = self.data[i,k]
             if r != 0:
-                self.data[i,k:n] = self.data[i,k:n]/r - self.data[k,k:n]/p
+                self.data[i,k:n] = self.data[i,k:n] - self.data[k,k:n]*r/p
         maxVal =  max(abs(self.data.flatten()))
         if maxVal > self.max_value:
             self.max_value = maxVal
         self.iterate = self.iterate + 1
+        #print self.data
+        #print self.max_value
         return True
 
     def run(self,A):

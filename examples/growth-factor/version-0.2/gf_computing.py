@@ -123,7 +123,7 @@ class GaussElimination:
         for i in range(k+1,n):
             r = self.data[i,k]
             if r != 0:
-                self.data[i,k:n] = self.data[i,k:n]/r - self.data[k,k:n]/p
+                self.data[i,k:n] = self.data[i,k:n] - self.data[k,k:n]*r/p
         maxVal =  max(abs(self.data.flatten()))
         if maxVal > self.max_value:
             self.max_value = maxVal
@@ -150,14 +150,17 @@ def get_matrix(matrix_file):
 
 if __name__ == '__main__':
     '''
-    Usage python gf_computing.py pivoting_strategy matrix_file
+    Usage python gf_computing.py pivoting_strategy matrix_file [log_file]
     '''
 
     gauss_eliminator = GaussElimination(pivottingStrategy=int(sys.argv[1]))
     matrix = get_matrix(sys.argv[2])
     #print matrix
     #print 
-    f = open('GE.log','a')
+    if len(sys.argv) > 3:
+        f = open(sys.argv[3],'a')
+    else:
+        f = open('GE.log','a')
     print >> f, matrix
     print >> f, gauss_eliminator.run(matrix)
     print >> f, gauss_eliminator.get_stability()

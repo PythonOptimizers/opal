@@ -42,18 +42,22 @@ class NOMADSolver(Solver):
     
     def initialize(self,blackbox):
         descriptionFile = open(self.paramFileName,"w")
-        descriptionFile.write('DIMENSION ' + str(blackbox.nVar) + '\n')
+        descriptionFile.write('DIMENSION ' + str(blackbox.n_var) + '\n')
         descriptionFile.write('DISPLAY_DEGREE 4\n')
         descriptionFile.write('DISPLAY_STATS EVAL& BBE & SOL&  &OBJ \\\\ \n')
         #descriptionFile.write('BB_EXE "$python ' + self.executableFileName + '"\n')
         descriptionFile.write('BB_EXE ' + blackbox.executableFileName + '\n')
         bbTypeStr = 'BB_OUTPUT_TYPE OBJ'
-        for i in range(blackbox.mCon):
+        for i in range(blackbox.m_con):
             bbTypeStr = bbTypeStr + ' PB'
         descriptionFile.write(bbTypeStr + '\n')
         descriptionFile.write('SOLUTION_FILE ' + self.solutionFileName + '\n')
-        pointStr = str(blackbox.initialPoint)
+        pointStr = str(blackbox.initial_points)
         descriptionFile.write('X0 ' +  pointStr.replace(',',' ') + '\n')
+        lowerBoundStr = str([bound[0] for bound in blackbox.bounds]).replace('None','-').replace(',',' ')
+        upperBoundStr = str([bound[1] for bound in blackbox.bounds]).replace('None','-').replace(',',' ')
+        descriptionFile.write('LOWER_BOUND ' + lowerBoundStr + '\n')
+        descriptionFile.write('UPPER_BOUND ' + upperBoundStr + '\n')
         descriptionFile.write('STATS_FILE ' + self.resultFileName + ' EVAL& BBE & BBO & SOL&  &OBJ \\\\ \n')
         for param_setting in self.parameter_settings:
             descriptionFile.write(param_setting + '\n')

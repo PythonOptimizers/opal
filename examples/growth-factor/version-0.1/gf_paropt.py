@@ -1,3 +1,4 @@
+
 from dev.paropt import TestProblem
 
 
@@ -11,8 +12,8 @@ from gf_algorithm import GFCompAlg
 
 
 problem = TestProblem(name='GF')
-growth_factor_alg = GFCompAlg(matrixSize=4)
-growth_factor_alg.set_executable_command('/userdata/users/codan/local/python/bin/python gf_computing.py 2')
+growth_factor_alg = GFCompAlg(matrixSize=4,initialMatrix='higham-matrix-c.txt')
+growth_factor_alg.set_executable_command('/userdata/users/codan/local/python/bin/python gf_computing.py 1')
 growth_factor_alg.set_parameter_file('matrix.txt')
 
 def growth_factor(p,measures):

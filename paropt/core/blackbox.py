@@ -27,9 +27,10 @@ class BlackBox:
         else:
             self.executableFileName = fileName
         activeParameters = self.model_data.get_active_parameters()
-        self.nVar = len(activeParameters)
-        self.mCon = len(self.model_structure.constraints)
-        self.initialPoint = [param.value for param in activeParameters]
+        self.n_var = len(activeParameters)
+        self.m_con = len(self.model_structure.constraints)
+        self.initial_points = [param.value for param in activeParameters]
+        self.bounds = [param.bound for param in activeParameters]
         pass
 
     def set_options(self,**kwargs):

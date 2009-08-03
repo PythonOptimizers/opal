@@ -1,3 +1,5 @@
+import random
+
 from dev.paropt import Algorithm
 from dev.paropt import Parameter
 from dev.paropt import Measure
@@ -10,13 +12,20 @@ class GFCompAlg(Algorithm):
     will use an algorithm that has 9 parameters, each parameter 
     represents for a cell of matrix
     '''
-    def __init__(self,matrixSize=0,**kwargs):
+    def __init__(self,matrixSize=0,initialMatrix=None,**kwargs):
         Algorithm.__init__(self,name='GFC',purpose='Compute growth factor of a matrix')
         self.matrix_size = matrixSize
+        cells = []
+        if initialMatrix is not None:
+            f = open(initialMatrix)
+            map(lambda l: cells.extend(l.strip(' \n').split(' ')), f.readlines())
+            f.close()
         # Add the parameters, each parameter corresponds to a cell of matrix
         for i in range(self.matrix_size*self.matrix_size):
-            self.add_param(Parameter(name='CELL'+str(i),kind='real',default=float(i+1.0)))
-        
+            if i >= len(cells):
+                self.add_param(Parameter(name='CELL'+str(i),kind='real',default=float(random.random()),bound=(-1,1)))
+            else:
+                self.add_param(Parameter(name='CELL'+str(i),kind='real',default=float(cells[i]),bound=(-1,1)))
         # Define the measures
         self.add_measure(Measure(name='GF',kind='real',description='Growth factor of Gaussian Elimination on the matrix'))
         return
