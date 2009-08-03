@@ -47,11 +47,10 @@ DFO.add_parameter_constraint('CNSTOL <= 0.1')
 DFO.add_parameter_constraint('DELTA >= DELMIN')
 DFO.add_parameter_constraint('PP >= 1')
 
-# Define measures
-cpuTime = Measure(kind='real',name='CPU',description='CPU time usage')
-
-# Register the measures 
-DFO.add_measure(cpuTime)
-
+# Define and register the measures
+DFO.add_measure(Measure(kind='integer',name='EXITCODE',description='Exit code'))
+DFO.add_measure(Measure(kind="real",name='FVAL',description='Function value'))
+DFO.add_measure(Measure(kind='real',name='FEVAL',description='Number of function evaluations'))
+DFO.add_measure(Measure(kind='real',name='CPU',description='CPU time usage'))
 
 
