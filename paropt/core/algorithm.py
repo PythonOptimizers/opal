@@ -125,11 +125,12 @@ class Algorithm:
         f = open(self.name + '-' + problem.name + '.out')
         map(lambda l: allValues.extend(l.strip('\n').split(' ')), f.readlines())
         f.close()
-        
+        #print allValues
         measure_values = {}
         converters = {'categorical':str,'integer':int,'real':float}
         for i in range(len(measures)):
             measure_values[measures[i].name] = converters[measures[i].kind](allValues[i])
+        #print 'print in algorithm.py',measure_values
         return measure_values
 
     def get_full_executable_command(self,paramValues=None,problem=None):

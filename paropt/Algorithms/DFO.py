@@ -50,7 +50,7 @@ DFO.add_parameter_constraint('PP >= 1')
 # Define and register the measures
 DFO.add_measure(Measure(kind='integer',name='EXITCODE',description='Exit code'))
 DFO.add_measure(Measure(kind="real",name='FVAL',description='Function value'))
-DFO.add_measure(Measure(kind='real',name='FEVAL',description='Number of function evaluations'))
 DFO.add_measure(Measure(kind='real',name='CPU',description='CPU time usage'))
+DFO.add_measure(Measure(kind='real',name='FEVAL',description='Number of function evaluations'))
 
 

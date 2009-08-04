@@ -153,6 +153,7 @@ class ModelData:
 
         for prob in self.problems:
             measure_values = self.algorithm.get_measure(prob,self.measures)
+            #print measure_values
             if len(measure_values) != 0:
                 self.measure_value_table.add_problem_measures(prob.name,measure_values)
         #print "ho ho test.py ",self.problems
