@@ -5,14 +5,13 @@ from ..core.testproblem import *
 
 class CUTErTestProblem(OptimizationTestProblem):
 
-    def __init__(self, name=None, description=None, nvar=0, ncon=0,
-                 paramString=None, classifyStr=None, **kwargs):
-        OptimizationTestProblem.__init__(self, name, description, nvar, ncon,
+    def __init__(self, name=None, description=None, classifyStr=None,nvar=0, ncon=0,
+                 paramString=None, **kwargs):
+        OptimizationTestProblem.__init__(self, name, description, classifyStr, nvar, ncon,
                                          **kwargs)
         self.paramString = None
-        self.classifyStr = None
 
-class Query:
+class CUTErQuery:
 
     def __init__(self,qName=None,
                  name='',
@@ -102,7 +101,7 @@ class CUTErFactory:
         f.close()
         for line in lines:
             line = line.strip()
-            if len(line) == 0:
+            if len(line) <= 2:
                 continue
             #print line
             fields = line.split(' ',1)
@@ -111,12 +110,27 @@ class CUTErFactory:
                 queryResult.append(fields[0].strip())
         return queryResult
 
-    def generate_problem(self,problem_name,param=None):      
+    def generate_collection(self):
+        f = open(self.classifyFile,'r')
+        lines = f.readlines()
+        f.close()
+        CUTEr =  ProblemCollection(name='CUTEr collection')
+        for line in lines:
+            line = line.strip()
+            if len(line) <= 2:
+                # Emtry line with new line symbol
+                continue
+            #print line
+            fields = line.split(' ',1)
+            CUTEr.all.add_problem(self.generate_problem(fields[0].strip(),fields[1].strip()))
+        return CUTEr
+    
+    def generate_problem(self,problem_name,classify_string=None,param=None):      
         decode_cmd = self.decoder
         if param is None:
             decode_cmd = decode_cmd + ' ' + problem_name
         else:
-            decode_cmd = decode_cmd + '-param ' + param + ' ' + problem_name 
+            decode_cmd = decode_cmd + ' -param ' + param + ' ' + problem_name 
         f = os.popen(decode_cmd)
         decode_log = f.read()
         f.close()
@@ -131,5 +145,5 @@ class CUTErFactory:
         ncon = 0
         for cons_decl in constraint_declarations:
             ncon = ncon + int(number_query.findall(cons_decl)[0])
-        problem = CUTErTestProblem(name=problem_name,nvar=nvar,ncon=ncon)
+        problem = CUTErTestProblem(name=problem_name,classifyStr=classify_string,nvar=nvar,ncon=ncon)
         return problem          

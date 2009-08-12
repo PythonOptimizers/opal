@@ -75,7 +75,7 @@ class MeasureValueTable:
         for i in range(len(problem_names)):
             #print i
             self.problem_indices[problem_names[i]] = i 
-        print self.problem_indices
+        #print self.problem_indices
         self.measure_names = measure_names
         self.table = {} # this mapping with key is the name of measure
                         # and value is a list of value
@@ -86,7 +86,7 @@ class MeasureValueTable:
         pass
 
     def get_cell(self,prob,measure):
-        print prob,measure,self.table[measure],self.problem_indices[prob]
+        #print prob,measure,self.table[measure],self.problem_indices[prob]
         return self.table[measure][self.problem_indices[prob]]
 
     def get_column(self,measure):
@@ -113,13 +113,13 @@ class MeasureValueTable:
         return
 
     def __string__(self):
-        print self.table
-        print self.problem_indices
-        print self.measure_names
+        #print self.table
+        #print self.problem_indices
+        #print self.measure_names
         tableStr = ''
-        for prob in self.problem_indices.keys():
+        for prob in sorted(self.problem_indices.keys()):
             tableStr = tableStr + prob 
-            for measure in self.measure_names: 
+            for measure in sorted(self.measure_names): 
                 tableStr = tableStr + ' ' + str(self.get_cell(prob,measure))
             tableStr = tableStr + '\n'
         return tableStr

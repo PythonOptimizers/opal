@@ -12,10 +12,22 @@ class TestProblem:
     >>> print chem.name, chem.description
     """
 
-    def __init__(self, name=None, description=None, **kwargs):
+    def __init__(self, name=None, description=None,classifyStr=None, **kwargs):
+        """
+        Any test problem has three general information
+        """
         self.name = name
         self.description = description
+        self.classify_string = classifyStr
 
+    def get_name(self):
+        return self.name
+
+    def get_description(self):
+        return self.description
+
+    def get_classify_string(self):
+        return self.classify_string
 
 class OptimizationTestProblem(TestProblem):
     """
@@ -27,12 +39,11 @@ class OptimizationTestProblem(TestProblem):
     HS26 3 1
     """
 
-    def __init__(self, name=None, description=None, nvar=0, ncon=0, **kwargs):
-        TestProblem.__init__(self, name, description, **kwargs)
+    def __init__(self, name=None, description=None, classifyStr=None,nvar=0, ncon=0, **kwargs):
+        TestProblem.__init__(self, name, description,classifyStr, **kwargs)
         self.nvar = nvar
         self.ncon = ncon
 
-    
 class ProblemSet:
     """
     An abstract class to represent a test set from which lists of
@@ -91,7 +102,20 @@ class ProblemSet:
     def all_problems(self):
         "Return a list of all problems in this collection."
         return self.problems.copy()
-
+    
+    def select(self,query):
+        """
+        Return a list of problem that match with the query
+        The query object is any object that has a function match that
+        figure out a given problem is satisified the searching criteria.
+        The information of problem is given via two arguments: name and 
+        the classify string
+        """
+        queryResult = []
+        for prob in self.problems:
+            if query.match(prob.name,prob.get_classify_string()):
+                queryResult.append(prob)
+        return queryResult
 
 class ProblemCollection:
     """
@@ -118,16 +142,17 @@ class ProblemCollection:
 
     def __init__(self, name=None, **kwargs):
         self.name = name
+        self.all = ProblemSet('Physic set of the collection. It contains all problem of collection')
         self.subcollections = [] # List of subcollections of this collection
 
     def __len__(self):
-        return len(self.allproblems)
+        return len(self.all_problems())
 
     def __getitem__(self,key):
-        return self.allproblems[key]
+        return self.all_problems()[key]
 
     def __contains__(self,prob):
-        return (prob in self.allproblems)
+        return (prob in self.all_problems())
     
     def add_subcollection(self, collection):
         "Add a subcollection to this collection."
@@ -140,13 +165,14 @@ class ProblemCollection:
         """
         Return a list of all problems in all subcollections of this collection.
         """
-        allprobs = []
+        allprobs = self.all
         for collection in self.subcollections:
-            for prob in collection:
-                allprobs.append(prob)
+            allprobs.extend(collection.problems)
         return allprobs
 
-
+    def select(self,query):
+        return self.all.select(query)
+        
 def _test():
     import doctest
     return doctest.testmod()

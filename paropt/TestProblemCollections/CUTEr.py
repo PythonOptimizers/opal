@@ -8,9 +8,10 @@ import sys
 from ..core.testproblem import *
 
 from cuterfactory import CUTErFactory
-from cuterfactory import Query
+from cuterfactory import CUTErQuery
 
-data_file = os.path.join(os.path.dirname(os.path.abspath(sys.modules[__name__].__file__)),'CUTEr.data')
+#data_file = os.path.join(os.path.dirname(os.path.abspath(sys.modules[__name__].__file__)),'CUTEr.data')
+data_file = os.path.join(os.path.expanduser('~'),'.opal/CUTEr.data')
 #print data_file
 # Object definition        
 try:
@@ -22,12 +23,8 @@ except IOError:
     classfName='CLASSF.DB'  # Standard name for CUTEr classify file
     classfFile = os.path.join(classfDir, classfName)
     CUTEr_factory = CUTErFactory(classifyFile=classfFile)
-    CUTEr =  ProblemCollection(name='CUTEr collection')
-    HS = ProblemSet(name='Hock-Schittkowski test problems')
-    for prob_name in CUTEr_factory.extract(name='HS\d+'):
-        HS.add_problem(CUTEr_factory.generate_problem(prob_name))
-    CUTEr.add_subcollection(HS)
-    CUTEr.HS = HS
+    CUTEr = CUTEr_factory.generate_collection()
+    CUTEr.HS = CUTEr.all.select(CUTErQuery(name='HS\d+'))
     f = open(data_file,'w')
     pickle.dump(CUTEr,f)
     f.close()
