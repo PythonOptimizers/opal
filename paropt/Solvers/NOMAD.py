@@ -54,6 +54,7 @@ class NOMADSolver(Solver):
         descriptionFile.write('SOLUTION_FILE ' + self.solutionFileName + '\n')
         pointStr = str(blackbox.initial_points)
         descriptionFile.write('X0 ' +  pointStr.replace(',',' ') + '\n')
+        print [bound[0] for bound in blackbox.bounds]
         lowerBoundStr = str([bound[0] for bound in blackbox.bounds]).replace('None','-').replace(',',' ')
         upperBoundStr = str([bound[1] for bound in blackbox.bounds]).replace('None','-').replace(',',' ')
         descriptionFile.write('LOWER_BOUND ' + lowerBoundStr + '\n')

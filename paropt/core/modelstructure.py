@@ -11,11 +11,11 @@ class ModelStructure:
         self.objective = MeasureFunction(objective)
         self.constraints = []
         for constraint in constraints:
-            if type(constraint) != type((1,2)):
-                self.constraints.append(MeasureFunction(constraint[0]),
-                                        constraint[1])
+            if type(constraint) == type((1,2)):
+                self.constraints.append((MeasureFunction(constraint[0]),
+                                        constraint[1]))
             else:
-                self.constraints.append(MeasureFunction(constraint),0)
+                self.constraints.append((MeasureFunction(constraint),0))
         self.log = None
         pass
 
@@ -68,11 +68,14 @@ class ModelEvaluator:
         
         # Get the value of parameter vector p
         paramValues = [param.value for param in testResult.parameters if not param.is_const()]
+        measureValues = testResult.measure_value_table
         # Evaluate the objective function by passing the parameter vector and measure vector
-        objValue = self.model.objective(paramValues,self.measures)
+        # The 
+        objValue = self.model.objective(paramValues,measureValues)
         consValues = []
         for i in range(len(self.model.constraints)):
-            consValues.append(self.model.constraints[i][0](paramValues,self.measures) - self.model.constraints[i][1]) 
+            #consValues.append(self.model.constraints[i][0](paramValues,self.measures) - self.model.constraints[i][1]) 
+            consValues.append(self.model.constraints[i][0](paramValues,measureValues) - self.model.constraints[i][1])
         return (objValue,consValues)
 
     def log(self,fileName):

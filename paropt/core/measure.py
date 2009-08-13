@@ -85,6 +85,16 @@ class MeasureValueTable:
             self.table[measure] = []
         pass
 
+    def __len__(self):
+        return (len(self.problem_indices),len(self.measure_names))
+
+    def __getitem__(self,key):
+        if key in self.measure_names:
+            return self.table[key]
+        else:
+            return None
+
+
     def get_cell(self,prob,measure):
         #print prob,measure,self.table[measure],self.problem_indices[prob]
         return self.table[measure][self.problem_indices[prob]]
