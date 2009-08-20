@@ -9,7 +9,6 @@ setup(name='ParOpt',
       packages=['paropt',
                 'paropt.core', 
                 'paropt.Algorithms',
-                'paropt.Measures',
                 'paropt.Platforms',
                 'paropt.Solvers',
                 'paropt.TestProblemCollections']
