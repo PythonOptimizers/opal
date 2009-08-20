@@ -59,7 +59,7 @@ class LSFPlatform(Platform):
         #  Generating synchronizing job
         #----------------------
         synchronizerFile = open('synchronizer.py','w')
-        synchronizerFile.write('#!/usr/bin/env python\n')
+        #synchronizerFile.write('#!/usr/bin/env python\n')
         synchronizerFile.write('import socket\n')
         synchronizerFile.write('port = ' + str(port) + '\n')
         synchronizerFile.write('s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n')
@@ -67,7 +67,7 @@ class LSFPlatform(Platform):
         synchronizerFile.write('s.send("'+ keyStr + '")\n')
         synchronizerFile.write('s.close()\n')
         synchronizerFile.close()
-        os.chmod('synchronizer.py',0755)
+        #os.chmod('synchronizer.py',0755)
         #------------------------
         # Launch the synchronizer
         #------------------------
@@ -75,7 +75,7 @@ class LSFPlatform(Platform):
         timeStr = str(ltime.tm_year) + '-' + str(ltime.tm_mon) + '-' + str(ltime.tm_mday) + ' ' + \
                   str(ltime.tm_hour) + ':' + str(ltime.tm_min) + ':' + str(ltime.tm_sec)
         os.system('echo ' + timeStr + ' Begin waiting >> lsf-sync.log')
-        synchronizeCmd = 'bsub -w "' + condition + '" ./synchronizer.py >> lsf-sync.log'
+        synchronizeCmd = 'bsub -w "' + condition + '" python synchronizer.py >> lsf-sync.log'
         os.system(synchronizeCmd)
         #-----------------------
         # Waiting for the notify from synchonizer
@@ -90,7 +90,7 @@ class LSFPlatform(Platform):
         # free the sockets if received a notification
         #-----------------
 
-        clientsocket.close()
+        #clientsocket.close()
         serversocket.close()
         ltime = time.localtime()
         timeStr = str(ltime.tm_year) + '-' + str(ltime.tm_mon) + '-' + str(ltime.tm_mday) + ' ' + \
