@@ -28,7 +28,7 @@ class NOMADSolver(Solver):
         if len(argv) < 1:
             return inputValues
         f = open(argv[1])
-        map(lambda l: inputValues.extend(l.strip('\n').split(' ')), f.readlines()) # Extract every words from the file and save to a list
+        map(lambda l: inputValues.extend(l.strip('\n').strip(' ').split(' ')), f.readlines()) # Extract every words from the file and save to a list
         f.close()
         return inputValues
 
@@ -45,8 +45,8 @@ class NOMADSolver(Solver):
         descriptionFile.write('DIMENSION ' + str(blackbox.n_var) + '\n')
         descriptionFile.write('DISPLAY_DEGREE 4\n')
         descriptionFile.write('DISPLAY_STATS EVAL& BBE & SOL&  &OBJ \\\\ \n')
-        #descriptionFile.write('BB_EXE "$python ' + self.executableFileName + '"\n')
-        descriptionFile.write('BB_EXE ' + blackbox.executableFileName + '\n')
+        descriptionFile.write('BB_EXE "$python ' + blackbox.executableFileName + '"\n')
+        #descriptionFile.write('BB_EXE ' + blackbox.executableFileName + '\n')
         bbTypeStr = 'BB_OUTPUT_TYPE OBJ'
         for i in range(blackbox.m_con):
             bbTypeStr = bbTypeStr + ' PB'
@@ -54,7 +54,7 @@ class NOMADSolver(Solver):
         descriptionFile.write('SOLUTION_FILE ' + self.solutionFileName + '\n')
         pointStr = str(blackbox.initial_points)
         descriptionFile.write('X0 ' +  pointStr.replace(',',' ') + '\n')
-        print [bound[0] for bound in blackbox.bounds]
+        #print 'NOMAD.py',[bound[0] for bound in blackbox.bounds]
         lowerBoundStr = str([bound[0] for bound in blackbox.bounds]).replace('None','-').replace(',',' ')
         upperBoundStr = str([bound[1] for bound in blackbox.bounds]).replace('None','-').replace(',',' ')
         descriptionFile.write('LOWER_BOUND ' + lowerBoundStr + '\n')

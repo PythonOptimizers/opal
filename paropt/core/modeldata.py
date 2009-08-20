@@ -125,13 +125,14 @@ class ModelData:
                
     def run(self,parameter_values):
         self.fill_parameter_value(parameter_values)
+        #print '[modeldata.py]',[param.value for param in self.parameters]
         self.test_number += 1
         self.test_is_failed = False
         if not self.algorithm.are_parameters_valid(self.parameters):
-            # print 'Parameter values are invalid, test fails'
+            #print '[modeldata.py]','Parameter values are invalid, test fails'
             self.test_is_failed = True
             return
-        #print 'ho ho parameter values',self.parameters
+        #print '[modeldata.py]','Parameter values are valid'
         
         ltime = time.localtime()
         self.run_id = str(ltime.tm_year) +  str(ltime.tm_mon) + str(ltime.tm_mday) + \
@@ -139,8 +140,12 @@ class ModelData:
         # Launches the algorithm routines
         
         self.algorithm.set_parameter(self.parameters)
+        
         for prob in self.problems:
+            #print '[modeldata.py]:Executing ' + prob
+            output_file_name = self.algorithm.name + '-' + prob.name + '.out'
             self.platform.execute(self.algorithm.get_full_executable_command(self.parameters,prob),
+                                  output_file_name,
                                   self.run_id + '-' + prob.name)
         return 
 

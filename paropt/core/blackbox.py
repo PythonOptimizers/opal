@@ -46,7 +46,7 @@ class BlackBox:
         # --------
         # or predifine config.python to the used python
         rootPackage = config.__name__.replace('.config','')
-        blackboxFile.write(config.python + '\n')
+        #blackboxFile.write(config.python + '\n')
         #blackboxFile.write('#!/usr/bin/env python\n')
         blackboxFile.write('import os\n')
         blackboxFile.write('import sys\n')
@@ -91,6 +91,7 @@ class BlackBox:
         # Get the parameter values from the input of blackbox
 
         paramValues = self.solver.read_input(argv)
+        #print '[blackbox.py] ', paramValues
         self.model_data.run(paramValues)
         
         testResult = self.model_data.get_test_result()

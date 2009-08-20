@@ -90,7 +90,7 @@ class MeasureValueTable:
 
     def __getitem__(self,key):
         if key in self.measure_names:
-            return self.table[key]
+            return numpy.array(self.table[key])
         else:
             return None
 

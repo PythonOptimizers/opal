@@ -1,5 +1,6 @@
 import pickle
 import copy
+import os
 
 from .parameter import Parameter
 from .parameter import ParameterConstraint
@@ -122,10 +123,12 @@ class Algorithm:
         if self.measure_reading_method is not None:
             return self.measure_reading_method(self,problem,measures)
         allValues = []
-        f = open(self.name + '-' + problem.name + '.out')
-        map(lambda l: allValues.extend(l.strip('\n').split(' ')), f.readlines())
+        measureFile = self.name + '-' + problem.name + '.out' 
+        f = open(measureFile)
+        map(lambda l: allValues.extend(l.strip('\n').strip(' ').split(' ')), f.readlines())
         f.close()
-        #print allValues
+        os.remove(measureFile)
+        #print '[algorithm.py]', allValues, [measure.name for measure in measures]
         measure_values = {}
         converters = {'categorical':str,'integer':int,'real':float}
         for i in range(len(measures)):
@@ -142,8 +145,7 @@ class Algorithm:
         # By default, we assume that the algorithm is called by
         # the command 
         # ./algorithm paramfile problem
-        output_file_name = self.name + '-' + problem.name + '.out'
-        executingCmd = self.executable + ' ' + self.parameter_file + ' ' + problem.name + ' > ' +  output_file_name
+        executingCmd = self.executable + ' ' + self.parameter_file + ' ' + problem.name
         return executingCmd
 
     def add_parameter_constraint(self, paramConstraint):
@@ -156,6 +158,7 @@ class Algorithm:
         return
 
     def are_parameters_valid(self,parameters):
+        #print '[algorithm.py]',[param.value for param in parameters]
         for constraint in self.constraints:
             if constraint(parameters) is ParameterConstraint.violated:
                 return ParameterConstraint.violated
