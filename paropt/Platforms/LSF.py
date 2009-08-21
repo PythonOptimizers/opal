@@ -10,15 +10,12 @@ class LSFPlatform(Platform):
         self.submitLog = submitLog
         pass
    
-    def execute(self,command,output=None,commandId=None,):
+    def execute(self,command,output='/dev/null',commandId=None,):
         if commandId is None:
             jobName = command + '-' + self.name
         else:
-            jobName = commandId + '-' + self.name
-        if output == None:
-            os.system("bsub -oo  output.log  -J " + jobName + " " + command + " >> " + self.submitLog)
-        else:
-            os.system("bsub -oo /dev/null -J " + jobName + " " + command + " >> " + self.submitLog)
+            jobName = commandId + '-' + self.name       
+        os.system("bsub -N -oo " + output + "  -J " + jobName + " " + command + " >> " + self.submitLog)
         return
 
 

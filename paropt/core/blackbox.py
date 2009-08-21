@@ -76,7 +76,7 @@ class BlackBox:
         blackboxFile.write(tab+'print "Error in loading"\n')
         #blackboxFile.write('blackboxRunLogFile.close()\n')
         blackboxFile.close()
-        os.chmod(self.executableFileName,0755)
+        #os.chmod(self.executableFileName,0755)
         return
 
     def run(self,argv):

@@ -111,6 +111,12 @@ class Algorithm:
             f.close()
         return
     
+    def get_output(self):
+        return 'file'
+
+    def get_measure_file(self,problem):
+        return self.name + '-' + problem.name + '.out'
+
     def get_measure(self,problem,measures):
         # The virtual method determines how to 
         # extract the measure value from the running result

@@ -8,11 +8,9 @@ class LINUXPlatform(Platform):
         Platform.__init__(self,'LINUX',**kwargs)
         pass
 
-    def execute(self,command,output=None,commandId=None):
-        if output is None:
-            os.system(command + ' > output.log')
-        else:
-            os.system(command + ' > /dev/null')
+    def execute(self,command,output='/dev/null',commandId=None):
+        os.system(command + ' > ' + output
+)
 
     def waitForCondition(self,condition):
         pass

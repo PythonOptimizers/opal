@@ -143,7 +143,14 @@ class ModelData:
         
         for prob in self.problems:
             #print '[modeldata.py]:Executing ' + prob
-            output_file_name = self.algorithm.name + '-' + prob.name + '.out'
+            if self.algorithm.get_output() is None:
+                # The algorithm out the measues to standard output
+                # We will redirect the output to the corresponding measure file
+                # Otherwise, the output of runing is outed to the /dev/null
+                output_file_name = algorithm.get_measure_file(prob)
+            else:
+                output_file_name = '/dev/null'
+            #output_file_name = self.algorithm.name + '-' + prob.name + '.out'
             self.platform.execute(self.algorithm.get_full_executable_command(self.parameters,prob),
                                   output_file_name,
                                   self.run_id + '-' + prob.name)
