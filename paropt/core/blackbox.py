@@ -1,4 +1,5 @@
 import os
+import sys
 import os.path
 import pickle
 
@@ -7,7 +8,7 @@ from .modelstructure import ModelEvaluator
 
 class BlackBox:
     def __init__(self, modelData=None, modelStructure=None,
-                 fileName=None,**kwargs):
+                 runFileName='blackbox.py',dataFileName='blackbox.dat',logFileName='test.log',**kwargs):
         """
         This class represent a black box that encapsulates the 
         information of a parameter optimization problem.
@@ -22,15 +23,18 @@ class BlackBox:
 
         self.model_data = modelData
         self.model_structure = modelStructure
-        if fileName is None:
-            self.executableFileName = 'blackbox.py'
-        else:
-            self.executableFileName = fileName
+        self.runFileName = runFileName
+        self.dataFileName = dataFileName
+        self.logFileName = logFileName
         activeParameters = self.model_data.get_active_parameters()
         self.n_var = len(activeParameters)
         self.m_con = len(self.model_structure.constraints)
         self.initial_points = [param.value for param in activeParameters]
         self.bounds = [param.bound for param in activeParameters]
+        self.solver = None 
+        # if no solver is specified, the blackbox is a general 
+        # executable file with two arguments: input file and parameter file
+        # The output is standard screen
         pass
 
     def set_options(self,**kwargs):
@@ -39,7 +43,7 @@ class BlackBox:
     def generate_executable_file(self):
         
         tab = ' '*4
-        blackboxFile = open(self.executableFileName,'w')
+        blackboxFile = open(self.runFileName,'w')
         # To avoid the error compability of python version (local version intalled by user) and
         # global version (system), we don't turn black box as a executable but call it by
         # python blackbox.py
@@ -55,28 +59,30 @@ class BlackBox:
         blackboxFile.write('import pickle\n')
         blackboxFile.write('from ' + rootPackage + '.core import modeldata\n')
         blackboxFile.write('from ' + rootPackage + '.core import blackbox\n')
-        blackboxFile.write('from ' + rootPackage + '.Solvers import ' + self.solver.name + '\n')
+        if self.solver is not None:
+            blackboxFile.write('from ' + rootPackage + '.Solvers import ' + self.solver.name + '\n')
         #blackboxFile.write('from ' + self.modelEvaluator.model.moduleName + ' import '+ self.modelEvaluator.model.objFuncName + '\n')
         #for constraint in self.modelEvaluator.model.constraintNames:
         #    blackboxFile.write('from ' + self.modelEvaluator.model.moduleName + ' import '+ constraint + '\n')
         blackboxFile.write('# load the test data\n')
         blackboxFile.write('try:\n')
-        blackboxFile.write(tab+'blackboxDataFile = open("blackbox.dat","r")\n')
+        blackboxFile.write(tab+'blackboxDataFile = open("' + self.dataFileName + '","r")\n')
         blackboxFile.write(tab+'blackbox = pickle.load(blackboxDataFile)\n')
         blackboxFile.write(tab+'blackboxDataFile.close()\n')
         blackboxFile.write('except TypeError:\n')
         blackboxFile.write(tab+'print "Error in loading"\n')
         #blackboxFile.write('blackbox.opt_data.synchronize_measures()\n')
         blackboxFile.write('blackbox.run(sys.argv)\n')
-        blackboxFile.write('try:\n')
-        blackboxFile.write(tab+'blackboxDataFile = open("blackbox.dat","w")\n')
-        blackboxFile.write(tab+'pickle.dump(blackbox,blackboxDataFile)\n')
-        blackboxFile.write(tab+'blackboxDataFile.close()\n')
-        blackboxFile.write('except TypeError:\n')
-        blackboxFile.write(tab+'print "Error in loading"\n')
+        #blackboxFile.write('try:\n')
+        #blackboxFile.write(tab+'blackboxDataFile = open("' + self.dataFileName + '","w")\n')
+        #blackboxFile.write(tab+'pickle.dump(blackbox,blackboxDataFile)\n')
+        #blackboxFile.write(tab+'blackboxDataFile.close()\n')
+        #blackboxFile.write('except TypeError:\n')
+        #blackboxFile.write(tab+'print "Error in loading"\n')
+        blackboxFile.write('blackbox.save()\n')
         #blackboxFile.write('blackboxRunLogFile.close()\n')
         blackboxFile.close()
-        #os.chmod(self.executableFileName,0755)
+        #os.chmod(self.runFileName,0755)
         return
 
     def run(self,argv):
@@ -87,22 +93,46 @@ class BlackBox:
         output = run(input)
         
         '''
-        paramValues = []
+        inputValues = [] # algorithm parameter values
+        paramValues = [] # blackbox parameter values
         # Get the parameter values from the input of blackbox
-
-        paramValues = self.solver.read_input(argv)
+        if self.solver is not None:
+            (inputValues,paramValues) = self.solver.blackbox_read_input(argv)
+        else:
+            (inputValues,paramValues) = self.read_input(argv)
         #print '[blackbox.py] ', paramValues
-        self.model_data.run(paramValues)
+        self.model_data.run(inputValues)
         
         testResult = self.model_data.get_test_result()
         #print 'ho ho after getTestResult', self.modelData.measures[0],\
          #      self.modelData.measures[0].valuetable
         modelEvaluator = ModelEvaluator(self.model_structure,self.model_data.measures)
         (funcObj,constraints) = modelEvaluator.evaluate(testResult)
-        self.solver.write_output(funcObj,constraints)
-        self.log('test.log')
+        if self.solver is not None:
+            self.solver.blackbox_write_output(funcObj,constraints)
+        else:
+            self.write_output(funcObj,constraints)
+        self.log()
         return
     
+    def read_input(self,argv):
+        inputValues = []
+        paramValues = []
+        if len(argv) < 1:
+            return (inputValues,paramValues)
+        f = open(argv[1])
+        map(lambda l: inputValues.extend(l.strip('\n').strip(' ').split(' ')), f.readlines()) # Extract every words from the file and save to a list
+        f.close()
+        return (inputValues,paramValues)
+    
+    def write_output(self,objectiveValue,constraintValues):
+        print >> sys.stdout, objectiveValue,
+        if len(constraintValues) > 0:
+            for i in range(len(constraintValues)):
+                print >> sys.stdout,constraintValues[i],
+            print ""
+        return
+
     def solve(self,solver):
         self.solver = solver
         self.generate_executable_file()
@@ -111,20 +141,20 @@ class BlackBox:
         self.solver.run()
         return
     
-    def save(self,fileName='blackbox.dat'):
+    def save(self):
         try:
-            blackboxDataFile = open(fileName,"w")
+            blackboxDataFile = open(self.dataFileName,"w")
             pickle.dump(self,blackboxDataFile)
             blackboxDataFile.close()
         except TypeError:
-            print "Error in loading"
+            print "Error in saving"
         return
     
-    def log(self,fileName='blackbox.log'):
+    def log(self):
         if self.model_data.log != None:
-            self.model_data.log(fileName)
+            self.model_data.log(self.logFileName)
         if self.model_structure.log != None:
-            self.model_structure.log(fileName)
+            self.model_structure.log(self.logFileName)
         return
 
 

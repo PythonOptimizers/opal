@@ -23,16 +23,17 @@ class NOMADSolver(Solver):
         self.parameter_settings = [] # List of line in parameter file
         pass
 
-    def read_input(self,argv):
-        inputValues = []
+    def blackbox_read_input(self,argv):
+        inputValues = [] # blackbox input = algorithm parameter
+        paramValues = [] # blackbox parameter
         if len(argv) < 1:
-            return inputValues
+            return (inputValues,paramValues)
         f = open(argv[1])
         map(lambda l: inputValues.extend(l.strip('\n').strip(' ').split(' ')), f.readlines()) # Extract every words from the file and save to a list
         f.close()
-        return inputValues
+        return (inputValues,paramValues)
 
-    def write_output(self,objectiveValue,constraintValues):
+    def blackbox_write_output(self,objectiveValue,constraintValues):
         print >> sys.stdout, objectiveValue,
         if len(constraintValues) > 0:
             for i in range(len(constraintValues)):
