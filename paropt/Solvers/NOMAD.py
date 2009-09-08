@@ -46,12 +46,15 @@ class NOMADSolver(Solver):
         descriptionFile.write('DIMENSION ' + str(blackbox.n_var) + '\n')
         descriptionFile.write('DISPLAY_DEGREE 4\n')
         descriptionFile.write('DISPLAY_STATS EVAL& BBE & SOL&  &OBJ \\\\ \n')
-        descriptionFile.write('BB_EXE "$python ' + blackbox.executableFileName + '"\n')
+        descriptionFile.write('BB_EXE "$python ' + blackbox.runFileName + '"\n')
         #descriptionFile.write('BB_EXE ' + blackbox.executableFileName + '\n')
         bbTypeStr = 'BB_OUTPUT_TYPE OBJ'
         for i in range(blackbox.m_con):
             bbTypeStr = bbTypeStr + ' PB'
         descriptionFile.write(bbTypeStr + '\n')
+        surrogate = blackbox.get_surrogate()
+        if surrogate is not None:
+            descriptionFile.write('SGTE_EXE "$python ' + surrogate.runFileName + '"\n') 
         descriptionFile.write('SOLUTION_FILE ' + self.solutionFileName + '\n')
         pointStr = str(blackbox.initial_points)
         descriptionFile.write('X0 ' +  pointStr.replace(',',' ') + '\n')

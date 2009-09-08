@@ -32,6 +32,7 @@ class BlackBox:
         self.initial_points = [param.value for param in activeParameters]
         self.bounds = [param.bound for param in activeParameters]
         self.solver = None 
+        self.surrogate = None
         # if no solver is specified, the blackbox is a general 
         # executable file with two arguments: input file and parameter file
         # The output is standard screen
@@ -40,6 +41,12 @@ class BlackBox:
     def set_options(self,**kwargs):
         return
     
+    def has_surrogate(self):
+        return self.surrogate is not None
+
+    def get_surrogate(self):
+        return self.surrogate
+
     def generate_executable_file(self):
         
         tab = ' '*4
@@ -133,10 +140,14 @@ class BlackBox:
             print ""
         return
 
-    def solve(self,solver):
+    def solve(self,solver,surrogate=None):
         self.solver = solver
+        self.surrogate = surrogate
         self.generate_executable_file()
         self.save()
+        if surrogate is not None:
+            surrogate.generate_executable_file()
+            surrogate.save()
         self.solver.initialize(self)
         self.solver.run()
         return
@@ -157,4 +168,10 @@ class BlackBox:
             self.model_structure.log(self.logFileName)
         return
 
-
+    def generate_surrogate(self):
+        reducedModelData = self.model_data.reduce_problem_set()
+        surrogate = BlackBox(modelData=reducedModelData, modelStructure=self.model_structure,
+                             runFileName=self.runFileName.strip('.py') + '_surrogate.py',
+                             dataFileName=self.dataFileName.strip('.dat') + '_surrogate.dat',
+                             logFileName=self.logFileName.strip('.log') + '_surrogate.log')
+        return surrogate

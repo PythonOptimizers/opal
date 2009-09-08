@@ -71,10 +71,11 @@ class MeasureValueTable:
 
 
     def __init__(self,problem_names,measure_names):
+        sortedProblemNames = sorted(problem_names)
         self.problem_indices = {}
-        for i in range(len(problem_names)):
+        for i in range(len(sortedProblemNames)):
             #print i
-            self.problem_indices[problem_names[i]] = i 
+            self.problem_indices[sortedProblemNames[i]] = i 
         #print self.problem_indices
         self.measure_names = measure_names
         self.table = {} # this mapping with key is the name of measure
@@ -109,7 +110,10 @@ class MeasureValueTable:
         for measure in self.measure_names:
             row.append(self.get_cell(prob,measure))
         return row
-                       
+  
+    def get_problems(self):
+        return sorted(self.problem_indices.keys())
+
     def add_problem_measures(self,problem,measure_values):
         #self.problem_indices[problem] = len(self.problem_indices)
         for measure in self.measure_names:

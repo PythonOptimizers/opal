@@ -185,5 +185,20 @@ class ModelData:
 
     def log(self,fileName):
         self.logging.write(self,fileName)
+    
+    def reduce_problem_set(self):
+        newProblemSet = []
+        i = 1
+        for prob in self.problems:
+            if i % 2 == 0:
+                newProblemSet.append(prob)
+            i = i + 1
+        activeParameters = self.get_active_parameters()
+        reducedData = ModelData(algorithm=self.algorithm,
+                                problems=newProblemSet,
+                                activeParameters=activeParameters,
+                                platform=self.platform)
+        return reducedData
 
-
+        
+        
