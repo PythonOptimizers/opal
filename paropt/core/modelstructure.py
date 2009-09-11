@@ -67,15 +67,20 @@ class ModelEvaluator:
             measure.set_data(testResult.measure_value_table)
         
         # Get the value of parameter vector p
-        paramValues = [param.value for param in testResult.parameters if not param.is_const()]
+        # paramValues = [param.value for param in testResult.parameters if not param.is_const()]
+        # Get the optimizing parameter
+        parameterSet = {}
+        for param in testResult.parameters:
+            if not param.is_const():
+                parameterSet[param.name] = param
         measureValues = testResult.measure_value_table
         # Evaluate the objective function by passing the parameter vector and measure vector
         # The 
-        objValue = self.model.objective(paramValues,measureValues)
+        objValue = self.model.objective(parameterSet,measureValues)
         consValues = []
         for i in range(len(self.model.constraints)):
             #consValues.append(self.model.constraints[i][0](paramValues,self.measures) - self.model.constraints[i][1]) 
-            consValues.append(self.model.constraints[i][0](paramValues,measureValues) - self.model.constraints[i][1])
+            consValues.append(self.model.constraints[i][0](parameterSet,measureValues) - self.model.constraints[i][1])
         return (objValue,consValues)
 
     def log(self,fileName):
