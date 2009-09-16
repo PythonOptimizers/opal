@@ -45,7 +45,7 @@ class Parameter:
         # this is a run-time information
         # The _default is a description
         self._default = default
-        self.value = default
+        self.value = self._default
         # The bound of a parameter might be a tuple indicating 
         # the lower and the upper if the parameter has ordered kind 
         # like integer, real
@@ -58,6 +58,15 @@ class Parameter:
     def get_default(self):
         "Return default value"
         return self._default
+    
+    def set_default(self,value):
+        if self.is_real:
+            self._default = float(value)
+        elif self.is_integer:
+            self._default = int(value)
+        else:
+            self._default = value
+        return
 
     def set_value(self, value):
         "Set parameter to a non-default value."
