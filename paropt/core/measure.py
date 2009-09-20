@@ -1,4 +1,5 @@
 import numpy
+import copy
 
 class Measure:
     '''
@@ -72,58 +73,54 @@ class MeasureValueTable:
 
     def __init__(self,problem_names,measure_names):
         sortedProblemNames = sorted(problem_names)
-        self.problem_indices = {}
-        for i in range(len(sortedProblemNames)):
-            #print i
-            self.problem_indices[sortedProblemNames[i]] = i 
-        #print self.problem_indices
         self.measure_names = measure_names
-        self.table = {} # this mapping with key is the name of measure
+        self.problem_names = sorted(problem_names)
+        self.table = {} # this mapping with key is the name of problems
+                        # and value is another mapping whorse key is measure name
                         # and value is a list of value
                         # We don't use the table because, the different measure
                         # have different type
-        for measure in self.measure_names:
-            self.table[measure] = []
+        #for problem in self.problem_names:
+        #    self.table[problem] = {}
         pass
 
     def __len__(self):
         return (len(self.problem_indices),len(self.measure_names))
 
     def __getitem__(self,key):
-        if key in self.measure_names:
-            return numpy.array(self.table[key])
-        else:
-            return None
-
+        if type(key) == type(('Problem','Measure')):
+            return self.get_cell(key[0],key[1])
+        return self.get_column(key)
+        
 
     def get_cell(self,prob,measure):
         #print prob,measure,self.table[measure],self.problem_indices[prob]
-        return self.table[measure][self.problem_indices[prob]]
+        return self.table[problem][measure]
 
     def get_column(self,measure):
-        if measure in self.measure_names:
-            return numpy.array(self.table[measure])
-        return None
+        col = []
+        for prob in sorted(self.problem_names):
+            col.append(self.table[prob][measure])
+        return numpy.array(col)
 
     def get_row(self,prob):
         row = []
         for measure in self.measure_names:
-            row.append(self.get_cell(prob,measure))
+            row.append(self.table[prob][measure])
         return row
   
     def get_problems(self):
-        return sorted(self.problem_indices.keys())
+        return sorted(self.problem_names)
 
     def add_problem_measures(self,problem,measure_values):
         #self.problem_indices[problem] = len(self.problem_indices)
-        for measure in self.measure_names:
-            self.table[measure].append(measure_values[measure])
+        #print problem,measure_values
+        self.table[problem] = copy.copy(measure_values)
         return
 
     def clear(self):
-        for measure in self.measure_names:
-            del self.table[measure]
-            self.table[measure] = []
+        for problem in self.table.keys():
+            del self.table[problem]
         return
 
     def __string__(self):
@@ -131,10 +128,10 @@ class MeasureValueTable:
         #print self.problem_indices
         #print self.measure_names
         tableStr = ''
-        for prob in sorted(self.problem_indices.keys()):
+        for prob in sorted(self.table.keys()):
             tableStr = tableStr + prob 
-            for measure in sorted(self.measure_names): 
-                tableStr = tableStr + ' ' + str(self.get_cell(prob,measure))
+            for measure in sorted(self.table[prob].keys()): 
+                tableStr = tableStr + ' ' + str(self.table[prob][measure])
             tableStr = tableStr + '\n'
         return tableStr
     
