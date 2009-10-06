@@ -5,11 +5,11 @@ from Platforms import LINUX as platform
 def create_default_configuration():
     configuration = cfg.ConfigParser()
     configuration.add_section('SYSTEM')
-    configuration.set('System','Python','#!/usr/bin/env python')
+    configuration.set('SYSTEM','Python','#!/usr/bin/env python')
     return configuration
 
 def read_config():
-    configFile = os.environ['HOME'] + '/.paropt/paropt.cfg'
+    configFile = os.environ['HOME'] + '/.opal/opal.cfg'
     if not os.path.exists(configFile):
         return create_default_configuration()
     configuration = cfg.ConfigParser()

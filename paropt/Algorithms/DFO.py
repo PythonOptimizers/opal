@@ -53,4 +53,3 @@ DFO.add_measure(Measure(kind="real",name='FVAL',description='Function value'))
 DFO.add_measure(Measure(kind='real',name='CPU',description='CPU time usage'))
 DFO.add_measure(Measure(kind='real',name='FEVAL',description='Number of function evaluations'))
 
-
