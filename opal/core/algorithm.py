@@ -128,17 +128,19 @@ class Algorithm:
         # to the file, say, ALGORITHM-PROBLEM.out
         if self.measure_reading_method is not None:
             return self.measure_reading_method(self,problem,measures)
-        allValues = []
+        #allValues = []
+        #allValues = {}
         measureFile = self.name + '-' + problem.name + '.out' 
         f = open(measureFile)
-        map(lambda l: allValues.extend(l.strip('\n').strip(' ').split(' ')), f.readlines())
+        #map(lambda l: allValues.extend(l.strip('\n').strip(' ').split(' ')), f.readlines())
+        valueStr = f.read()
         f.close()
         os.remove(measureFile)
         #print '[algorithm.py]', allValues, [measure.name for measure in measures]
-        measure_values = {}
-        converters = {'categorical':str,'integer':int,'real':float}
-        for i in range(len(measures)):
-            measure_values[measures[i].name] = converters[measures[i].kind](allValues[i])
+        measure_values = eval(valueStr)
+        #converters = {'categorical':str,'integer':int,'real':float}
+        #for i in range(len(measures)):
+        #    measure_values[measures[i].name] = converters[measures[i].kind](allValues[i])
         #print 'print in algorithm.py',measure_values
         return measure_values
 
