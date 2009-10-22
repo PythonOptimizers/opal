@@ -46,4 +46,32 @@ class TestLogging:
         else:
             return content[tests[id][0]:tests[id][1]]
 
+class PythonLogging:
+    def __init__(self,**kwarg):
+        pass
+
+    def write(self,empiricalModel,fileName='test.log'):
+        f = open(fileName,'a')
+        print >> f, '# Test number:'
+        print >> f, empiricalModel.test_number
+        print >> f, '# Parameters:'
+        print >> f, [(param.name,param.value) for param in empiricalModel.parameters]
+        #print >> f, '# Non relaxable constraints are violated:', empiricalModel.test_is_failed
+        if not empiricalModel.test_is_failed:
+            print >> f, '# Table format'
+            print >> f, "{ 'PROB' : ", [measure.name for measure in empiricalModel.measures], '}'
+            print >> f, '# Measure table'
+            tableStr = '{'
+            firstRow = True
+            for prob in sorted(empiricalModel.measure_value_table.get_problems()):
+                if firstRow :
+                    tableStr = tableStr + "'" + prob + "' : "
+                    firstRow = False
+                else:
+                    tableStr = tableStr + ',\n' + "'" + prob + "' : "
+                tableStr = tableStr + str(empiricalModel.measure_value_table.get_row(prob))
+            tableStr = tableStr + '}'
+            print >> f, tableStr
+        f.close()
+        return
         

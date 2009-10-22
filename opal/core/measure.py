@@ -105,12 +105,15 @@ class MeasureValueTable:
 
     def get_row(self,prob):
         row = []
-        for measure in self.measure_names:
+        for measure in sorted(self.measure_names):
             row.append(self.table[prob][measure])
         return row
   
     def get_problems(self):
         return sorted(self.problem_names)
+
+    def get_measures(self):
+        return sorted(self.measure_names)
 
     def add_problem_measures(self,problem,measure_values):
         #self.problem_indices[problem] = len(self.problem_indices)

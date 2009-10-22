@@ -122,7 +122,9 @@ class CUTErFactory:
                 continue
             #print line
             fields = line.split(' ',1)
-            CUTEr.all.add_problem(self.generate_problem(fields[0].strip(),fields[1].strip()))
+            prob = self.generate_problem(fields[0].strip(),fields[1].strip())
+            if prob is not None:
+                CUTEr.all.add_problem(prob)
         return CUTEr
     
     def generate_problem(self,problem_name,classify_string=None,param=None):      
@@ -139,11 +141,17 @@ class CUTErFactory:
         number_query = re.compile('\d+')
         nvar = 0
         variable_declarations = variable_query.findall(decode_log)
+        #print problem_name,
         for var_decl in variable_declarations:
+            #print var_decl,
             nvar = nvar + int(number_query.findall(var_decl)[0])
+        #print ''
         constraint_declarations = constraint_query.findall(decode_log)
         ncon = 0
         for cons_decl in constraint_declarations:
             ncon = ncon + int(number_query.findall(cons_decl)[0])
+        if (nvar + ncon <= 0):
+            return None
+            # There is no problem nvar + ncon = 0
         problem = CUTErTestProblem(name=problem_name,classifyStr=classify_string,nvar=nvar,ncon=ncon)
         return problem          

@@ -49,9 +49,10 @@ class MeasureFunction:
 class ModelEvaluator:
 
 
-    def __init__(self,model=None,measures=None,**kwargs):
+    def __init__(self,model=None,measures=None,logging=None,**kwargs):
         self.model = model
         self.measures = measures
+        self.logging = logging
         pass
 
     def evaluate(self,testResult):
@@ -84,4 +85,6 @@ class ModelEvaluator:
         return (objValue,consValues)
 
     def log(self,fileName):
+        if self.logging is not None:
+            self.logging.write(fileName,self.result_string)
         return
