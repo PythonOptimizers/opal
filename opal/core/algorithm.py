@@ -133,14 +133,24 @@ class Algorithm:
         measureFile = self.name + '-' + problem.name + '.out' 
         f = open(measureFile)
         #map(lambda l: allValues.extend(l.strip('\n').strip(' ').split(' ')), f.readlines())
-        valueStr = f.read()
+        #valueStr = f.read()
+        lines = f.readlines()
         f.close()
         os.remove(measureFile)
+        converters = {'categorical':str,'integer':int,'real':float}
+        measure_values = {}
+        for line in lines:
+            line.strip('\n')
+            if len(line) < 1:
+                continue
+            fields = line.split(' ')
+            if len(fields) < 2:
+                continue
+            measure_values[fields[0].strip(' ')] = fields[1].strip(' ')
+        for i in range(len(measures)):
+            measure_values[measures[i].name] = converters[measures[i].kind](measure_values[measures[i].name])
         #print '[algorithm.py]', allValues, [measure.name for measure in measures]
-        measure_values = eval(valueStr)
-        #converters = {'categorical':str,'integer':int,'real':float}
-        #for i in range(len(measures)):
-        #    measure_values[measures[i].name] = converters[measures[i].kind](allValues[i])
+        # measure_values = eval(valueStr)
         #print 'print in algorithm.py',measure_values
         return measure_values
 
