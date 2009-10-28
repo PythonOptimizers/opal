@@ -1,1 +1,0 @@
-from NOMAD import NOMAD
