@@ -1,6 +1,6 @@
 # A sample gateway to DFO to be used by Paropt.
 # Will be run as 'python dfo_minimizer.py parameter_file problem'
-# This version base on cuter interface
+# This version base on cuter interface. Hey
 
 import os
 import sys
