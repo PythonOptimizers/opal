@@ -8,14 +8,22 @@ class LSFPlatform(Platform):
     def __init__(self,submitLog='submit.log',**kwargs):
         Platform.__init__(self,'LSF',**kwargs)
         self.submitLog = submitLog
+        self.configuration = {}
         pass
    
+    def set_config(self, parameterName, parameterValue):
+        self.configuration[parameterName] = parameterValue 
+        return
+
     def execute(self,command,output='/dev/null',commandId=None,):
         if commandId is None:
             jobName = command + '-' + self.name
         else:
-            jobName = commandId + '-' + self.name       
-        os.system("bsub -N -oo " + output + "  -J " + jobName + " " + command + " >> " + self.submitLog)
+            jobName = commandId + '-' + self.name
+        optionStr = " "
+        for param in self.configuration.keys():
+            optionStr = optionStr + param + " " + self.configuration[param] + " "
+        os.system("bsub -N -oo " + output + "  -J " + jobName + optionStr + command + " >> " + self.submitLog)
         return
 
 

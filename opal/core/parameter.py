@@ -66,6 +66,7 @@ class Parameter:
             self._default = int(value)
         else:
             self._default = value
+        self.value = self._default
         return
 
     def set_value(self, value):
