@@ -136,5 +136,6 @@ class MeasureValueTable:
             for measure in sorted(self.table[prob].keys()): 
                 tableStr = tableStr + ' ' + str(self.table[prob][measure])
             tableStr = tableStr + '\n'
+        tableStr = tableStr.strip('\n')
         return tableStr
     

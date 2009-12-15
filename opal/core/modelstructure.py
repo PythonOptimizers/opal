@@ -9,19 +9,19 @@ class ModelStructure:
     """
     def __init__(self, objective=None, constraints=[], **kwargs):
         self.objective = MeasureFunction(objective)
-        self.constraints = []
-        for constraint in constraints:
-            if type(constraint) == type((1,2)):
-                self.constraints.append((MeasureFunction(constraint[0]),
-                                        constraint[1]))
-            else:
-                self.constraints.append((MeasureFunction(constraint),0))
+        self.constraints = constraints
+        #for constraint in constraints:
+        #    if type(constraint) == type((1,2)):
+        #        self.constraints.append()
+        #    else:
+        #        self.constraints.append((MeasureFunction(constraint),0))
         self.log = None
         pass
 
 class MeasureFunction:
     """
-    *** This class contains the information to evaluate it
+    *** This class contains the information of a measure function that
+    *** built up from the parameter and elementary measure \varphi(p,\mu)
     """
     def __init__(self,function=None):
         if function is None:
@@ -46,9 +46,31 @@ class MeasureFunction:
     def __call__(self,*args,**kwargs):
         return self.evaluate(*args,**kwargs)
 
+class Constraint:
+    """
+    *** This class is a description constraint. A constraint is defined in form
+    *** lower_bound <= measure_function <= upper_bound
+    *** if lower_bound is None, the constraint is consider as 
+    *** measure_function <= upper_bound
+    *** The same principle is applied to upper_bound
+    *** To define a constraint, there is at least a bound is not Non
+    """
+    def __init__(self, function=None,lowerBound=None,upperBound=None,**kwargs):
+        self.function = MeasureFunction(function)
+        self.lower_bound = lowerBound
+        self.upper_bound = upperBound
+        pass
+    
+    def evaluate(self,*args,**kwargs):
+        funcVal = self.function(*args,**kwargs)
+        values = [None,None]
+        if self.lower_bound is not None:
+            values[0] = self.lower_bound - funcVal
+        if self.upper_bound is not None:
+            values[1] = funcVal - self.upper_bound
+        return values
+
 class ModelEvaluator:
-
-
     def __init__(self,model=None,measures=None,logging=None,**kwargs):
         self.model = model
         self.measures = measures
@@ -81,7 +103,8 @@ class ModelEvaluator:
         consValues = []
         for i in range(len(self.model.constraints)):
             #consValues.append(self.model.constraints[i][0](paramValues,self.measures) - self.model.constraints[i][1]) 
-            consValues.append(self.model.constraints[i][0](parameterSet,measureValues) - self.model.constraints[i][1])
+            #consValues.append(self.model.constraints[i][0](parameterSet,measureValues) - self.model.constraints[i][1])
+            consValues.extend([val for val in self.model.constraints[i].evaluate(parameterSet,measureValues) if val is not None])
         return (objValue,consValues)
 
     def log(self,fileName):
