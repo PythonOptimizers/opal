@@ -23,7 +23,13 @@ class BlackBox:
     def run(self,*args,**kwargs):
         inputValues = []
         paramValues = []
+        #print args
         (inputValues,paramValues) = self.read_input(*args,**kwargs)
+        if self.model is None:
+            return
+        #print inputValues
+        (objective,constraints) = self.model.evaluate(inputValues)
+        self.write_output(objective,constraints)
         return
 
     def read_input(self,*args,**kwargs):
@@ -98,17 +104,18 @@ class BlackBoxModel:
         In the case of error, two None values are returned
         '''
        
-        #print '[blackbox.py] ', paramValues
+       
         self.model_data.run(inputValues)
-        
         testResult = self.model_data.get_test_result()
         #print 'ho ho after getTestResult', self.modelData.measures[0],\
         #      self.modelData.measures[0].valuetable
         # An evaluator object may be redudant, remove it in the future
         modelEvaluator = ModelEvaluator(self.model_structure,self.model_data.measures)
         (funcObj,constraints) = modelEvaluator.evaluate(testResult)
+        #print funcObj
+        #print constraints
         self.log()
-        return
+        return (funcObj,constraints)
     
     def save(self):
         try:
