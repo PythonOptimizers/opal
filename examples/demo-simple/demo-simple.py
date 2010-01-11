@@ -21,11 +21,11 @@ print 'Working with parameters ', [par.name for par in params]
 print 'Testing on problems ', [prb.name for prb in problems]
 
 # Define parameter optimization problem.
-structure = ModelStructure(objective=mu_time,constraints=[])  # Unconstrained
+structure = ModelStructure(objective=avg_time,constraints=[])  # Unconstrained
 data = ModelData(DFO, problems, params)
 
 # Instantiate black-box solver.
-blackbox = BlackBox(modelData=data,modelStructure=structure)
+blackbox = BlackBoxModel(modelData=data,modelStructure=structure)
 
 # Solve parameter optimization problem.
 NOMAD.set_parameter(name='MAX_BB_EVAL',value=2)
