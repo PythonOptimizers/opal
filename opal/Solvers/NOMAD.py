@@ -32,7 +32,9 @@ class NOMADBlackbox(BlackBox):
     def read_input(self,*args,**kwargs):
         inputValues = []
         paramValues = []
-        if len(argv) < 1:
+        #print args
+        #print ""
+        if len(args) < 1:
             return (inputValues,paramValues)
         f = open(args[1])
         map(lambda l: inputValues.extend(l.strip('\n').strip(' ').split(' ')), f.readlines()) # Extract every words from the file and save to a list
@@ -67,6 +69,7 @@ class NOMADBlackbox(BlackBox):
         blackboxFile.write('import string\n')
         blackboxFile.write('import shutil\n')
         blackboxFile.write('import pickle\n')
+        blackboxFile.write('from opal.Solvers.NOMAD import NOMADBlackbox\n')
         #blackboxFile.write('from ' + rootPackage + '.core import modeldata\n')
         #blackboxFile.write('from ' + rootPackage + '.core import blackbox\n')
         #if self.solver is not None:
@@ -81,16 +84,16 @@ class NOMADBlackbox(BlackBox):
         blackboxFile.write(tab+'blackboxDataFile.close()\n')
         blackboxFile.write('except TypeError:\n')
         blackboxFile.write(tab+'print "Error in loading"\n')
-        blackboxFile.write('blackbox = NOMADBlackBox(model=blackboxModel)\n')
+        blackboxFile.write('blackbox = NOMADBlackbox(model=blackboxModel)\n')
         #blackboxFile.write('blackbox.opt_data.synchronize_measures()\n')
-        blackboxFile.write('blackbox.run(sys.argv)\n')
+        blackboxFile.write('blackbox.run(*sys.argv)\n')
         #blackboxFile.write('try:\n')
         #blackboxFile.write(tab+'blackboxDataFile = open("' + self.dataFileName + '","w")\n')
         #blackboxFile.write(tab+'pickle.dump(blackbox,blackboxDataFile)\n')
         #blackboxFile.write(tab+'blackboxDataFile.close()\n')
         #blackboxFile.write('except TypeError:\n')
         #blackboxFile.write(tab+'print "Error in loading"\n')
-        blackboxFile.write('blackbox.save()\n')
+        blackboxFile.write('blackboxModel.save()\n')
         #blackboxFile.write('blackboxRunLogFile.close()\n')
         blackboxFile.close()
         #os.chmod(self.runFileName,0755)
@@ -182,5 +185,7 @@ class NOMADSolver(Solver):
         return
 
     def run(self):
+        os.system('nomad ' + self.paramFileName)
         return
+
 NOMAD = NOMADSolver()

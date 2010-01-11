@@ -1,14 +1,15 @@
 # Simple demo: tune DFO parameters for CPU time on simple HS problems.
-from paropt.TestProblemCollections import CUTEr
-from paropt.Algorithms import DFO
-from paropt.Solvers import NOMAD
-from paropt import ModelStructure
-from paropt import ModelData
-from paropt import BlackBox
+from opal.TestProblemCollections import CUTEr
+from opal.Algorithms import DFO
 
-def mu_time(p,measures):
-    cpuTime = measures[0]
-    return cpuTime(p).sum() / len(cpuTime(p))
+from opal import ModelStructure
+from opal import ModelData
+from opal import BlackBoxModel
+
+from opal.Solvers import NOMAD
+
+def avg_time(parameters,measures):
+    return measures["CPU"].mean()
 
 # Select real parameters from DFO.
 params = [par for par in DFO.parameters if par.is_real]
@@ -25,8 +26,7 @@ data = ModelData(DFO, problems, params)
 
 # Instantiate black-box solver.
 blackbox = BlackBox(modelData=data,modelStructure=structure)
- 
-NOMAD.set_parameter(name='MAX_BB_EVAL',value=2)
 
 # Solve parameter optimization problem.
-#blackbox.solve(solver=NOMAD)
+NOMAD.set_parameter(name='MAX_BB_EVAL',value=2)
+NOMAD.solve(model=blackbox)
