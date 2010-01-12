@@ -5,11 +5,13 @@ from opal.Algorithms import DFO
 from opal import ModelStructure
 from opal import ModelData
 from opal import BlackBoxModel
+from opal import StatisticalMeasure
 
 from opal.Solvers import NOMAD
 
-def avg_time(parameters,measures):
-    return measures["CPU"].mean()
+
+#def avg_time(parameters,measures):
+#    return measures["CPU"].mean()
 
 # Select algorithm
 algorithm = DFO
@@ -24,7 +26,7 @@ print 'Working with parameters ', [par.name for par in params]
 print 'Testing on problems ', [prb.name for prb in problems]
 
 data = ModelData(algorithm, problems, params)
-structure = ModelStructure(objective=avg_time,constraints=[])  # Unconstrained
+structure = ModelStructure(objective=StatisticalMeasure.average('CPU'), constraints=[])  # Unconstrained
 
 blackbox = BlackBoxModel(modelData=data,modelStructure=structure)
     

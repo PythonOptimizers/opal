@@ -138,4 +138,4 @@ class MeasureValueTable:
             tableStr = tableStr + '\n'
         tableStr = tableStr.strip('\n')
         return tableStr
-    
+
