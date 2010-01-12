@@ -1,0 +1,4276 @@
+Sender: LSF System <lsfadmin@lin56>
+Subject: Job 516142: <python dfoparam.py> Done
+
+Job <python dfoparam.py> was submitted from host <lin60> by user <codan> in cluster <LINcluster>.
+Job was executed on host(s) <lin56>, in queue <suse>, as user <codan> in cluster <LINcluster>.
+</userdata/users/codan> was used as the home directory.
+</userdata/users/codan/opt-package/opal/case-study/dfo/2009-11-02/min-eval/cons> was used as the working directory.
+Started at Tue Nov  3 22:45:32 2009
+Results reported at Tue Nov  3 23:45:44 2009
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python dfoparam.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time   :    391.84 sec.
+    Max Memory :        36 MB
+    Max Swap   :       186 MB
+
+    Max Processes  :        10
+    Max Threads    :        11
+
+The output (if any) follows:
+
+
+NOMAD - Nonsmooth Optimization by Mesh Adaptive Direct search - version 3.1.0
+
+Copyright (C) 2001-2008
+	Mark A. Abramson     - The Boeing Company
+	Charles Audet        - Ecole Polytechnique de Montreal
+	Gilles Couture       - Ecole Polytechnique de Montreal
+	John E. Dennis, Jr.  - Rice University
+	Sebastien Le Digabel - Ecole Polytechnique de Montreal
+
+	funded in part by AFOSR and Exxon Mobil
+
+
+parameters:
+	problem directory     : ./
+	dimension             : n=3
+	lower bounds          : ( 1e-08 1e-08    1 )
+	upper bounds          : ( 0.001    -    - )
+	black-box input types : all variables are continuous (R)
+	black-box outputs (m=3):
+		#0          OBJ	$python blackbox.py	$python blackbox_surrogate.py
+		#1           PB	$python blackbox.py	$python blackbox_surrogate.py
+		#2           PB	$python blackbox.py	$python blackbox_surrogate.py
+	sort trial points with surrogates : yes
+	barrier type                      : progressive
+	prog. barrier trigger             : 0.1
+	barrier h_min                     : 0
+	barrier initial h_max             : inf
+	barrier h_norm                    : L2
+	add seed to output file names     : yes
+	solution file                     : nomad-solution.0.txt
+	history file                      : no history file
+	stats file                        : (nomad-result.0.txt)  EVAL& BBE & BBO & SOL& &OBJ \\
+	cache file                        : no cache file
+	x0                                : ( 0.0001    1    1 )
+	directions                        : Ortho-MADS 2n
+	sec. poll dir. type               : Ortho-MADS 2
+	mesh:
+		update basis              :   4
+		coarsening exponent       :   1
+		refining exponent         :  -1
+		initial mesh index        :   0
+		initial mesh size         : ( 1e-05    1   10 )
+	opportunistic evaluations         : yes
+	snap to bounds                    : yes
+	speculative search                : yes
+	random seed / run id              : 0
+	epsilon                           : 1e-13
+	display degrees                   : general : 4 (full / debug display)
+	                                  : search  : 4 (full / debug display)
+	                                  : poll    : 4 (full / debug display)
+	                                  : updates : 4 (full / debug display)
+	normal display stats              : EVAL& BBE & SOL& &OBJ \\
+	point display limit               : no limit
+	max black-box eval.               : 100
+
+
+
+begin of Mads::run()
+--------------------
+
+
+begin of Mads::eval_x0()
+
+x0 eval points:
+	point 0: ( 0.0001  1  1 )
+
+begin of Evaluator_Control::eval_list_of_points (x0 evaluation)
+
+	evaluation 1/1: point #0 ( 0.0001  1  1 )
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.0.input > ./nomad.0.0.output"
+
+	x0 evaluation dominating point: #0 X=( 0.0001  1  1 ) F(X)=[ 0.1902693112  0 -0.1516129032 ] h=0 f=0.1902693112
+
+end of Evaluator_Control::eval_list_of_points (x0 evaluation)
+
+	terminate MADS           : no
+	iteration status         : dominating
+	new feasible incumbent   : #0 X=( 0.0001  1  1 ) F(X)=[ 0.1902693112  0 -0.1516129032 ] h=0 f=0.1902693112
+	new infeasible incumbent : NULL
+
+end of Mads::eval_x0()
+
+iteration 0:
+--------------
+	black-box evaluations : 1
+	best feasible point   : ( 0.0001  1  1 ) h=0 f=0.1902693112
+	best infeasible point : NULL
+	poll center           : ( 0.0001  1  1 )
+	mesh size             : ( 1e-05  1 10 )
+	poll size             : ( 1e-05  1 10 )
+	mesh index            : 0
+	h_max                 : inf
+
+iteration 0, begin of Mads::search()
+
+iteration 0, end of Mads::search()
+
+iteration 0, begin of Mads::poll()
+
+	poll center: ( 0.0001  1  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : ( 1e-05  0  0 ) type=Ortho-MADS 2n
+		dir 1 : ( -1e-05  0  0 ) type=Ortho-MADS 2n
+		dir 2 : (  0  1  0 ) type=Ortho-MADS 2n
+		dir 3 : (  0 -1  0 ) type=Ortho-MADS 2n
+		dir 4 : (  0  0 -10 ) type=Ortho-MADS 2n
+		dir 5 : (  0  0 10 ) type=Ortho-MADS 2n
+
+	point #4 (dir 3) has been snapped to bounds
+
+	point #5 (dir 4) has been snapped to bounds
+	point #5 is flushed (||dir||==0)
+
+	re-ordered list of 5 poll trial points:
+		point #2 : (9e-05  1  1) (dir 1)
+		point #4 : (0.0001 1e-08  1) (dir 3)
+		point #6 : (0.0001  1 11) (dir 5)
+		point #3 : (0.0001  2  1) (dir 2)
+		point #1 : (0.00011  1  1) (dir 0)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/5: point #2 ( 9e-05  1  1 )
+	direction  : ( -1e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.2.input > ./nomad.0.2.output"
+
+	point #2 surrogate evaluation: h=0 f=0.2016757591
+
+	surrogate evaluation 2/5: point #4 ( 0.0001 1e-08  1 )
+	direction  : (  0 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.4.input > ./nomad.0.4.output"
+
+	point #4 surrogate evaluation: h=1.414213562e+20 f=1e+20
+
+	surrogate evaluation 3/5: point #6 ( 0.0001  1 11 )
+	direction  : (  0  0 10 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.6.input > ./nomad.0.6.output"
+
+	point #6 surrogate evaluation: h=0.1225806452 f=3.403161439
+
+	surrogate evaluation 4/5: point #3 ( 0.0001  2  1 )
+	direction  : (  0  1  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.3.input > ./nomad.0.3.output"
+
+	point #3 surrogate evaluation: h=0 f=-1.193201503
+
+	surrogate evaluation 5/5: point #1 ( 0.00011  1  1 )
+	direction  : ( 1e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.1.input > ./nomad.0.1.output"
+
+	point #1 surrogate evaluation: h=0 f=0.1484806746
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	new poll point #7: (9e-05  1  1)
+
+	new poll point #8: (0.0001 1e-08  1)
+
+	new poll point #9: (0.0001  1 11)
+
+	new poll point #10: (0.0001  2  1)
+
+	new poll point #11: (0.00011  1  1)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/5: point #10 ( 0.0001  2  1 )
+	direction  : (  0  1  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.10.input > ./nomad.0.10.output"
+
+	poll improving point: #10 X=( 0.0001  2  1 ) F(X)=[ -0.2310257013  0 0.009677419355 ] h=0.009677419355 f=-0.2310257013
+
+	evaluation 2/5: point #11 ( 0.00011  1  1 )
+	direction  : ( 1e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.11.input > ./nomad.0.11.output"
+
+	poll dominating point: #11 X=( 0.00011  1  1 ) F(X)=[ 0.1386998803  0 -0.135483871 ] h=0 f=0.1386998803
+
+	opportunistic strategy: terminate evaluations
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 0, end of Mads::poll()
+
+Mesh update:
+	previous mesh index: 0
+	new mesh index     : -1
+
+
+end of iteration 0
+
+	terminate MADS           : no
+	iteration status         : dominating
+	new feasible incumbent   : #11 X=( 0.00011  1  1 ) F(X)=[ 0.1386998803  0 -0.135483871 ] h=0 f=0.1386998803
+	new infeasible incumbent : #10 X=( 0.0001  2  1 ) F(X)=[ -0.2310257013  0 0.009677419355 ] h=0.009677419355 f=-0.2310257013
+
+iteration 1:
+--------------
+	black-box evaluations : 3
+	best feasible point   : ( 0.00011  1  1 ) h=0 f=0.1386998803
+	best infeasible point : ( 0.0001  2  1 ) h=0.009677419355 f=-0.2310257013
+	poll center           : ( 0.0001  2  1 )
+	mesh size             : ( 1e-05  1 10 )
+	poll size             : ( 2e-05  2 20 )
+	sec. poll center      : ( 0.00011  1  1 )
+	mesh index            : -1
+	h_max                 : 0.009677419355
+
+iteration 1, begin of Mads::search()
+
+	speculative search
+	speculative search point #12: (0.00014  1  1)
+	speculative search point #13: (0.0001  5  1)
+
+begin of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+	surrogate evaluation 1/2: point #13 ( 0.0001  5  1 )
+	direction  : (  0  4  0 ) type=Ortho-MADS 2n
+	mesh index : -1
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.13.input > ./nomad.0.13.output"
+
+	point #13 surrogate evaluation: h=0.02580645161 f=1.065830388
+
+	surrogate evaluation 2/2: point #12 ( 0.00014  1  1 )
+	direction  : ( 4e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : -1
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.12.input > ./nomad.0.12.output"
+
+	point #12 surrogate evaluation: h=0 f=0.1956674716
+
+end of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+	new MADS speculative search point #14: (0.0001  5  1)
+
+	new MADS speculative search point #15: (0.00014  1  1)
+
+begin of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+	evaluation 1/2: point #15 ( 0.00014  1  1 )
+	direction  : ( 4e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : -1
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.15.input > ./nomad.0.15.output"
+
+	MADS speculative search dominating point: #15 X=( 0.00014  1  1 ) F(X)=[ 0.04393175289  0 -0.1677419355 ] h=0 f=0.04393175289
+
+	opportunistic strategy: terminate evaluations
+
+end of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+iteration 1, end of Mads::search()
+
+Mesh update:
+	previous mesh index: -1
+	new mesh index     : -2
+
+
+end of iteration 1
+
+	terminate MADS           : no
+	iteration status         : dominating
+	new feasible incumbent   : #15 X=( 0.00014  1  1 ) F(X)=[ 0.04393175289  0 -0.1677419355 ] h=0 f=0.04393175289
+	new infeasible incumbent : NULL
+
+iteration 2:
+--------------
+	black-box evaluations : 4
+	best feasible point   : ( 0.00014  1  1 ) h=0 f=0.04393175289
+	best infeasible point : ( 0.0001  2  1 ) h=0.009677419355 f=-0.2310257013
+	poll center           : ( 0.0001  2  1 )
+	mesh size             : ( 1e-05  1 10 )
+	poll size             : ( 4e-05  4 40 )
+	sec. poll center      : ( 0.00014  1  1 )
+	mesh index            : -2
+	h_max                 : 0.009677419355
+
+iteration 2, begin of Mads::search()
+
+	speculative search
+	speculative search point #16: (0.00026  1  1)
+
+begin of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+	evaluation 1/1: point #16 ( 0.00026  1  1 )
+	direction  : ( 0.00016  0  0 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.16.input > ./nomad.0.16.output"
+
+	MADS speculative search dominating point: #16 X=( 0.00026  1  1 ) F(X)=[ -0.002595354926  0 -0.1193548387 ] h=0 f=-0.002595354926
+
+end of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+iteration 2, end of Mads::search()
+
+Mesh update:
+	previous mesh index: -2
+	new mesh index     : -3
+
+
+end of iteration 2
+
+	terminate MADS           : no
+	iteration status         : dominating
+	new feasible incumbent   : #16 X=( 0.00026  1  1 ) F(X)=[ -0.002595354926  0 -0.1193548387 ] h=0 f=-0.002595354926
+	new infeasible incumbent : NULL
+
+iteration 3:
+--------------
+	black-box evaluations : 5
+	best feasible point   : ( 0.00026  1  1 ) h=0 f=-0.002595354926
+	best infeasible point : ( 0.0001  2  1 ) h=0.009677419355 f=-0.2310257013
+	poll center           : ( 0.0001  2  1 )
+	mesh size             : ( 1e-05  1 10 )
+	poll size             : ( 8e-05  8 80 )
+	sec. poll center      : ( 0.00026  1  1 )
+	mesh index            : -3
+	h_max                 : 0.009677419355
+
+iteration 3, begin of Mads::search()
+
+	speculative search
+	speculative search point #17: (0.00074  1  1)
+
+begin of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+	evaluation 1/1: point #17 ( 0.00074  1  1 )
+	direction  : ( 0.00064  0  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.17.input > ./nomad.0.17.output"
+
+	MADS speculative search dominating point: #17 X=( 0.00074  1  1 ) F(X)=[ -1.093237768  0 -0.1032258065 ] h=0 f=-1.093237768
+
+end of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+iteration 3, end of Mads::search()
+
+Mesh update:
+	previous mesh index: -3
+	new mesh index     : -4
+
+
+end of iteration 3
+
+	terminate MADS           : no
+	iteration status         : dominating
+	new feasible incumbent   : #17 X=( 0.00074  1  1 ) F(X)=[ -1.093237768  0 -0.1032258065 ] h=0 f=-1.093237768
+	new infeasible incumbent : NULL
+
+iteration 4:
+--------------
+	black-box evaluations : 6
+	best feasible point   : ( 0.00074  1  1 ) h=0 f=-1.093237768
+	best infeasible point : ( 0.0001  2  1 ) h=0.009677419355 f=-0.2310257013
+	poll center           : ( 0.00074  1  1 )
+	mesh size             : ( 1e-05  1 10 )
+	poll size             : ( 0.00016 16 160 )
+	sec. poll center      : ( 0.0001  2  1 )
+	mesh index            : -4
+	h_max                 : 0.009677419355
+
+iteration 4, begin of Mads::search()
+
+	speculative search
+	speculative search point #18: (0.00266  1  1)
+
+	point #18 has been snapped to bounds
+
+begin of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+	evaluation 1/1: point #18 ( 0.001  1  1 )
+	direction  : ( 0.0009  0  0 ) type=Ortho-MADS 2n
+	mesh index : -4
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.18.input > ./nomad.0.18.output"
+
+	MADS speculative search dominating point: #18 X=( 0.001  1  1 ) F(X)=[ -1.772880689  0 -0.08709677419 ] h=0 f=-1.772880689
+
+end of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+iteration 4, end of Mads::search()
+
+Mesh update:
+	previous mesh index: -4
+	new mesh index     : -5
+
+
+end of iteration 4
+
+	terminate MADS           : no
+	iteration status         : dominating
+	new feasible incumbent   : #18 X=( 0.001  1  1 ) F(X)=[ -1.772880689  0 -0.08709677419 ] h=0 f=-1.772880689
+	new infeasible incumbent : NULL
+
+iteration 5:
+--------------
+	black-box evaluations : 7
+	best feasible point   : ( 0.001  1  1 ) h=0 f=-1.772880689
+	best infeasible point : ( 0.0001  2  1 ) h=0.009677419355 f=-0.2310257013
+	poll center           : ( 0.001  1  1 )
+	mesh size             : ( 1e-05  1 10 )
+	poll size             : ( 0.00032 32 320 )
+	sec. poll center      : ( 0.0001  2  1 )
+	mesh index            : -5
+	h_max                 : 0.009677419355
+
+iteration 5, begin of Mads::search()
+
+	speculative search
+	speculative search point #19: (0.0037  1  1)
+
+	point #19 has been snapped to bounds
+
+begin of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+	evaluation 1/1: point #19 ( 0.001  1  1 )
+	direction  : ( 0.0009  0  0 ) type=Ortho-MADS 2n
+	mesh index : -5
+
+	cache hit: #19 --> #18
+
+	MADS speculative search unsuccessful point #18
+
+end of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+iteration 5, end of Mads::search()
+
+iteration 5, begin of Mads::poll()
+
+	poll center: ( 0.001  1  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : ( 0.00021 -16 -120 ) type=Ortho-MADS 2n
+		dir 1 : ( -0.00021 16 120 ) type=Ortho-MADS 2n
+		dir 2 : ( -0.00016 -3 -240 ) type=Ortho-MADS 2n
+		dir 3 : ( 0.00016  3 240 ) type=Ortho-MADS 2n
+		dir 4 : ( -0.00012 -24 110 ) type=Ortho-MADS 2n
+		dir 5 : ( 0.00012 24 -110 ) type=Ortho-MADS 2n
+
+	point #20 (dir 0) has been snapped to bounds
+
+	point #22 (dir 2) has been snapped to bounds
+
+	point #23 (dir 3) has been snapped to bounds
+
+	point #24 (dir 4) has been snapped to bounds
+
+	point #25 (dir 5) has been snapped to bounds
+
+	re-ordered list of 6 poll trial points:
+		point #20 : (0.001 1e-08  1) (dir 0)
+		point #23 : (0.001  4 241) (dir 3)
+		point #25 : (0.001 25  1) (dir 5)
+		point #24 : (0.00088 1e-08 111) (dir 4)
+		point #21 : (0.00079 17 121) (dir 1)
+		point #22 : (0.00084 1e-08  1) (dir 2)
+
+
+	secondary poll center: ( 0.0001  2  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 6 : ( 0.00031  5 -50 ) type=Ortho-MADS 2
+		dir 7 : ( -0.00031 -5 50 ) type=Ortho-MADS 2
+
+	point #26 (dir 6) has been snapped to bounds
+
+	point #27 (dir 7) has been snapped to bounds
+
+	re-ordered list of 8 poll trial points:
+		point #26 : (0.00041  7  1) (dir 6)
+		point #20 : (0.001 1e-08  1) (dir 0)
+		point #23 : (0.001  4 241) (dir 3)
+		point #25 : (0.001 25  1) (dir 5)
+		point #24 : (0.00088 1e-08 111) (dir 4)
+		point #21 : (0.00079 17 121) (dir 1)
+		point #22 : (0.00084 1e-08  1) (dir 2)
+		point #27 : (1e-08 1e-08 51) (dir 7)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/8: point #26 ( 0.00041  7  1 )
+	direction  : ( 0.00031  5  0 ) type=Ortho-MADS 2
+	mesh index : -5
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.26.input > ./nomad.0.26.output"
+
+	point #26 surrogate evaluation: h=0.05806451613 f=0.7175130685
+
+	surrogate evaluation 2/8: point #20 ( 0.001 1e-08  1 )
+	direction  : ( -1.084202172e-19 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -5
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.20.input > ./nomad.0.20.output"
+
+	point #20 surrogate evaluation: h=1.414213562e+20 f=1e+20
+
+	surrogate evaluation 3/8: point #23 ( 0.001  4 241 )
+	direction  : ( 2.710505431e-20  3 240 ) type=Ortho-MADS 2n
+	mesh index : -5
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.23.input > ./nomad.0.23.output"
+
+	point #23 surrogate evaluation: h=0.3483870968 f=6.074416596
+
+	surrogate evaluation 4/8: point #25 ( 0.001 25  1 )
+	direction  : ( -8.131516294e-20 24  0 ) type=Ortho-MADS 2n
+	mesh index : -5
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.25.input > ./nomad.0.25.output"
+
+	point #25 surrogate evaluation: h=0 f=2.011204608
+
+	surrogate evaluation 5/8: point #24 ( 0.00088 1e-08 111 )
+	direction  : ( -0.00012 -0.99999999 110 ) type=Ortho-MADS 2n
+	mesh index : -5
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.24.input > ./nomad.0.24.output"
+
+	point #24 surrogate evaluation: h=1.414213562e+20 f=1e+20
+
+	surrogate evaluation 6/8: point #21 ( 0.00079 17 121 )
+	direction  : ( -0.00021 16 120 ) type=Ortho-MADS 2n
+	mesh index : -5
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.21.input > ./nomad.0.21.output"
+
+	point #21 surrogate evaluation: h=0.3806451613 f=5.652687778
+
+	surrogate evaluation 7/8: point #22 ( 0.00084 1e-08  1 )
+	direction  : ( -0.00016 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -5
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.22.input > ./nomad.0.22.output"
+
+	point #22 surrogate evaluation: h=1.414213562e+20 f=1e+20
+
+	surrogate evaluation 8/8: point #27 ( 1e-08 1e-08 51 )
+	direction  : ( -9.999e-05 -1.99999999 50 ) type=Ortho-MADS 2
+	mesh index : -5
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.27.input > ./nomad.0.27.output"
+
+	point #27 surrogate evaluation: h=0.6387096774 f=-22.96186267
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	new poll point #28: (0.00041  7  1)
+
+	new poll point #29: (0.001 1e-08  1)
+
+	new poll point #30: (0.001  4 241)
+
+	new poll point #31: (0.001 25  1)
+
+	new poll point #32: (0.00088 1e-08 111)
+
+	new poll point #33: (0.00079 17 121)
+
+	new poll point #34: (0.00084 1e-08  1)
+
+	new poll point #35: (1e-08 1e-08 51)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/8: point #31 ( 0.001 25  1 )
+	direction  : ( -8.131516294e-20 24  0 ) type=Ortho-MADS 2n
+	mesh index : -5
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.31.input > ./nomad.0.31.output"
+Traceback (most recent call last):
+  File "./blackbox.py", line 16, in <module>
+    blackbox.run(sys.argv)
+  File "/userdata/users/codan/local/python/lib/python2.6/site-packages/dev/paropt/core/blackbox.py", line 113, in run
+    
+  File "/userdata/users/codan/local/python/lib/python2.6/site-packages/dev/paropt/core/modeldata.py", line 167, in get_test_result
+  File "/userdata/users/codan/local/python/lib/python2.6/site-packages/dev/opal/core/algorithm.py", line 134, in get_measure
+    f = open(measureFile)
+IOError: [Errno 2] No such file or directory: 'DFO-HS111LNP.out'
+
+	poll unsuccessful point #31
+
+	evaluation 2/8: point #35 ( 1e-08 1e-08 51 )
+	direction  : ( -9.999e-05 -1.99999999 50 ) type=Ortho-MADS 2
+	mesh index : -5
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.35.input > ./nomad.0.35.output"
+
+	poll unsuccessful point #35
+
+	evaluation 3/8: point #28 ( 0.00041  7  1 )
+	direction  : ( 0.00031  5  0 ) type=Ortho-MADS 2
+	mesh index : -5
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.28.input > ./nomad.0.28.output"
+
+	poll unsuccessful point #28
+
+	evaluation 4/8: point #33 ( 0.00079 17 121 )
+	direction  : ( -0.00021 16 120 ) type=Ortho-MADS 2n
+	mesh index : -5
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.33.input > ./nomad.0.33.output"
+
+	poll unsuccessful point #33
+
+	evaluation 5/8: point #30 ( 0.001  4 241 )
+	direction  : ( 2.710505431e-20  3 240 ) type=Ortho-MADS 2n
+	mesh index : -5
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.30.input > ./nomad.0.30.output"
+
+	poll unsuccessful point #30
+
+	evaluation 6/8: point #34 ( 0.00084 1e-08  1 )
+	direction  : ( -0.00016 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -5
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.34.input > ./nomad.0.34.output"
+
+	poll unsuccessful point #34
+
+	evaluation 7/8: point #32 ( 0.00088 1e-08 111 )
+	direction  : ( -0.00012 -0.99999999 110 ) type=Ortho-MADS 2n
+	mesh index : -5
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.32.input > ./nomad.0.32.output"
+
+	poll unsuccessful point #32
+
+	evaluation 8/8: point #29 ( 0.001 1e-08  1 )
+	direction  : ( -1.084202172e-19 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -5
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.29.input > ./nomad.0.29.output"
+
+	poll unsuccessful point #29
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 5, end of Mads::poll()
+
+Mesh update:
+	previous mesh index: -5
+	new mesh index     : -4
+
+
+end of iteration 5
+
+	terminate MADS           : no
+	iteration status         : unsuccessful
+	new feasible incumbent   : NULL
+	new infeasible incumbent : NULL
+
+iteration 6:
+--------------
+	black-box evaluations : 15
+	best feasible point   : ( 0.001  1  1 ) h=0 f=-1.772880689
+	best infeasible point : ( 0.0001  2  1 ) h=0.009677419355 f=-0.2310257013
+	poll center           : ( 0.001  1  1 )
+	mesh size             : ( 1e-05  1 10 )
+	poll size             : ( 0.00016 16 160 )
+	sec. poll center      : ( 0.0001  2  1 )
+	mesh index            : -4
+	h_max                 : 0.009677419355
+
+iteration 6, begin of Mads::search()
+
+iteration 6, end of Mads::search()
+
+iteration 6, begin of Mads::poll()
+
+	poll center: ( 0.001  1  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : ( -4e-05 12 60 ) type=Ortho-MADS 2n
+		dir 1 : ( 4e-05 -12 -60 ) type=Ortho-MADS 2n
+		dir 2 : ( 0.00012  6 -40 ) type=Ortho-MADS 2n
+		dir 3 : ( -0.00012 -6 40 ) type=Ortho-MADS 2n
+		dir 4 : ( 6e-05 -4 120 ) type=Ortho-MADS 2n
+		dir 5 : ( -6e-05  4 -120 ) type=Ortho-MADS 2n
+
+	point #37 (dir 1) has been snapped to bounds
+
+	point #38 (dir 2) has been snapped to bounds
+
+	point #39 (dir 3) has been snapped to bounds
+
+	point #40 (dir 4) has been snapped to bounds
+
+	point #41 (dir 5) has been snapped to bounds
+
+	re-ordered list of 6 poll trial points:
+		point #39 : (0.00088 1e-08 41) (dir 3)
+		point #41 : (0.00094  5  1) (dir 5)
+		point #36 : (0.00096 13 61) (dir 0)
+		point #37 : (0.001 1e-08  1) (dir 1)
+		point #40 : (0.001 1e-08 121) (dir 4)
+		point #38 : (0.001  7  1) (dir 2)
+
+
+	secondary poll center: ( 0.0001  2  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 6 : ( 2e-05 -13 90 ) type=Ortho-MADS 2
+		dir 7 : ( -2e-05 13 -90 ) type=Ortho-MADS 2
+
+	point #42 (dir 6) has been snapped to bounds
+
+	point #43 (dir 7) has been snapped to bounds
+
+	re-ordered list of 8 poll trial points:
+		point #43 : (8e-05 15  1) (dir 7)
+		point #42 : (0.00012 1e-08 91) (dir 6)
+		point #39 : (0.00088 1e-08 41) (dir 3)
+		point #41 : (0.00094  5  1) (dir 5)
+		point #36 : (0.00096 13 61) (dir 0)
+		point #37 : (0.001 1e-08  1) (dir 1)
+		point #40 : (0.001 1e-08 121) (dir 4)
+		point #38 : (0.001  7  1) (dir 2)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/8: point #43 ( 8e-05 15  1 )
+	direction  : ( -2e-05 13  0 ) type=Ortho-MADS 2
+	mesh index : -4
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.43.input > ./nomad.0.43.output"
+
+	point #43 surrogate evaluation: h=0 f=0.2062155136
+
+	surrogate evaluation 2/8: point #42 ( 0.00012 1e-08 91 )
+	direction  : ( 2e-05 -1.99999999 90 ) type=Ortho-MADS 2
+	mesh index : -4
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.42.input > ./nomad.0.42.output"
+
+	point #42 surrogate evaluation: h=1.414213562e+20 f=1e+20
+
+	surrogate evaluation 3/8: point #39 ( 0.00088 1e-08 41 )
+	direction  : ( -0.00012 -0.99999999 40 ) type=Ortho-MADS 2n
+	mesh index : -4
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.39.input > ./nomad.0.39.output"
+
+	point #39 surrogate evaluation: h=1.414213562e+20 f=1e+20
+
+	surrogate evaluation 4/8: point #41 ( 0.00094  5  1 )
+	direction  : ( -6e-05  4  0 ) type=Ortho-MADS 2n
+	mesh index : -4
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.41.input > ./nomad.0.41.output"
+
+	point #41 surrogate evaluation: h=0.05806451613 f=0.2377758208
+
+	surrogate evaluation 5/8: point #36 ( 0.00096 13 61 )
+	direction  : ( -4e-05 12 60 ) type=Ortho-MADS 2n
+	mesh index : -4
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.36.input > ./nomad.0.36.output"
+
+	point #36 surrogate evaluation: h=0.2193548387 f=4.390721755
+
+	surrogate evaluation 6/8: point #37 ( 0.001 1e-08  1 )
+	direction  : ( -1.016439537e-19 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -4
+
+	cache hit: #37 --> #29
+
+	poll unsuccessful point #29
+
+	surrogate evaluation 7/8: point #40 ( 0.001 1e-08 121 )
+	direction  : ( 6.776263578e-20 -0.99999999 120 ) type=Ortho-MADS 2n
+	mesh index : -4
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.40.input > ./nomad.0.40.output"
+
+	point #40 surrogate evaluation: h=1.414213562e+20 f=1e+20
+
+	surrogate evaluation 8/8: point #38 ( 0.001  7  1 )
+	direction  : ( -8.131516294e-20  6  0 ) type=Ortho-MADS 2n
+	mesh index : -4
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.38.input > ./nomad.0.38.output"
+
+	point #38 surrogate evaluation: h=0.05806451613 f=0.1785494625
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	new poll point #44: (8e-05 15  1)
+
+	new poll point #45: (0.00012 1e-08 91)
+
+	new poll point #46: (0.00088 1e-08 41)
+
+	new poll point #47: (0.00094  5  1)
+
+	new poll point #48: (0.00096 13 61)
+
+	poll point #29: (0.001 1e-08  1)
+
+	new poll point #49: (0.001 1e-08 121)
+
+	new poll point #50: (0.001  7  1)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/8: point #29 ( 0.001 1e-08  1 )
+	direction  : ( -1.016439537e-19 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -4
+
+	cache hit: #29 --> #29
+
+	poll unsuccessful point #29
+
+	evaluation 2/8: point #44 ( 8e-05 15  1 )
+	direction  : ( -2e-05 13  0 ) type=Ortho-MADS 2
+	mesh index : -4
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.44.input > ./nomad.0.44.output"
+
+	poll unsuccessful point #44
+
+	evaluation 3/8: point #50 ( 0.001  7  1 )
+	direction  : ( -8.131516294e-20  6  0 ) type=Ortho-MADS 2n
+	mesh index : -4
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.50.input > ./nomad.0.50.output"
+
+	poll unsuccessful point #50
+
+	evaluation 4/8: point #47 ( 0.00094  5  1 )
+	direction  : ( -6e-05  4  0 ) type=Ortho-MADS 2n
+	mesh index : -4
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.47.input > ./nomad.0.47.output"
+
+	poll unsuccessful point #47
+
+	evaluation 5/8: point #48 ( 0.00096 13 61 )
+	direction  : ( -4e-05 12 60 ) type=Ortho-MADS 2n
+	mesh index : -4
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.48.input > ./nomad.0.48.output"
+
+	poll unsuccessful point #48
+
+	evaluation 6/8: point #45 ( 0.00012 1e-08 91 )
+	direction  : ( 2e-05 -1.99999999 90 ) type=Ortho-MADS 2
+	mesh index : -4
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.45.input > ./nomad.0.45.output"
+
+	poll unsuccessful point #45
+
+	evaluation 7/8: point #46 ( 0.00088 1e-08 41 )
+	direction  : ( -0.00012 -0.99999999 40 ) type=Ortho-MADS 2n
+	mesh index : -4
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.46.input > ./nomad.0.46.output"
+
+	poll unsuccessful point #46
+
+	evaluation 8/8: point #49 ( 0.001 1e-08 121 )
+	direction  : ( 6.776263578e-20 -0.99999999 120 ) type=Ortho-MADS 2n
+	mesh index : -4
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.49.input > ./nomad.0.49.output"
+
+	poll unsuccessful point #49
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 6, end of Mads::poll()
+
+Mesh update:
+	previous mesh index: -4
+	new mesh index     : -3
+
+
+end of iteration 6
+
+	terminate MADS           : no
+	iteration status         : unsuccessful
+	new feasible incumbent   : NULL
+	new infeasible incumbent : NULL
+
+iteration 7:
+--------------
+	black-box evaluations : 22
+	best feasible point   : ( 0.001  1  1 ) h=0 f=-1.772880689
+	best infeasible point : ( 0.0001  2  1 ) h=0.009677419355 f=-0.2310257013
+	poll center           : ( 0.001  1  1 )
+	mesh size             : ( 1e-05  1 10 )
+	poll size             : ( 8e-05  8 80 )
+	sec. poll center      : ( 0.0001  2  1 )
+	mesh index            : -3
+	h_max                 : 0.009677419355
+
+iteration 7, begin of Mads::search()
+
+iteration 7, end of Mads::search()
+
+iteration 7, begin of Mads::poll()
+
+	poll center: ( 0.001  1  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : ( 4e-05 -2 -40 ) type=Ortho-MADS 2n
+		dir 1 : ( -4e-05  2 40 ) type=Ortho-MADS 2n
+		dir 2 : ( -2e-05  4 -40 ) type=Ortho-MADS 2n
+		dir 3 : ( 2e-05 -4 40 ) type=Ortho-MADS 2n
+		dir 4 : ( -4e-05 -4 -20 ) type=Ortho-MADS 2n
+		dir 5 : ( 4e-05  4 20 ) type=Ortho-MADS 2n
+
+	point #51 (dir 0) has been snapped to bounds
+
+	point #53 (dir 2) has been snapped to bounds
+
+	point #54 (dir 3) has been snapped to bounds
+
+	point #55 (dir 4) has been snapped to bounds
+
+	point #56 (dir 5) has been snapped to bounds
+
+	re-ordered list of 6 poll trial points:
+		point #55 : (0.00096 1e-08  1) (dir 4)
+		point #52 : (0.00096  3 41) (dir 1)
+		point #53 : (0.00098  5  1) (dir 2)
+		point #51 : (0.001 1e-08  1) (dir 0)
+		point #54 : (0.001 1e-08 41) (dir 3)
+		point #56 : (0.001  5 21) (dir 5)
+
+
+	secondary poll center: ( 0.0001  2  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 6 : ( 5e-05  4 -40 ) type=Ortho-MADS 2
+		dir 7 : ( -5e-05 -4 40 ) type=Ortho-MADS 2
+
+	point #57 (dir 6) has been snapped to bounds
+
+	point #58 (dir 7) has been snapped to bounds
+
+	re-ordered list of 8 poll trial points:
+		point #58 : (5e-05 1e-08 41) (dir 7)
+		point #57 : (0.00015  6  1) (dir 6)
+		point #55 : (0.00096 1e-08  1) (dir 4)
+		point #52 : (0.00096  3 41) (dir 1)
+		point #53 : (0.00098  5  1) (dir 2)
+		point #51 : (0.001 1e-08  1) (dir 0)
+		point #54 : (0.001 1e-08 41) (dir 3)
+		point #56 : (0.001  5 21) (dir 5)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/8: point #58 ( 5e-05 1e-08 41 )
+	direction  : ( -5e-05 -1.99999999 40 ) type=Ortho-MADS 2
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.58.input > ./nomad.0.58.output"
+
+	point #58 surrogate evaluation: h=1.414213562e+20 f=1e+20
+
+	surrogate evaluation 2/8: point #57 ( 0.00015  6  1 )
+	direction  : ( 5e-05  4  0 ) type=Ortho-MADS 2
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.57.input > ./nomad.0.57.output"
+
+	point #57 surrogate evaluation: h=0.09032258065 f=0.9097556764
+
+	surrogate evaluation 3/8: point #55 ( 0.00096 1e-08  1 )
+	direction  : ( -4e-05 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.55.input > ./nomad.0.55.output"
+
+	point #55 surrogate evaluation: h=1.414213562e+20 f=1e+20
+
+	surrogate evaluation 4/8: point #52 ( 0.00096  3 41 )
+	direction  : ( -4e-05  2 40 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.52.input > ./nomad.0.52.output"
+
+	point #52 surrogate evaluation: h=0.2516129032 f=3.83442037
+
+	surrogate evaluation 5/8: point #53 ( 0.00098  5  1 )
+	direction  : ( -2e-05  4  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.53.input > ./nomad.0.53.output"
+
+	point #53 surrogate evaluation: h=0.05806451613 f=0.2266354916
+
+	surrogate evaluation 6/8: point #51 ( 0.001 1e-08  1 )
+	direction  : ( -1.016439537e-19 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	cache hit: #51 --> #29
+
+	poll unsuccessful point #29
+
+	surrogate evaluation 7/8: point #54 ( 0.001 1e-08 41 )
+	direction  : ( -5.082197684e-20 -0.99999999 40 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.54.input > ./nomad.0.54.output"
+
+	point #54 surrogate evaluation: h=1.414213562e+20 f=1e+20
+
+	surrogate evaluation 8/8: point #56 ( 0.001  5 21 )
+	direction  : ( -1.016439537e-19  4 20 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.56.input > ./nomad.0.56.output"
+
+	point #56 surrogate evaluation: h=0.2838709677 f=3.923509665
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	new poll point #59: (5e-05 1e-08 41)
+
+	new poll point #60: (0.00015  6  1)
+
+	new poll point #61: (0.00096 1e-08  1)
+
+	new poll point #62: (0.00096  3 41)
+
+	new poll point #63: (0.00098  5  1)
+
+	poll point #29: (0.001 1e-08  1)
+
+	new poll point #64: (0.001 1e-08 41)
+
+	new poll point #65: (0.001  5 21)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/8: point #29 ( 0.001 1e-08  1 )
+	direction  : ( -1.016439537e-19 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	cache hit: #29 --> #29
+
+	poll unsuccessful point #29
+
+	evaluation 2/8: point #63 ( 0.00098  5  1 )
+	direction  : ( -2e-05  4  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.63.input > ./nomad.0.63.output"
+
+	poll unsuccessful point #63
+
+	evaluation 3/8: point #60 ( 0.00015  6  1 )
+	direction  : ( 5e-05  4  0 ) type=Ortho-MADS 2
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.60.input > ./nomad.0.60.output"
+
+	poll unsuccessful point #60
+
+	evaluation 4/8: point #62 ( 0.00096  3 41 )
+	direction  : ( -4e-05  2 40 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.62.input > ./nomad.0.62.output"
+
+	poll unsuccessful point #62
+
+	evaluation 5/8: point #65 ( 0.001  5 21 )
+	direction  : ( -1.016439537e-19  4 20 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.65.input > ./nomad.0.65.output"
+
+	poll unsuccessful point #65
+
+	evaluation 6/8: point #59 ( 5e-05 1e-08 41 )
+	direction  : ( -5e-05 -1.99999999 40 ) type=Ortho-MADS 2
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.59.input > ./nomad.0.59.output"
+
+	poll unsuccessful point #59
+
+	evaluation 7/8: point #61 ( 0.00096 1e-08  1 )
+	direction  : ( -4e-05 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.61.input > ./nomad.0.61.output"
+
+	poll unsuccessful point #61
+
+	evaluation 8/8: point #64 ( 0.001 1e-08 41 )
+	direction  : ( -5.082197684e-20 -0.99999999 40 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.64.input > ./nomad.0.64.output"
+
+	poll unsuccessful point #64
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 7, end of Mads::poll()
+
+Mesh update:
+	previous mesh index: -3
+	new mesh index     : -2
+
+
+end of iteration 7
+
+	terminate MADS           : no
+	iteration status         : unsuccessful
+	new feasible incumbent   : NULL
+	new infeasible incumbent : NULL
+
+iteration 8:
+--------------
+	black-box evaluations : 29
+	best feasible point   : ( 0.001  1  1 ) h=0 f=-1.772880689
+	best infeasible point : ( 0.0001  2  1 ) h=0.009677419355 f=-0.2310257013
+	poll center           : ( 0.001  1  1 )
+	mesh size             : ( 1e-05  1 10 )
+	poll size             : ( 4e-05  4 40 )
+	sec. poll center      : ( 0.0001  2  1 )
+	mesh index            : -2
+	h_max                 : 0.009677419355
+
+iteration 8, begin of Mads::search()
+
+iteration 8, end of Mads::search()
+
+iteration 8, begin of Mads::poll()
+
+	poll center: ( 0.001  1  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : (  0 -2  0 ) type=Ortho-MADS 2n
+		dir 1 : (  0  2  0 ) type=Ortho-MADS 2n
+		dir 2 : ( -2e-05  0  0 ) type=Ortho-MADS 2n
+		dir 3 : ( 2e-05  0  0 ) type=Ortho-MADS 2n
+		dir 4 : (  0  0 20 ) type=Ortho-MADS 2n
+		dir 5 : (  0  0 -20 ) type=Ortho-MADS 2n
+
+	point #66 (dir 0) has been snapped to bounds
+
+	point #69 (dir 3) has been snapped to bounds
+	point #69 is flushed (||dir||==0)
+
+	point #71 (dir 5) has been snapped to bounds
+	point #71 is flushed (||dir||==0)
+
+	re-ordered list of 4 poll trial points:
+		point #68 : (0.00098  1  1) (dir 2)
+		point #66 : (0.001 1e-08  1) (dir 0)
+		point #70 : (0.001  1 21) (dir 4)
+		point #67 : (0.001  3  1) (dir 1)
+
+
+	secondary poll center: ( 0.0001  2  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 6 : ( 3e-05  0 20 ) type=Ortho-MADS 2
+		dir 7 : ( -3e-05  0 -20 ) type=Ortho-MADS 2
+
+	point #73 (dir 7) has been snapped to bounds
+
+	re-ordered list of 6 poll trial points:
+		point #73 : (7e-05  2  1) (dir 7)
+		point #72 : (0.00013  2 21) (dir 6)
+		point #68 : (0.00098  1  1) (dir 2)
+		point #66 : (0.001 1e-08  1) (dir 0)
+		point #70 : (0.001  1 21) (dir 4)
+		point #67 : (0.001  3  1) (dir 1)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/6: point #73 ( 7e-05  2  1 )
+	direction  : ( -3e-05  0  0 ) type=Ortho-MADS 2
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.73.input > ./nomad.0.73.output"
+
+	point #73 surrogate evaluation: h=0 f=-1.41642357
+
+	surrogate evaluation 2/6: point #72 ( 0.00013  2 21 )
+	direction  : ( 3e-05  0 20 ) type=Ortho-MADS 2
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.72.input > ./nomad.0.72.output"
+
+	point #72 surrogate evaluation: h=0.2193548387 f=4.85932237
+
+	surrogate evaluation 3/6: point #68 ( 0.00098  1  1 )
+	direction  : ( -2e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.68.input > ./nomad.0.68.output"
+
+	point #68 surrogate evaluation: h=0 f=-1.059248703
+
+	surrogate evaluation 4/6: point #66 ( 0.001 1e-08  1 )
+	direction  : (  0 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	cache hit: #66 --> #29
+
+	poll unsuccessful point #29
+
+	surrogate evaluation 5/6: point #70 ( 0.001  1 21 )
+	direction  : (  0  0 20 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.70.input > ./nomad.0.70.output"
+
+	point #70 surrogate evaluation: h=0.1870967742 f=2.524790932
+
+	surrogate evaluation 6/6: point #67 ( 0.001  3  1 )
+	direction  : (  0  2  0 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.67.input > ./nomad.0.67.output"
+
+	point #67 surrogate evaluation: h=0.02580645161 f=-0.1395471773
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	new poll point #74: (7e-05  2  1)
+
+	new poll point #75: (0.00013  2 21)
+
+	new poll point #76: (0.00098  1  1)
+
+	poll point #29: (0.001 1e-08  1)
+
+	new poll point #77: (0.001  1 21)
+
+	new poll point #78: (0.001  3  1)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/6: point #29 ( 0.001 1e-08  1 )
+	direction  : (  0 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	cache hit: #29 --> #29
+
+	poll unsuccessful point #29
+
+	evaluation 2/6: point #74 ( 7e-05  2  1 )
+	direction  : ( -3e-05  0  0 ) type=Ortho-MADS 2
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.74.input > ./nomad.0.74.output"
+
+	poll dominating point: #74 X=( 7e-05  2  1 ) F(X)=[ -0.2626926143  0 0.009677419355 ] h=0.009677419355 f=-0.2626926143
+
+	opportunistic strategy: terminate evaluations
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 8, end of Mads::poll()
+
+Mesh update:
+	previous mesh index: -2
+	new mesh index     : -3
+
+
+end of iteration 8
+
+	terminate MADS           : no
+	iteration status         : dominating
+	new feasible incumbent   : NULL
+	new infeasible incumbent : #74 X=( 7e-05  2  1 ) F(X)=[ -0.2626926143  0 0.009677419355 ] h=0.009677419355 f=-0.2626926143
+
+iteration 9:
+--------------
+	black-box evaluations : 30
+	best feasible point   : ( 0.001  1  1 ) h=0 f=-1.772880689
+	best infeasible point : ( 7e-05  2  1 ) h=0.009677419355 f=-0.2626926143
+	poll center           : ( 0.001  1  1 )
+	mesh size             : ( 1e-05  1 10 )
+	poll size             : ( 8e-05  8 80 )
+	sec. poll center      : ( 7e-05  2  1 )
+	mesh index            : -3
+	h_max                 : 0.009677419355
+
+iteration 9, begin of Mads::search()
+
+	speculative search
+	speculative search point #79: (-2e-05  2  1)
+
+	point #79 has been snapped to bounds
+
+begin of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+	evaluation 1/1: point #79 ( 1e-08  2  1 )
+	direction  : ( -9.999e-05  0  0 ) type=Ortho-MADS 2
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.79.input > ./nomad.0.79.output"
+
+	MADS speculative search unsuccessful point #79
+
+end of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+iteration 9, end of Mads::search()
+
+iteration 9, begin of Mads::poll()
+
+	poll center: ( 0.001  1  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : ( 8e-05  0  0 ) type=Ortho-MADS 2n
+		dir 1 : ( -8e-05  0  0 ) type=Ortho-MADS 2n
+		dir 2 : (  0  0 -80 ) type=Ortho-MADS 2n
+		dir 3 : (  0  0 80 ) type=Ortho-MADS 2n
+		dir 4 : (  0 -8  0 ) type=Ortho-MADS 2n
+		dir 5 : (  0  8  0 ) type=Ortho-MADS 2n
+
+	point #80 (dir 0) has been snapped to bounds
+	point #80 is flushed (||dir||==0)
+
+	point #82 (dir 2) has been snapped to bounds
+	point #82 is flushed (||dir||==0)
+
+	point #84 (dir 4) has been snapped to bounds
+
+	re-ordered list of 4 poll trial points:
+		point #81 : (0.00092  1  1) (dir 1)
+		point #84 : (0.001 1e-08  1) (dir 4)
+		point #83 : (0.001  1 81) (dir 3)
+		point #85 : (0.001  9  1) (dir 5)
+
+
+	secondary poll center: ( 7e-05  2  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 6 : ( 5e-05 -3 -50 ) type=Ortho-MADS 2
+		dir 7 : ( -5e-05  3 50 ) type=Ortho-MADS 2
+
+	point #86 (dir 6) has been snapped to bounds
+
+	re-ordered list of 6 poll trial points:
+		point #87 : (2e-05  5 51) (dir 7)
+		point #86 : (0.00012 1e-08  1) (dir 6)
+		point #81 : (0.00092  1  1) (dir 1)
+		point #84 : (0.001 1e-08  1) (dir 4)
+		point #83 : (0.001  1 81) (dir 3)
+		point #85 : (0.001  9  1) (dir 5)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/6: point #87 ( 2e-05  5 51 )
+	direction  : ( -5e-05  3 50 ) type=Ortho-MADS 2
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.87.input > ./nomad.0.87.output"
+
+	point #87 surrogate evaluation: h=0.3483870968 f=5.709083891
+
+	surrogate evaluation 2/6: point #86 ( 0.00012 1e-08  1 )
+	direction  : ( 5e-05 -1.99999999  0 ) type=Ortho-MADS 2
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.86.input > ./nomad.0.86.output"
+
+	point #86 surrogate evaluation: h=1.414213562e+20 f=1e+20
+
+	surrogate evaluation 3/6: point #81 ( 0.00092  1  1 )
+	direction  : ( -8e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.81.input > ./nomad.0.81.output"
+
+	point #81 surrogate evaluation: h=0 f=-0.7126690126
+
+	surrogate evaluation 4/6: point #84 ( 0.001 1e-08  1 )
+	direction  : (  0 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	cache hit: #84 --> #29
+
+	poll unsuccessful point #29
+
+	surrogate evaluation 5/6: point #83 ( 0.001  1 81 )
+	direction  : (  0  0 80 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.83.input > ./nomad.0.83.output"
+
+	point #83 surrogate evaluation: h=0.2516129032 f=4.993859346
+
+	surrogate evaluation 6/6: point #85 ( 0.001  9  1 )
+	direction  : (  0  8  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.85.input > ./nomad.0.85.output"
+
+	point #85 surrogate evaluation: h=0 f=-0.03649051025
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	new poll point #88: (2e-05  5 51)
+
+	new poll point #89: (0.00012 1e-08  1)
+
+	new poll point #90: (0.00092  1  1)
+
+	poll point #29: (0.001 1e-08  1)
+
+	new poll point #91: (0.001  1 81)
+
+	new poll point #92: (0.001  9  1)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/6: point #29 ( 0.001 1e-08  1 )
+	direction  : (  0 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	cache hit: #29 --> #29
+
+	poll unsuccessful point #29
+
+	evaluation 2/6: point #90 ( 0.00092  1  1 )
+	direction  : ( -8e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.90.input > ./nomad.0.90.output"
+
+	poll unsuccessful point #90
+
+	evaluation 3/6: point #92 ( 0.001  9  1 )
+	direction  : (  0  8  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.92.input > ./nomad.0.92.output"
+
+	poll unsuccessful point #92
+
+	evaluation 4/6: point #91 ( 0.001  1 81 )
+	direction  : (  0  0 80 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.91.input > ./nomad.0.91.output"
+
+	poll unsuccessful point #91
+
+	evaluation 5/6: point #88 ( 2e-05  5 51 )
+	direction  : ( -5e-05  3 50 ) type=Ortho-MADS 2
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.88.input > ./nomad.0.88.output"
+
+	poll unsuccessful point #88
+
+	evaluation 6/6: point #89 ( 0.00012 1e-08  1 )
+	direction  : ( 5e-05 -1.99999999  0 ) type=Ortho-MADS 2
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.89.input > ./nomad.0.89.output"
+
+	poll unsuccessful point #89
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 9, end of Mads::poll()
+
+Mesh update:
+	previous mesh index: -3
+	new mesh index     : -2
+
+
+end of iteration 9
+
+	terminate MADS           : no
+	iteration status         : unsuccessful
+	new feasible incumbent   : NULL
+	new infeasible incumbent : NULL
+
+iteration 10:
+--------------
+	black-box evaluations : 36
+	best feasible point   : ( 0.001  1  1 ) h=0 f=-1.772880689
+	best infeasible point : ( 7e-05  2  1 ) h=0.009677419355 f=-0.2626926143
+	poll center           : ( 0.001  1  1 )
+	mesh size             : ( 1e-05  1 10 )
+	poll size             : ( 4e-05  4 40 )
+	sec. poll center      : ( 7e-05  2  1 )
+	mesh index            : -2
+	h_max                 : 0.009677419355
+
+iteration 10, begin of Mads::search()
+
+iteration 10, end of Mads::search()
+
+iteration 10, begin of Mads::poll()
+
+	poll center: ( 0.001  1  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : (  0  0 -20 ) type=Ortho-MADS 2n
+		dir 1 : (  0  0 20 ) type=Ortho-MADS 2n
+		dir 2 : (  0  2  0 ) type=Ortho-MADS 2n
+		dir 3 : (  0 -2  0 ) type=Ortho-MADS 2n
+		dir 4 : ( -2e-05  0  0 ) type=Ortho-MADS 2n
+		dir 5 : ( 2e-05  0  0 ) type=Ortho-MADS 2n
+
+	point #93 (dir 0) has been snapped to bounds
+	point #93 is flushed (||dir||==0)
+
+	point #96 (dir 3) has been snapped to bounds
+
+	point #98 (dir 5) has been snapped to bounds
+	point #98 is flushed (||dir||==0)
+
+	re-ordered list of 4 poll trial points:
+		point #97 : (0.00098  1  1) (dir 4)
+		point #96 : (0.001 1e-08  1) (dir 3)
+		point #94 : (0.001  1 21) (dir 1)
+		point #95 : (0.001  3  1) (dir 2)
+
+
+	secondary poll center: ( 7e-05  2  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 6 : (  0  4  0 ) type=Ortho-MADS 2
+		dir 7 : (  0 -4  0 ) type=Ortho-MADS 2
+
+	point #100 (dir 7) has been snapped to bounds
+
+	re-ordered list of 6 poll trial points:
+		point #100 : (7e-05 1e-08  1) (dir 7)
+		point #99 : (7e-05  6  1) (dir 6)
+		point #97 : (0.00098  1  1) (dir 4)
+		point #96 : (0.001 1e-08  1) (dir 3)
+		point #94 : (0.001  1 21) (dir 1)
+		point #95 : (0.001  3  1) (dir 2)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/6: point #100 ( 7e-05 1e-08  1 )
+	direction  : (  0 -1.99999999  0 ) type=Ortho-MADS 2
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.100.input > ./nomad.0.100.output"
+
+	point #100 surrogate evaluation: h=1.414213562e+20 f=1e+20
+
+	surrogate evaluation 2/6: point #99 ( 7e-05  6  1 )
+	direction  : (  0  4  0 ) type=Ortho-MADS 2
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.99.input > ./nomad.0.99.output"
+
+	point #99 surrogate evaluation: h=0.09032258065 f=1.006356834
+
+	surrogate evaluation 3/6: point #97 ( 0.00098  1  1 )
+	direction  : ( -2e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	surrogate cache hit: #97 --> #68
+
+	point #68 surrogate evaluation: h=0 f=-1.059248703
+
+	surrogate evaluation 4/6: point #96 ( 0.001 1e-08  1 )
+	direction  : (  0 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	cache hit: #96 --> #29
+
+	poll unsuccessful point #29
+
+	surrogate evaluation 5/6: point #94 ( 0.001  1 21 )
+	direction  : (  0  0 20 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	surrogate cache hit: #94 --> #70
+
+	point #70 surrogate evaluation: h=0.1870967742 f=2.524790932
+
+	surrogate evaluation 6/6: point #95 ( 0.001  3  1 )
+	direction  : (  0  2  0 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	surrogate cache hit: #95 --> #67
+
+	point #67 surrogate evaluation: h=0.02580645161 f=-0.1395471773
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	new poll point #101: (7e-05 1e-08  1)
+
+	new poll point #102: (7e-05  6  1)
+
+	new poll point #103: (0.00098  1  1)
+
+	poll point #29: (0.001 1e-08  1)
+
+	new poll point #104: (0.001  1 21)
+
+	new poll point #105: (0.001  3  1)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/6: point #29 ( 0.001 1e-08  1 )
+	direction  : (  0 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	cache hit: #29 --> #29
+
+	poll unsuccessful point #29
+
+	evaluation 2/6: point #103 ( 0.00098  1  1 )
+	direction  : ( -2e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.103.input > ./nomad.0.103.output"
+
+	poll dominating point: #103 X=( 0.00098  1  1 ) F(X)=[ -1.952289586  0 -0.08709677419 ] h=0 f=-1.952289586
+
+	opportunistic strategy: terminate evaluations
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 10, end of Mads::poll()
+
+Mesh update:
+	previous mesh index: -2
+	new mesh index     : -3
+
+
+end of iteration 10
+
+	terminate MADS           : no
+	iteration status         : dominating
+	new feasible incumbent   : #103 X=( 0.00098  1  1 ) F(X)=[ -1.952289586  0 -0.08709677419 ] h=0 f=-1.952289586
+	new infeasible incumbent : NULL
+
+iteration 11:
+--------------
+	black-box evaluations : 37
+	best feasible point   : ( 0.00098  1  1 ) h=0 f=-1.952289586
+	best infeasible point : ( 7e-05  2  1 ) h=0.009677419355 f=-0.2626926143
+	poll center           : ( 0.00098  1  1 )
+	mesh size             : ( 1e-05  1 10 )
+	poll size             : ( 8e-05  8 80 )
+	sec. poll center      : ( 7e-05  2  1 )
+	mesh index            : -3
+	h_max                 : 0.009677419355
+
+iteration 11, begin of Mads::search()
+
+	speculative search
+	speculative search point #106: (0.00092  1  1)
+
+begin of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+	evaluation 1/1: point #106 ( 0.00092  1  1 )
+	direction  : ( -8e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	cache hit: #106 --> #90
+
+	MADS speculative search unsuccessful point #90
+
+end of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+iteration 11, end of Mads::search()
+
+iteration 11, begin of Mads::poll()
+
+	poll center: ( 0.00098  1  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : ( 4e-05 -4 20 ) type=Ortho-MADS 2n
+		dir 1 : ( -4e-05  4 -20 ) type=Ortho-MADS 2n
+		dir 2 : ( -4e-05 -2 40 ) type=Ortho-MADS 2n
+		dir 3 : ( 4e-05  2 -40 ) type=Ortho-MADS 2n
+		dir 4 : ( 2e-05  4 40 ) type=Ortho-MADS 2n
+		dir 5 : ( -2e-05 -4 -40 ) type=Ortho-MADS 2n
+
+	point #107 (dir 0) has been snapped to bounds
+
+	point #108 (dir 1) has been snapped to bounds
+
+	point #109 (dir 2) has been snapped to bounds
+
+	point #110 (dir 3) has been snapped to bounds
+
+	point #112 (dir 5) has been snapped to bounds
+
+	re-ordered list of 6 poll trial points:
+		point #112 : (0.00096 1e-08  1) (dir 5)
+		point #108 : (0.00094  5  1) (dir 1)
+		point #109 : (0.00094 1e-08 41) (dir 2)
+		point #111 : (0.001  5 41) (dir 4)
+		point #107 : (0.001 1e-08 21) (dir 0)
+		point #110 : (0.001  3  1) (dir 3)
+
+
+	secondary poll center: ( 7e-05  2  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 6 : ( 4e-05 -1 60 ) type=Ortho-MADS 2
+		dir 7 : ( -4e-05  1 -60 ) type=Ortho-MADS 2
+
+	point #114 (dir 7) has been snapped to bounds
+
+	re-ordered list of 8 poll trial points:
+		point #114 : (3e-05  3  1) (dir 7)
+		point #113 : (0.00011  1 61) (dir 6)
+		point #112 : (0.00096 1e-08  1) (dir 5)
+		point #108 : (0.00094  5  1) (dir 1)
+		point #109 : (0.00094 1e-08 41) (dir 2)
+		point #111 : (0.001  5 41) (dir 4)
+		point #107 : (0.001 1e-08 21) (dir 0)
+		point #110 : (0.001  3  1) (dir 3)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/8: point #114 ( 3e-05  3  1 )
+	direction  : ( -4e-05  1  0 ) type=Ortho-MADS 2
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.114.input > ./nomad.0.114.output"
+
+	point #114 surrogate evaluation: h=0.05806451613 f=0.8562530927
+
+	surrogate evaluation 2/8: point #113 ( 0.00011  1 61 )
+	direction  : ( 4e-05 -1 60 ) type=Ortho-MADS 2
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.113.input > ./nomad.0.113.output"
+
+	point #113 surrogate evaluation: h=0.2193548387 f=5.595788957
+
+	surrogate evaluation 3/8: point #112 ( 0.00096 1e-08  1 )
+	direction  : ( -2e-05 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	cache hit: #112 --> #61
+
+	poll unsuccessful point #61
+
+	surrogate evaluation 4/8: point #108 ( 0.00094  5  1 )
+	direction  : ( -4e-05  4  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	cache hit: #108 --> #47
+
+	poll unsuccessful point #47
+
+	surrogate evaluation 5/8: point #109 ( 0.00094 1e-08 41 )
+	direction  : ( -4e-05 -0.99999999 40 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.109.input > ./nomad.0.109.output"
+
+	point #109 surrogate evaluation: h=1.414213562e+20 f=1e+20
+
+	surrogate evaluation 6/8: point #111 ( 0.001  5 41 )
+	direction  : ( 2e-05  4 40 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.111.input > ./nomad.0.111.output"
+
+	point #111 surrogate evaluation: h=0.3161290323 f=5.163402697
+
+	surrogate evaluation 7/8: point #107 ( 0.001 1e-08 21 )
+	direction  : ( 2e-05 -0.99999999 20 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.107.input > ./nomad.0.107.output"
+
+	point #107 surrogate evaluation: h=1.414213562e+20 f=1e+20
+
+	surrogate evaluation 8/8: point #110 ( 0.001  3  1 )
+	direction  : ( 2e-05  2  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	surrogate cache hit: #110 --> #67
+
+	point #67 surrogate evaluation: h=0.02580645161 f=-0.1395471773
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	new poll point #115: (3e-05  3  1)
+
+	new poll point #116: (0.00011  1 61)
+
+	poll point #61: (0.00096 1e-08  1)
+
+	poll point #47: (0.00094  5  1)
+
+	new poll point #117: (0.00094 1e-08 41)
+
+	new poll point #118: (0.001  5 41)
+
+	new poll point #119: (0.001 1e-08 21)
+
+	new poll point #120: (0.001  3  1)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/8: point #61 ( 0.00096 1e-08  1 )
+	direction  : ( -2e-05 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	cache hit: #61 --> #61
+
+	poll unsuccessful point #61
+
+	evaluation 2/8: point #47 ( 0.00094  5  1 )
+	direction  : ( -4e-05  4  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	cache hit: #47 --> #47
+
+	poll unsuccessful point #47
+
+	evaluation 3/8: point #120 ( 0.001  3  1 )
+	direction  : ( 2e-05  2  0 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.120.input > ./nomad.0.120.output"
+
+	poll unsuccessful point #120
+
+	evaluation 4/8: point #115 ( 3e-05  3  1 )
+	direction  : ( -4e-05  1  0 ) type=Ortho-MADS 2
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.115.input > ./nomad.0.115.output"
+
+	poll unsuccessful point #115
+
+	evaluation 5/8: point #116 ( 0.00011  1 61 )
+	direction  : ( 4e-05 -1 60 ) type=Ortho-MADS 2
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.116.input > ./nomad.0.116.output"
+
+	poll unsuccessful point #116
+
+	evaluation 6/8: point #118 ( 0.001  5 41 )
+	direction  : ( 2e-05  4 40 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.118.input > ./nomad.0.118.output"
+
+	poll unsuccessful point #118
+
+	evaluation 7/8: point #117 ( 0.00094 1e-08 41 )
+	direction  : ( -4e-05 -0.99999999 40 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.117.input > ./nomad.0.117.output"
+
+	poll unsuccessful point #117
+
+	evaluation 8/8: point #119 ( 0.001 1e-08 21 )
+	direction  : ( 2e-05 -0.99999999 20 ) type=Ortho-MADS 2n
+	mesh index : -3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.119.input > ./nomad.0.119.output"
+
+	poll unsuccessful point #119
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 11, end of Mads::poll()
+
+Mesh update:
+	previous mesh index: -3
+	new mesh index     : -2
+
+
+end of iteration 11
+
+	terminate MADS           : no
+	iteration status         : unsuccessful
+	new feasible incumbent   : NULL
+	new infeasible incumbent : NULL
+
+iteration 12:
+--------------
+	black-box evaluations : 43
+	best feasible point   : ( 0.00098  1  1 ) h=0 f=-1.952289586
+	best infeasible point : ( 7e-05  2  1 ) h=0.009677419355 f=-0.2626926143
+	poll center           : ( 0.00098  1  1 )
+	mesh size             : ( 1e-05  1 10 )
+	poll size             : ( 4e-05  4 40 )
+	sec. poll center      : ( 7e-05  2  1 )
+	mesh index            : -2
+	h_max                 : 0.009677419355
+
+iteration 12, begin of Mads::search()
+
+iteration 12, end of Mads::search()
+
+iteration 12, begin of Mads::poll()
+
+	poll center: ( 0.00098  1  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : ( 1e-05  2 -20 ) type=Ortho-MADS 2n
+		dir 1 : ( -1e-05 -2 20 ) type=Ortho-MADS 2n
+		dir 2 : ( 2e-05  1 20 ) type=Ortho-MADS 2n
+		dir 3 : ( -2e-05 -1 -20 ) type=Ortho-MADS 2n
+		dir 4 : ( -2e-05  2 10 ) type=Ortho-MADS 2n
+		dir 5 : ( 2e-05 -2 -10 ) type=Ortho-MADS 2n
+
+	point #121 (dir 0) has been snapped to bounds
+
+	point #122 (dir 1) has been snapped to bounds
+
+	point #124 (dir 3) has been snapped to bounds
+
+	point #126 (dir 5) has been snapped to bounds
+
+	re-ordered list of 6 poll trial points:
+		point #124 : (0.00096 1e-08  1) (dir 3)
+		point #125 : (0.00096  3 11) (dir 4)
+		point #122 : (0.00097 1e-08 21) (dir 1)
+		point #121 : (0.00099  3  1) (dir 0)
+		point #126 : (0.001 1e-08  1) (dir 5)
+		point #123 : (0.001  2 21) (dir 2)
+
+
+	secondary poll center: ( 7e-05  2  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 6 : ( 2e-05 -3 -10 ) type=Ortho-MADS 2
+		dir 7 : ( -2e-05  3 10 ) type=Ortho-MADS 2
+
+	point #127 (dir 6) has been snapped to bounds
+
+	re-ordered list of 8 poll trial points:
+		point #128 : (5e-05  5 11) (dir 7)
+		point #127 : (9e-05 1e-08  1) (dir 6)
+		point #124 : (0.00096 1e-08  1) (dir 3)
+		point #125 : (0.00096  3 11) (dir 4)
+		point #122 : (0.00097 1e-08 21) (dir 1)
+		point #121 : (0.00099  3  1) (dir 0)
+		point #126 : (0.001 1e-08  1) (dir 5)
+		point #123 : (0.001  2 21) (dir 2)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/8: point #128 ( 5e-05  5 11 )
+	direction  : ( -2e-05  3 10 ) type=Ortho-MADS 2
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.128.input > ./nomad.0.128.output"
+
+	point #128 surrogate evaluation: h=0.2838709677 f=4.520669718
+
+	surrogate evaluation 2/8: point #127 ( 9e-05 1e-08  1 )
+	direction  : ( 2e-05 -1.99999999  0 ) type=Ortho-MADS 2
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.127.input > ./nomad.0.127.output"
+
+	point #127 surrogate evaluation: h=1.414213562e+20 f=1e+20
+
+	surrogate evaluation 3/8: point #124 ( 0.00096 1e-08  1 )
+	direction  : ( -2e-05 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	cache hit: #124 --> #61
+
+	poll unsuccessful point #61
+
+	surrogate evaluation 4/8: point #125 ( 0.00096  3 11 )
+	direction  : ( -2e-05  2 10 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.125.input > ./nomad.0.125.output"
+
+	point #125 surrogate evaluation: h=0.2838709677 f=3.616239656
+
+	surrogate evaluation 5/8: point #122 ( 0.00097 1e-08 21 )
+	direction  : ( -1e-05 -0.99999999 20 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.122.input > ./nomad.0.122.output"
+
+	point #122 surrogate evaluation: h=1.414213562e+20 f=1e+20
+
+	surrogate evaluation 6/8: point #121 ( 0.00099  3  1 )
+	direction  : ( 1e-05  2  0 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.121.input > ./nomad.0.121.output"
+
+	point #121 surrogate evaluation: h=0.02580645161 f=-0.09266947587
+
+	surrogate evaluation 7/8: point #126 ( 0.001 1e-08  1 )
+	direction  : ( 2e-05 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	cache hit: #126 --> #29
+
+	poll unsuccessful point #29
+
+	surrogate evaluation 8/8: point #123 ( 0.001  2 21 )
+	direction  : ( 2e-05  1 20 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.123.input > ./nomad.0.123.output"
+
+	point #123 surrogate evaluation: h=0.2193548387 f=3.998103343
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	new poll point #129: (5e-05  5 11)
+
+	new poll point #130: (9e-05 1e-08  1)
+
+	poll point #61: (0.00096 1e-08  1)
+
+	new poll point #131: (0.00096  3 11)
+
+	new poll point #132: (0.00097 1e-08 21)
+
+	new poll point #133: (0.00099  3  1)
+
+	poll point #29: (0.001 1e-08  1)
+
+	new poll point #134: (0.001  2 21)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/8: point #61 ( 0.00096 1e-08  1 )
+	direction  : ( -2e-05 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	cache hit: #61 --> #61
+
+	poll unsuccessful point #61
+
+	evaluation 2/8: point #29 ( 0.001 1e-08  1 )
+	direction  : ( 2e-05 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	cache hit: #29 --> #29
+
+	poll unsuccessful point #29
+
+	evaluation 3/8: point #133 ( 0.00099  3  1 )
+	direction  : ( 1e-05  2  0 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.133.input > ./nomad.0.133.output"
+
+	poll unsuccessful point #133
+
+	evaluation 4/8: point #131 ( 0.00096  3 11 )
+	direction  : ( -2e-05  2 10 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.131.input > ./nomad.0.131.output"
+
+	poll unsuccessful point #131
+
+	evaluation 5/8: point #134 ( 0.001  2 21 )
+	direction  : ( 2e-05  1 20 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.134.input > ./nomad.0.134.output"
+
+	poll unsuccessful point #134
+
+	evaluation 6/8: point #129 ( 5e-05  5 11 )
+	direction  : ( -2e-05  3 10 ) type=Ortho-MADS 2
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.129.input > ./nomad.0.129.output"
+
+	poll unsuccessful point #129
+
+	evaluation 7/8: point #130 ( 9e-05 1e-08  1 )
+	direction  : ( 2e-05 -1.99999999  0 ) type=Ortho-MADS 2
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.130.input > ./nomad.0.130.output"
+
+	poll unsuccessful point #130
+
+	evaluation 8/8: point #132 ( 0.00097 1e-08 21 )
+	direction  : ( -1e-05 -0.99999999 20 ) type=Ortho-MADS 2n
+	mesh index : -2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.132.input > ./nomad.0.132.output"
+
+	poll unsuccessful point #132
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 12, end of Mads::poll()
+
+Mesh update:
+	previous mesh index: -2
+	new mesh index     : -1
+
+
+end of iteration 12
+
+	terminate MADS           : no
+	iteration status         : unsuccessful
+	new feasible incumbent   : NULL
+	new infeasible incumbent : NULL
+
+iteration 13:
+--------------
+	black-box evaluations : 49
+	best feasible point   : ( 0.00098  1  1 ) h=0 f=-1.952289586
+	best infeasible point : ( 7e-05  2  1 ) h=0.009677419355 f=-0.2626926143
+	poll center           : ( 0.00098  1  1 )
+	mesh size             : ( 1e-05  1 10 )
+	poll size             : ( 2e-05  2 20 )
+	sec. poll center      : ( 7e-05  2  1 )
+	mesh index            : -1
+	h_max                 : 0.009677419355
+
+iteration 13, begin of Mads::search()
+
+iteration 13, end of Mads::search()
+
+iteration 13, begin of Mads::poll()
+
+	poll center: ( 0.00098  1  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : (  0  0 20 ) type=Ortho-MADS 2n
+		dir 1 : (  0  0 -20 ) type=Ortho-MADS 2n
+		dir 2 : (  0  2  0 ) type=Ortho-MADS 2n
+		dir 3 : (  0 -2  0 ) type=Ortho-MADS 2n
+		dir 4 : ( 2e-05  0  0 ) type=Ortho-MADS 2n
+		dir 5 : ( -2e-05  0  0 ) type=Ortho-MADS 2n
+
+	point #136 (dir 1) has been snapped to bounds
+	point #136 is flushed (||dir||==0)
+
+	point #138 (dir 3) has been snapped to bounds
+
+	re-ordered list of 5 poll trial points:
+		point #140 : (0.00096  1  1) (dir 5)
+		point #138 : (0.00098 1e-08  1) (dir 3)
+		point #135 : (0.00098  1 21) (dir 0)
+		point #137 : (0.00098  3  1) (dir 2)
+		point #139 : (0.001  1  1) (dir 4)
+
+
+	secondary poll center: ( 7e-05  2  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 6 : ( 1e-05  1 10 ) type=Ortho-MADS 2
+		dir 7 : ( -1e-05 -1 -10 ) type=Ortho-MADS 2
+
+	point #142 (dir 7) has been snapped to bounds
+
+	re-ordered list of 7 poll trial points:
+		point #142 : (6e-05  1  1) (dir 7)
+		point #141 : (8e-05  3 11) (dir 6)
+		point #140 : (0.00096  1  1) (dir 5)
+		point #138 : (0.00098 1e-08  1) (dir 3)
+		point #135 : (0.00098  1 21) (dir 0)
+		point #137 : (0.00098  3  1) (dir 2)
+		point #139 : (0.001  1  1) (dir 4)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/7: point #142 ( 6e-05  1  1 )
+	direction  : ( -1e-05 -1  0 ) type=Ortho-MADS 2
+	mesh index : -1
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.142.input > ./nomad.0.142.output"
+
+	point #142 surrogate evaluation: h=0 f=0.3194521766
+
+	surrogate evaluation 2/7: point #141 ( 8e-05  3 11 )
+	direction  : ( 1e-05  1 10 ) type=Ortho-MADS 2
+	mesh index : -1
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.141.input > ./nomad.0.141.output"
+
+	point #141 surrogate evaluation: h=0.2516129032 f=4.524191671
+
+	surrogate evaluation 3/7: point #140 ( 0.00096  1  1 )
+	direction  : ( -2e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : -1
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.140.input > ./nomad.0.140.output"
+
+	point #140 surrogate evaluation: h=0 f=-0.7281526785
+
+	surrogate evaluation 4/7: point #138 ( 0.00098 1e-08  1 )
+	direction  : (  0 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -1
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.138.input > ./nomad.0.138.output"
+
+	point #138 surrogate evaluation: h=1.414213562e+20 f=1e+20
+
+	surrogate evaluation 5/7: point #135 ( 0.00098  1 21 )
+	direction  : (  0  0 20 ) type=Ortho-MADS 2n
+	mesh index : -1
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.135.input > ./nomad.0.135.output"
+
+	point #135 surrogate evaluation: h=0.1870967742 f=2.524790932
+
+	surrogate evaluation 6/7: point #137 ( 0.00098  3  1 )
+	direction  : (  0  2  0 ) type=Ortho-MADS 2n
+	mesh index : -1
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.137.input > ./nomad.0.137.output"
+
+	point #137 surrogate evaluation: h=0.02580645161 f=-0.06427951946
+
+	surrogate evaluation 7/7: point #139 ( 0.001  1  1 )
+	direction  : ( 2e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : -1
+
+	cache hit: #139 --> #18
+
+	poll unsuccessful point #18
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	new poll point #143: (6e-05  1  1)
+
+	new poll point #144: (8e-05  3 11)
+
+	new poll point #145: (0.00096  1  1)
+
+	new poll point #146: (0.00098 1e-08  1)
+
+	new poll point #147: (0.00098  1 21)
+
+	new poll point #148: (0.00098  3  1)
+
+	poll point #18: (0.001  1  1)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/7: point #18 ( 0.001  1  1 )
+	direction  : ( 2e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : -1
+
+	cache hit: #18 --> #18
+
+	poll unsuccessful point #18
+
+	evaluation 2/7: point #145 ( 0.00096  1  1 )
+	direction  : ( -2e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : -1
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.145.input > ./nomad.0.145.output"
+
+	poll unsuccessful point #145
+
+	evaluation 3/7: point #143 ( 6e-05  1  1 )
+	direction  : ( -1e-05 -1  0 ) type=Ortho-MADS 2
+	mesh index : -1
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.143.input > ./nomad.0.143.output"
+
+	poll unsuccessful point #143
+
+	evaluation 4/7: point #148 ( 0.00098  3  1 )
+	direction  : (  0  2  0 ) type=Ortho-MADS 2n
+	mesh index : -1
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.148.input > ./nomad.0.148.output"
+
+	poll unsuccessful point #148
+
+	evaluation 5/7: point #147 ( 0.00098  1 21 )
+	direction  : (  0  0 20 ) type=Ortho-MADS 2n
+	mesh index : -1
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.147.input > ./nomad.0.147.output"
+
+	poll unsuccessful point #147
+
+	evaluation 6/7: point #144 ( 8e-05  3 11 )
+	direction  : ( 1e-05  1 10 ) type=Ortho-MADS 2
+	mesh index : -1
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.144.input > ./nomad.0.144.output"
+
+	poll unsuccessful point #144
+
+	evaluation 7/7: point #146 ( 0.00098 1e-08  1 )
+	direction  : (  0 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : -1
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.146.input > ./nomad.0.146.output"
+
+	poll unsuccessful point #146
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 13, end of Mads::poll()
+
+Mesh update:
+	previous mesh index: -1
+	new mesh index     : 0
+
+
+end of iteration 13
+
+	terminate MADS           : no
+	iteration status         : unsuccessful
+	new feasible incumbent   : NULL
+	new infeasible incumbent : NULL
+
+iteration 14:
+--------------
+	black-box evaluations : 55
+	best feasible point   : ( 0.00098  1  1 ) h=0 f=-1.952289586
+	best infeasible point : ( 7e-05  2  1 ) h=0.009677419355 f=-0.2626926143
+	poll center           : ( 0.00098  1  1 )
+	mesh size             : ( 1e-05  1 10 )
+	poll size             : ( 1e-05  1 10 )
+	sec. poll center      : ( 7e-05  2  1 )
+	mesh index            : 0
+	h_max                 : 0.009677419355
+
+iteration 14, begin of Mads::search()
+
+iteration 14, end of Mads::search()
+
+iteration 14, begin of Mads::poll()
+
+	poll center: ( 0.00098  1  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : ( 1e-05  0  0 ) type=Ortho-MADS 2n
+		dir 1 : ( -1e-05  0  0 ) type=Ortho-MADS 2n
+		dir 2 : (  0  1  0 ) type=Ortho-MADS 2n
+		dir 3 : (  0 -1  0 ) type=Ortho-MADS 2n
+		dir 4 : (  0  0 -10 ) type=Ortho-MADS 2n
+		dir 5 : (  0  0 10 ) type=Ortho-MADS 2n
+
+	point #152 (dir 3) has been snapped to bounds
+
+	point #153 (dir 4) has been snapped to bounds
+	point #153 is flushed (||dir||==0)
+
+	re-ordered list of 5 poll trial points:
+		point #150 : (0.00097  1  1) (dir 1)
+		point #152 : (0.00098 1e-08  1) (dir 3)
+		point #154 : (0.00098  1 11) (dir 5)
+		point #151 : (0.00098  2  1) (dir 2)
+		point #149 : (0.00099  1  1) (dir 0)
+
+
+	secondary poll center: ( 7e-05  2  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 6 : (  0  0 -10 ) type=Ortho-MADS 2
+		dir 7 : (  0  0 10 ) type=Ortho-MADS 2
+
+	point #155 (dir 6) has been snapped to bounds
+	point #155 is flushed (||dir||==0)
+
+	re-ordered list of 6 poll trial points:
+		point #156 : (7e-05  2 11) (dir 7)
+		point #150 : (0.00097  1  1) (dir 1)
+		point #152 : (0.00098 1e-08  1) (dir 3)
+		point #154 : (0.00098  1 11) (dir 5)
+		point #151 : (0.00098  2  1) (dir 2)
+		point #149 : (0.00099  1  1) (dir 0)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/6: point #156 ( 7e-05  2 11 )
+	direction  : (  0  0 10 ) type=Ortho-MADS 2
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.156.input > ./nomad.0.156.output"
+
+	point #156 surrogate evaluation: h=0.1870967742 f=4.044946612
+
+	surrogate evaluation 2/6: point #150 ( 0.00097  1  1 )
+	direction  : ( -1e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.150.input > ./nomad.0.150.output"
+
+	point #150 surrogate evaluation: h=0 f=-0.7281526785
+
+	surrogate evaluation 3/6: point #152 ( 0.00098 1e-08  1 )
+	direction  : (  0 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	cache hit: #152 --> #146
+
+	poll unsuccessful point #146
+
+	surrogate evaluation 4/6: point #154 ( 0.00098  1 11 )
+	direction  : (  0  0 10 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.154.input > ./nomad.0.154.output"
+
+	point #154 surrogate evaluation: h=0.1548387097 f=3.102977859
+
+	surrogate evaluation 5/6: point #151 ( 0.00098  2  1 )
+	direction  : (  0  1  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.151.input > ./nomad.0.151.output"
+
+	point #151 surrogate evaluation: h=0 f=-1.843339227
+
+	surrogate evaluation 6/6: point #149 ( 0.00099  1  1 )
+	direction  : ( 1e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.149.input > ./nomad.0.149.output"
+
+	point #149 surrogate evaluation: h=0 f=-1.059248703
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	new poll point #157: (7e-05  2 11)
+
+	new poll point #158: (0.00097  1  1)
+
+	poll point #146: (0.00098 1e-08  1)
+
+	new poll point #159: (0.00098  1 11)
+
+	new poll point #160: (0.00098  2  1)
+
+	new poll point #161: (0.00099  1  1)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/6: point #146 ( 0.00098 1e-08  1 )
+	direction  : (  0 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	cache hit: #146 --> #146
+
+	poll unsuccessful point #146
+
+	evaluation 2/6: point #160 ( 0.00098  2  1 )
+	direction  : (  0  1  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.160.input > ./nomad.0.160.output"
+
+	poll unsuccessful point #160
+
+	evaluation 3/6: point #161 ( 0.00099  1  1 )
+	direction  : ( 1e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.161.input > ./nomad.0.161.output"
+
+	poll unsuccessful point #161
+
+	evaluation 4/6: point #158 ( 0.00097  1  1 )
+	direction  : ( -1e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.158.input > ./nomad.0.158.output"
+
+	poll unsuccessful point #158
+
+	evaluation 5/6: point #159 ( 0.00098  1 11 )
+	direction  : (  0  0 10 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.159.input > ./nomad.0.159.output"
+
+	poll unsuccessful point #159
+
+	evaluation 6/6: point #157 ( 7e-05  2 11 )
+	direction  : (  0  0 10 ) type=Ortho-MADS 2
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.157.input > ./nomad.0.157.output"
+
+	poll unsuccessful point #157
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 14, end of Mads::poll()
+
+Mesh update:
+	previous mesh index: 0
+	new mesh index     : 1
+
+
+end of iteration 14
+
+	terminate MADS           : no
+	iteration status         : unsuccessful
+	new feasible incumbent   : NULL
+	new infeasible incumbent : NULL
+
+iteration 15:
+--------------
+	black-box evaluations : 60
+	best feasible point   : ( 0.00098  1  1 ) h=0 f=-1.952289586
+	best infeasible point : ( 7e-05  2  1 ) h=0.009677419355 f=-0.2626926143
+	poll center           : ( 0.00098  1  1 )
+	mesh size             : ( 2.5e-06 0.25 2.5 )
+	poll size             : ( 5e-06 0.5  5 )
+	sec. poll center      : ( 7e-05  2  1 )
+	mesh index            : 1
+	h_max                 : 0.009677419355
+
+iteration 15, begin of Mads::search()
+
+iteration 15, end of Mads::search()
+
+iteration 15, begin of Mads::poll()
+
+	poll center: ( 0.00098  1  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : ( 5e-06  0  0 ) type=Ortho-MADS 2n
+		dir 1 : ( -5e-06  0  0 ) type=Ortho-MADS 2n
+		dir 2 : (  0  0 -5 ) type=Ortho-MADS 2n
+		dir 3 : (  0  0  5 ) type=Ortho-MADS 2n
+		dir 4 : (  0 -0.5  0 ) type=Ortho-MADS 2n
+		dir 5 : (  0 0.5  0 ) type=Ortho-MADS 2n
+
+	point #164 (dir 2) has been snapped to bounds
+	point #164 is flushed (||dir||==0)
+
+	re-ordered list of 5 poll trial points:
+		point #163 : (0.000975  1  1) (dir 1)
+		point #166 : (0.00098 0.5  1) (dir 4)
+		point #165 : (0.00098  1  6) (dir 3)
+		point #167 : (0.00098 1.5  1) (dir 5)
+		point #162 : (0.000985  1  1) (dir 0)
+
+
+	secondary poll center: ( 7e-05  2  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 6 : ( -2.5e-06 -0.25 -2.5 ) type=Ortho-MADS 2
+		dir 7 : ( 2.5e-06 0.25 2.5 ) type=Ortho-MADS 2
+
+	point #168 (dir 6) has been snapped to bounds
+
+	re-ordered list of 7 poll trial points:
+		point #168 : (6.75e-05 1.75  1) (dir 6)
+		point #169 : (7.25e-05 2.25 3.5) (dir 7)
+		point #163 : (0.000975  1  1) (dir 1)
+		point #166 : (0.00098 0.5  1) (dir 4)
+		point #165 : (0.00098  1  6) (dir 3)
+		point #167 : (0.00098 1.5  1) (dir 5)
+		point #162 : (0.000985  1  1) (dir 0)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/7: point #168 ( 6.75e-05 1.75  1 )
+	direction  : ( -2.5e-06 -0.25  0 ) type=Ortho-MADS 2
+	mesh index : 1
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.168.input > ./nomad.0.168.output"
+
+	point #168 surrogate evaluation: h=0.05806451613 f=-2.130945061
+
+	surrogate evaluation 2/7: point #169 ( 7.25e-05 2.25 3.5 )
+	direction  : ( 2.5e-06 0.25 2.5 ) type=Ortho-MADS 2
+	mesh index : 1
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.169.input > ./nomad.0.169.output"
+
+	point #169 surrogate evaluation: h=0.1870967742 f=2.461998261
+
+	surrogate evaluation 3/7: point #163 ( 0.000975  1  1 )
+	direction  : ( -5e-06  0  0 ) type=Ortho-MADS 2n
+	mesh index : 1
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.163.input > ./nomad.0.163.output"
+
+	point #163 surrogate evaluation: h=0 f=-0.7450497599
+
+	surrogate evaluation 4/7: point #166 ( 0.00098 0.5  1 )
+	direction  : (  0 -0.5  0 ) type=Ortho-MADS 2n
+	mesh index : 1
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.166.input > ./nomad.0.166.output"
+
+	point #166 surrogate evaluation: h=0 f=-2.553814214
+
+	surrogate evaluation 5/7: point #165 ( 0.00098  1  6 )
+	direction  : (  0  0  5 ) type=Ortho-MADS 2n
+	mesh index : 1
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.165.input > ./nomad.0.165.output"
+
+	point #165 surrogate evaluation: h=0.2193548387 f=2.315253548
+
+	surrogate evaluation 6/7: point #167 ( 0.00098 1.5  1 )
+	direction  : (  0 0.5  0 ) type=Ortho-MADS 2n
+	mesh index : 1
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.167.input > ./nomad.0.167.output"
+
+	point #167 surrogate evaluation: h=0 f=-0.6792479173
+
+	surrogate evaluation 7/7: point #162 ( 0.000985  1  1 )
+	direction  : ( 5e-06  0  0 ) type=Ortho-MADS 2n
+	mesh index : 1
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.162.input > ./nomad.0.162.output"
+
+	point #162 surrogate evaluation: h=0 f=-1.059248703
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	new poll point #170: (6.75e-05 1.75  1)
+
+	new poll point #171: (7.25e-05 2.25 3.5)
+
+	new poll point #172: (0.000975  1  1)
+
+	new poll point #173: (0.00098 0.5  1)
+
+	new poll point #174: (0.00098  1  6)
+
+	new poll point #175: (0.00098 1.5  1)
+
+	new poll point #176: (0.000985  1  1)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/7: point #173 ( 0.00098 0.5  1 )
+	direction  : (  0 -0.5  0 ) type=Ortho-MADS 2n
+	mesh index : 1
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.173.input > ./nomad.0.173.output"
+
+	poll unsuccessful point #173
+
+	evaluation 2/7: point #176 ( 0.000985  1  1 )
+	direction  : ( 5e-06  0  0 ) type=Ortho-MADS 2n
+	mesh index : 1
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.176.input > ./nomad.0.176.output"
+
+	poll dominating point: #176 X=( 0.000985  1  1 ) F(X)=[ -2.058353592  0 -0.08709677419 ] h=0 f=-2.058353592
+
+	opportunistic strategy: terminate evaluations
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 15, end of Mads::poll()
+
+Mesh update:
+	previous mesh index: 1
+	new mesh index     : 0
+
+
+end of iteration 15
+
+	terminate MADS           : no
+	iteration status         : dominating
+	new feasible incumbent   : #176 X=( 0.000985  1  1 ) F(X)=[ -2.058353592  0 -0.08709677419 ] h=0 f=-2.058353592
+	new infeasible incumbent : NULL
+
+iteration 16:
+--------------
+	black-box evaluations : 62
+	best feasible point   : ( 0.000985  1  1 ) h=0 f=-2.058353592
+	best infeasible point : ( 7e-05  2  1 ) h=0.009677419355 f=-0.2626926143
+	poll center           : ( 0.000985  1  1 )
+	mesh size             : ( 1e-05  1 10 )
+	poll size             : ( 1e-05  1 10 )
+	sec. poll center      : ( 7e-05  2  1 )
+	mesh index            : 0
+	h_max                 : 0.009677419355
+
+iteration 16, begin of Mads::search()
+
+	speculative search
+	speculative search point #177: (0.001  1  1)
+
+begin of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+	evaluation 1/1: point #177 ( 0.001  1  1 )
+	direction  : ( 2e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	cache hit: #177 --> #18
+
+	MADS speculative search unsuccessful point #18
+
+end of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+iteration 16, end of Mads::search()
+
+iteration 16, begin of Mads::poll()
+
+	poll center: ( 0.000985  1  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : ( 1e-05  0  0 ) type=Ortho-MADS 2n
+		dir 1 : ( -1e-05  0  0 ) type=Ortho-MADS 2n
+		dir 2 : (  0  1  0 ) type=Ortho-MADS 2n
+		dir 3 : (  0 -1  0 ) type=Ortho-MADS 2n
+		dir 4 : (  0  0 -10 ) type=Ortho-MADS 2n
+		dir 5 : (  0  0 10 ) type=Ortho-MADS 2n
+
+	point #181 (dir 3) has been snapped to bounds
+
+	point #182 (dir 4) has been snapped to bounds
+	point #182 is flushed (||dir||==0)
+
+	re-ordered list of 5 poll trial points:
+		point #178 : (0.000995  1  1) (dir 0)
+		point #181 : (0.000985 1e-08  1) (dir 3)
+		point #183 : (0.000985  1 11) (dir 5)
+		point #180 : (0.000985  2  1) (dir 2)
+		point #179 : (0.000975  1  1) (dir 1)
+
+
+	secondary poll center: ( 7e-05  2  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 6 : (  0  0 -10 ) type=Ortho-MADS 2
+		dir 7 : (  0  0 10 ) type=Ortho-MADS 2
+
+	point #184 (dir 6) has been snapped to bounds
+	point #184 is flushed (||dir||==0)
+
+	re-ordered list of 6 poll trial points:
+		point #185 : (7e-05  2 11) (dir 7)
+		point #178 : (0.000995  1  1) (dir 0)
+		point #181 : (0.000985 1e-08  1) (dir 3)
+		point #183 : (0.000985  1 11) (dir 5)
+		point #180 : (0.000985  2  1) (dir 2)
+		point #179 : (0.000975  1  1) (dir 1)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/6: point #185 ( 7e-05  2 11 )
+	direction  : (  0  0 10 ) type=Ortho-MADS 2
+	mesh index : 0
+
+	cache hit: #185 --> #157
+
+	poll unsuccessful point #157
+
+	surrogate evaluation 2/6: point #178 ( 0.000995  1  1 )
+	direction  : ( 1e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.178.input > ./nomad.0.178.output"
+
+	point #178 surrogate evaluation: h=0 f=-1.068957441
+
+	surrogate evaluation 3/6: point #181 ( 0.000985 1e-08  1 )
+	direction  : (  0 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.181.input > ./nomad.0.181.output"
+
+	point #181 surrogate evaluation: h=1.414213562e+20 f=1e+20
+
+	surrogate evaluation 4/6: point #183 ( 0.000985  1 11 )
+	direction  : (  0  0 10 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.183.input > ./nomad.0.183.output"
+
+	point #183 surrogate evaluation: h=0.1548387097 f=3.102977859
+
+	surrogate evaluation 5/6: point #180 ( 0.000985  2  1 )
+	direction  : (  0  1  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.180.input > ./nomad.0.180.output"
+
+	point #180 surrogate evaluation: h=0 f=-1.843339227
+
+	surrogate evaluation 6/6: point #179 ( 0.000975  1  1 )
+	direction  : ( -1e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	surrogate cache hit: #179 --> #163
+
+	point #163 surrogate evaluation: h=0 f=-0.7450497599
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	poll point #157: (7e-05  2 11)
+
+	new poll point #186: (0.000995  1  1)
+
+	new poll point #187: (0.000985 1e-08  1)
+
+	new poll point #188: (0.000985  1 11)
+
+	new poll point #189: (0.000985  2  1)
+
+	new poll point #190: (0.000975  1  1)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/6: point #157 ( 7e-05  2 11 )
+	direction  : (  0  0 10 ) type=Ortho-MADS 2
+	mesh index : 0
+
+	cache hit: #157 --> #157
+
+	poll unsuccessful point #157
+
+	evaluation 2/6: point #189 ( 0.000985  2  1 )
+	direction  : (  0  1  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.189.input > ./nomad.0.189.output"
+
+	poll unsuccessful point #189
+
+	evaluation 3/6: point #186 ( 0.000995  1  1 )
+	direction  : ( 1e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.186.input > ./nomad.0.186.output"
+
+	poll unsuccessful point #186
+
+	evaluation 4/6: point #190 ( 0.000975  1  1 )
+	direction  : ( -1e-05  0  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.190.input > ./nomad.0.190.output"
+
+	poll unsuccessful point #190
+
+	evaluation 5/6: point #188 ( 0.000985  1 11 )
+	direction  : (  0  0 10 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.188.input > ./nomad.0.188.output"
+
+	poll unsuccessful point #188
+
+	evaluation 6/6: point #187 ( 0.000985 1e-08  1 )
+	direction  : (  0 -0.99999999  0 ) type=Ortho-MADS 2n
+	mesh index : 0
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.187.input > ./nomad.0.187.output"
+
+	poll unsuccessful point #187
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 16, end of Mads::poll()
+
+Mesh update:
+	previous mesh index: 0
+	new mesh index     : 1
+
+
+end of iteration 16
+
+	terminate MADS           : no
+	iteration status         : unsuccessful
+	new feasible incumbent   : NULL
+	new infeasible incumbent : NULL
+
+iteration 17:
+--------------
+	black-box evaluations : 67
+	best feasible point   : ( 0.000985  1  1 ) h=0 f=-2.058353592
+	best infeasible point : ( 7e-05  2  1 ) h=0.009677419355 f=-0.2626926143
+	poll center           : ( 0.000985  1  1 )
+	mesh size             : ( 2.5e-06 0.25 2.5 )
+	poll size             : ( 5e-06 0.5  5 )
+	sec. poll center      : ( 7e-05  2  1 )
+	mesh index            : 1
+	h_max                 : 0.009677419355
+
+iteration 17, begin of Mads::search()
+
+iteration 17, end of Mads::search()
+
+iteration 17, begin of Mads::poll()
+
+	poll center: ( 0.000985  1  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : ( 5e-06  0  0 ) type=Ortho-MADS 2n
+		dir 1 : ( -5e-06  0  0 ) type=Ortho-MADS 2n
+		dir 2 : (  0  0 -5 ) type=Ortho-MADS 2n
+		dir 3 : (  0  0  5 ) type=Ortho-MADS 2n
+		dir 4 : (  0 -0.5  0 ) type=Ortho-MADS 2n
+		dir 5 : (  0 0.5  0 ) type=Ortho-MADS 2n
+
+	point #193 (dir 2) has been snapped to bounds
+	point #193 is flushed (||dir||==0)
+
+	re-ordered list of 5 poll trial points:
+		point #192 : (0.00098  1  1) (dir 1)
+		point #195 : (0.000985 0.5  1) (dir 4)
+		point #194 : (0.000985  1  6) (dir 3)
+		point #196 : (0.000985 1.5  1) (dir 5)
+		point #191 : (0.00099  1  1) (dir 0)
+
+
+	secondary poll center: ( 7e-05  2  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 6 : ( -2.5e-06 -0.25 -2.5 ) type=Ortho-MADS 2
+		dir 7 : ( 2.5e-06 0.25 2.5 ) type=Ortho-MADS 2
+
+	point #197 (dir 6) has been snapped to bounds
+
+	re-ordered list of 7 poll trial points:
+		point #197 : (6.75e-05 1.75  1) (dir 6)
+		point #198 : (7.25e-05 2.25 3.5) (dir 7)
+		point #192 : (0.00098  1  1) (dir 1)
+		point #195 : (0.000985 0.5  1) (dir 4)
+		point #194 : (0.000985  1  6) (dir 3)
+		point #196 : (0.000985 1.5  1) (dir 5)
+		point #191 : (0.00099  1  1) (dir 0)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/7: point #197 ( 6.75e-05 1.75  1 )
+	direction  : ( -2.5e-06 -0.25  0 ) type=Ortho-MADS 2
+	mesh index : 1
+
+	surrogate cache hit: #197 --> #168
+
+	point #168 surrogate evaluation: h=0.05806451613 f=-2.130945061
+
+	surrogate evaluation 2/7: point #198 ( 7.25e-05 2.25 3.5 )
+	direction  : ( 2.5e-06 0.25 2.5 ) type=Ortho-MADS 2
+	mesh index : 1
+
+	surrogate cache hit: #198 --> #169
+
+	point #169 surrogate evaluation: h=0.1870967742 f=2.461998261
+
+	surrogate evaluation 3/7: point #192 ( 0.00098  1  1 )
+	direction  : ( -5e-06  0  0 ) type=Ortho-MADS 2n
+	mesh index : 1
+
+	cache hit: #192 --> #103
+
+	poll unsuccessful point #103
+
+	surrogate evaluation 4/7: point #195 ( 0.000985 0.5  1 )
+	direction  : (  0 -0.5  0 ) type=Ortho-MADS 2n
+	mesh index : 1
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.195.input > ./nomad.0.195.output"
+
+	point #195 surrogate evaluation: h=0 f=-2.553814214
+
+	surrogate evaluation 5/7: point #194 ( 0.000985  1  6 )
+	direction  : (  0  0  5 ) type=Ortho-MADS 2n
+	mesh index : 1
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.194.input > ./nomad.0.194.output"
+
+	point #194 surrogate evaluation: h=0.2193548387 f=2.315253548
+
+	surrogate evaluation 6/7: point #196 ( 0.000985 1.5  1 )
+	direction  : (  0 0.5  0 ) type=Ortho-MADS 2n
+	mesh index : 1
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.196.input > ./nomad.0.196.output"
+
+	point #196 surrogate evaluation: h=0 f=-0.6792479173
+
+	surrogate evaluation 7/7: point #191 ( 0.00099  1  1 )
+	direction  : ( 5e-06  0  0 ) type=Ortho-MADS 2n
+	mesh index : 1
+
+	cache hit: #191 --> #161
+
+	poll unsuccessful point #161
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	new poll point #199: (6.75e-05 1.75  1)
+
+	new poll point #200: (7.25e-05 2.25 3.5)
+
+	poll point #103: (0.00098  1  1)
+
+	new poll point #201: (0.000985 0.5  1)
+
+	new poll point #202: (0.000985  1  6)
+
+	new poll point #203: (0.000985 1.5  1)
+
+	poll point #161: (0.00099  1  1)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/7: point #103 ( 0.00098  1  1 )
+	direction  : ( -5e-06  0  0 ) type=Ortho-MADS 2n
+	mesh index : 1
+
+	cache hit: #103 --> #103
+
+	poll unsuccessful point #103
+
+	evaluation 2/7: point #161 ( 0.00099  1  1 )
+	direction  : ( 5e-06  0  0 ) type=Ortho-MADS 2n
+	mesh index : 1
+
+	cache hit: #161 --> #161
+
+	poll unsuccessful point #161
+
+	evaluation 3/7: point #201 ( 0.000985 0.5  1 )
+	direction  : (  0 -0.5  0 ) type=Ortho-MADS 2n
+	mesh index : 1
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.201.input > ./nomad.0.201.output"
+
+	poll unsuccessful point #201
+
+	evaluation 4/7: point #203 ( 0.000985 1.5  1 )
+	direction  : (  0 0.5  0 ) type=Ortho-MADS 2n
+	mesh index : 1
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.203.input > ./nomad.0.203.output"
+
+	poll unsuccessful point #203
+
+	evaluation 5/7: point #199 ( 6.75e-05 1.75  1 )
+	direction  : ( -2.5e-06 -0.25  0 ) type=Ortho-MADS 2
+	mesh index : 1
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.199.input > ./nomad.0.199.output"
+
+	poll unsuccessful point #199
+
+	evaluation 6/7: point #200 ( 7.25e-05 2.25 3.5 )
+	direction  : ( 2.5e-06 0.25 2.5 ) type=Ortho-MADS 2
+	mesh index : 1
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.200.input > ./nomad.0.200.output"
+
+	poll unsuccessful point #200
+
+	evaluation 7/7: point #202 ( 0.000985  1  6 )
+	direction  : (  0  0  5 ) type=Ortho-MADS 2n
+	mesh index : 1
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.202.input > ./nomad.0.202.output"
+
+	poll unsuccessful point #202
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 17, end of Mads::poll()
+
+Mesh update:
+	previous mesh index: 1
+	new mesh index     : 2
+
+
+end of iteration 17
+
+	terminate MADS           : no
+	iteration status         : unsuccessful
+	new feasible incumbent   : NULL
+	new infeasible incumbent : NULL
+
+iteration 18:
+--------------
+	black-box evaluations : 72
+	best feasible point   : ( 0.000985  1  1 ) h=0 f=-2.058353592
+	best infeasible point : ( 7e-05  2  1 ) h=0.009677419355 f=-0.2626926143
+	poll center           : ( 0.000985  1  1 )
+	mesh size             : ( 6.25e-07 0.0625 0.625 )
+	poll size             : ( 2.5e-06 0.25 2.5 )
+	sec. poll center      : ( 7e-05  2  1 )
+	mesh index            : 2
+	h_max                 : 0.009677419355
+
+iteration 18, begin of Mads::search()
+
+iteration 18, end of Mads::search()
+
+iteration 18, begin of Mads::poll()
+
+	poll center: ( 0.000985  1  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : ( -2.5e-06  0  0 ) type=Ortho-MADS 2n
+		dir 1 : ( 2.5e-06  0  0 ) type=Ortho-MADS 2n
+		dir 2 : (  0 0.25  0 ) type=Ortho-MADS 2n
+		dir 3 : (  0 -0.25  0 ) type=Ortho-MADS 2n
+		dir 4 : (  0  0 2.5 ) type=Ortho-MADS 2n
+		dir 5 : (  0  0 -2.5 ) type=Ortho-MADS 2n
+
+	point #209 (dir 5) has been snapped to bounds
+	point #209 is flushed (||dir||==0)
+
+	re-ordered list of 5 poll trial points:
+		point #204 : (0.0009825  1  1) (dir 0)
+		point #207 : (0.000985 0.75  1) (dir 3)
+		point #208 : (0.000985  1 3.5) (dir 4)
+		point #206 : (0.000985 1.25  1) (dir 2)
+		point #205 : (0.0009875  1  1) (dir 1)
+
+
+	secondary poll center: ( 7e-05  2  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 6 : ( 1.875e-06 0.0625 -0.625 ) type=Ortho-MADS 2
+		dir 7 : ( -1.875e-06 -0.0625 0.625 ) type=Ortho-MADS 2
+
+	point #210 (dir 6) has been snapped to bounds
+
+	re-ordered list of 7 poll trial points:
+		point #211 : (6.8125e-05 1.9375 1.625) (dir 7)
+		point #210 : (7.1875e-05 2.0625  1) (dir 6)
+		point #204 : (0.0009825  1  1) (dir 0)
+		point #207 : (0.000985 0.75  1) (dir 3)
+		point #208 : (0.000985  1 3.5) (dir 4)
+		point #206 : (0.000985 1.25  1) (dir 2)
+		point #205 : (0.0009875  1  1) (dir 1)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/7: point #211 ( 6.8125e-05 1.9375 1.625 )
+	direction  : ( -1.875e-06 -0.0625 0.625 ) type=Ortho-MADS 2
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.211.input > ./nomad.0.211.output"
+
+	point #211 surrogate evaluation: h=0.09032258065 f=0.3535102336
+
+	surrogate evaluation 2/7: point #210 ( 7.1875e-05 2.0625  1 )
+	direction  : ( 1.875e-06 0.0625  0 ) type=Ortho-MADS 2
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.210.input > ./nomad.0.210.output"
+
+	point #210 surrogate evaluation: h=0 f=-1.113394891
+
+	surrogate evaluation 3/7: point #204 ( 0.0009825  1  1 )
+	direction  : ( -2.5e-06  0  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.204.input > ./nomad.0.204.output"
+
+	point #204 surrogate evaluation: h=0 f=-1.059248703
+
+	surrogate evaluation 4/7: point #207 ( 0.000985 0.75  1 )
+	direction  : (  0 -0.25  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.207.input > ./nomad.0.207.output"
+
+	point #207 surrogate evaluation: h=0.09032258065 f=-2.259115666
+
+	surrogate evaluation 5/7: point #208 ( 0.000985  1 3.5 )
+	direction  : (  0  0 2.5 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.208.input > ./nomad.0.208.output"
+
+	point #208 surrogate evaluation: h=0.1870967742 f=0.918273577
+
+	surrogate evaluation 6/7: point #206 ( 0.000985 1.25  1 )
+	direction  : (  0 0.25  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.206.input > ./nomad.0.206.output"
+
+	point #206 surrogate evaluation: h=0 f=-0.9090044503
+
+	surrogate evaluation 7/7: point #205 ( 0.0009875  1  1 )
+	direction  : ( 2.5e-06  0  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.205.input > ./nomad.0.205.output"
+
+	point #205 surrogate evaluation: h=0 f=-1.059248703
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	new poll point #212: (6.8125e-05 1.9375 1.625)
+
+	new poll point #213: (7.1875e-05 2.0625  1)
+
+	new poll point #214: (0.0009825  1  1)
+
+	new poll point #215: (0.000985 0.75  1)
+
+	new poll point #216: (0.000985  1 3.5)
+
+	new poll point #217: (0.000985 1.25  1)
+
+	new poll point #218: (0.0009875  1  1)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/7: point #213 ( 7.1875e-05 2.0625  1 )
+	direction  : ( 1.875e-06 0.0625  0 ) type=Ortho-MADS 2
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.213.input > ./nomad.0.213.output"
+
+	poll unsuccessful point #213
+
+	evaluation 2/7: point #214 ( 0.0009825  1  1 )
+	direction  : ( -2.5e-06  0  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.214.input > ./nomad.0.214.output"
+
+	poll unsuccessful point #214
+
+	evaluation 3/7: point #218 ( 0.0009875  1  1 )
+	direction  : ( 2.5e-06  0  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.218.input > ./nomad.0.218.output"
+
+	poll unsuccessful point #218
+
+	evaluation 4/7: point #217 ( 0.000985 1.25  1 )
+	direction  : (  0 0.25  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.217.input > ./nomad.0.217.output"
+
+	poll unsuccessful point #217
+
+	evaluation 5/7: point #215 ( 0.000985 0.75  1 )
+	direction  : (  0 -0.25  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.215.input > ./nomad.0.215.output"
+
+	poll unsuccessful point #215
+
+	evaluation 6/7: point #212 ( 6.8125e-05 1.9375 1.625 )
+	direction  : ( -1.875e-06 -0.0625 0.625 ) type=Ortho-MADS 2
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.212.input > ./nomad.0.212.output"
+
+	poll unsuccessful point #212
+
+	evaluation 7/7: point #216 ( 0.000985  1 3.5 )
+	direction  : (  0  0 2.5 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.216.input > ./nomad.0.216.output"
+
+	poll unsuccessful point #216
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 18, end of Mads::poll()
+
+Mesh update:
+	previous mesh index: 2
+	new mesh index     : 3
+
+
+end of iteration 18
+
+	terminate MADS           : no
+	iteration status         : unsuccessful
+	new feasible incumbent   : NULL
+	new infeasible incumbent : NULL
+
+iteration 19:
+--------------
+	black-box evaluations : 79
+	best feasible point   : ( 0.000985  1  1 ) h=0 f=-2.058353592
+	best infeasible point : ( 7e-05  2  1 ) h=0.009677419355 f=-0.2626926143
+	poll center           : ( 0.000985  1  1 )
+	mesh size             : ( 1.5625e-07 0.015625 0.15625 )
+	poll size             : ( 1.25e-06 0.125 1.25 )
+	sec. poll center      : ( 7e-05  2  1 )
+	mesh index            : 3
+	h_max                 : 0.009677419355
+
+iteration 19, begin of Mads::search()
+
+iteration 19, end of Mads::search()
+
+iteration 19, begin of Mads::poll()
+
+	poll center: ( 0.000985  1  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : ( -3.125e-07 0.0625 0.625 ) type=Ortho-MADS 2n
+		dir 1 : ( 3.125e-07 -0.0625 -0.625 ) type=Ortho-MADS 2n
+		dir 2 : ( 6.25e-07 0.0625 -0.3125 ) type=Ortho-MADS 2n
+		dir 3 : ( -6.25e-07 -0.0625 0.3125 ) type=Ortho-MADS 2n
+		dir 4 : ( 6.25e-07 -0.03125 0.625 ) type=Ortho-MADS 2n
+		dir 5 : ( -6.25e-07 0.03125 -0.625 ) type=Ortho-MADS 2n
+
+	point #220 (dir 1) has been snapped to bounds
+
+	point #221 (dir 2) has been snapped to bounds
+
+	point #224 (dir 5) has been snapped to bounds
+
+	re-ordered list of 6 poll trial points:
+		point #222 : (0.000984375 0.9375 1.3125) (dir 3)
+		point #224 : (0.000984375 1.03125  1) (dir 5)
+		point #219 : (0.0009846875 1.0625 1.625) (dir 0)
+		point #220 : (0.0009853125 0.9375  1) (dir 1)
+		point #223 : (0.000985625 0.96875 1.625) (dir 4)
+		point #221 : (0.000985625 1.0625  1) (dir 2)
+
+
+	secondary poll center: ( 7e-05  2  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 6 : ( -7.8125e-07 0.078125 0.3125 ) type=Ortho-MADS 2
+		dir 7 : ( 7.8125e-07 -0.078125 -0.3125 ) type=Ortho-MADS 2
+
+	point #226 (dir 7) has been snapped to bounds
+
+	re-ordered list of 8 poll trial points:
+		point #225 : (6.921875e-05 2.078125 1.3125) (dir 6)
+		point #226 : (7.078125e-05 1.921875  1) (dir 7)
+		point #222 : (0.000984375 0.9375 1.3125) (dir 3)
+		point #224 : (0.000984375 1.03125  1) (dir 5)
+		point #219 : (0.0009846875 1.0625 1.625) (dir 0)
+		point #220 : (0.0009853125 0.9375  1) (dir 1)
+		point #223 : (0.000985625 0.96875 1.625) (dir 4)
+		point #221 : (0.000985625 1.0625  1) (dir 2)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/8: point #225 ( 6.921875e-05 2.078125 1.3125 )
+	direction  : ( -7.8125e-07 0.078125 0.3125 ) type=Ortho-MADS 2
+	mesh index : 3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.225.input > ./nomad.0.225.output"
+
+	point #225 surrogate evaluation: h=0.1225806452 f=-0.461737228
+
+	surrogate evaluation 2/8: point #226 ( 7.078125e-05 1.921875  1 )
+	direction  : ( 7.8125e-07 -0.078125  0 ) type=Ortho-MADS 2
+	mesh index : 3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.226.input > ./nomad.0.226.output"
+
+	point #226 surrogate evaluation: h=0 f=-0.3777889342
+
+	surrogate evaluation 3/8: point #222 ( 0.000984375 0.9375 1.3125 )
+	direction  : ( -6.25e-07 -0.0625 0.3125 ) type=Ortho-MADS 2n
+	mesh index : 3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.222.input > ./nomad.0.222.output"
+
+	point #222 surrogate evaluation: h=0.1548387097 f=-0.05638139744
+
+	surrogate evaluation 4/8: point #224 ( 0.000984375 1.03125  1 )
+	direction  : ( -6.25e-07 0.03125  0 ) type=Ortho-MADS 2n
+	mesh index : 3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.224.input > ./nomad.0.224.output"
+
+	point #224 surrogate evaluation: h=0 f=-0.7505609931
+
+	surrogate evaluation 5/8: point #219 ( 0.0009846875 1.0625 1.625 )
+	direction  : ( -3.125e-07 0.0625 0.625 ) type=Ortho-MADS 2n
+	mesh index : 3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.219.input > ./nomad.0.219.output"
+
+	point #219 surrogate evaluation: h=0.05806451613 f=0.01815372395
+
+	surrogate evaluation 6/8: point #220 ( 0.0009853125 0.9375  1 )
+	direction  : ( 3.125e-07 -0.0625  0 ) type=Ortho-MADS 2n
+	mesh index : 3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.220.input > ./nomad.0.220.output"
+
+	point #220 surrogate evaluation: h=0.2193548387 f=-2.195159409
+
+	surrogate evaluation 7/8: point #223 ( 0.000985625 0.96875 1.625 )
+	direction  : ( 6.25e-07 -0.03125 0.625 ) type=Ortho-MADS 2n
+	mesh index : 3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.223.input > ./nomad.0.223.output"
+
+	point #223 surrogate evaluation: h=0.1548387097 f=-0.08067041216
+
+	surrogate evaluation 8/8: point #221 ( 0.000985625 1.0625  1 )
+	direction  : ( 6.25e-07 0.0625  0 ) type=Ortho-MADS 2n
+	mesh index : 3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.221.input > ./nomad.0.221.output"
+
+	point #221 surrogate evaluation: h=0 f=-1.490607493
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	new poll point #227: (6.921875e-05 2.078125 1.3125)
+
+	new poll point #228: (7.078125e-05 1.921875  1)
+
+	new poll point #229: (0.000984375 0.9375 1.3125)
+
+	new poll point #230: (0.000984375 1.03125  1)
+
+	new poll point #231: (0.0009846875 1.0625 1.625)
+
+	new poll point #232: (0.0009853125 0.9375  1)
+
+	new poll point #233: (0.000985625 0.96875 1.625)
+
+	new poll point #234: (0.000985625 1.0625  1)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/8: point #234 ( 0.000985625 1.0625  1 )
+	direction  : ( 6.25e-07 0.0625  0 ) type=Ortho-MADS 2n
+	mesh index : 3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.234.input > ./nomad.0.234.output"
+
+	poll dominating point: #234 X=( 0.000985625 1.0625  1 ) F(X)=[ -2.954109266  0 -0.02258064516 ] h=0 f=-2.954109266
+
+	opportunistic strategy: terminate evaluations
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 19, end of Mads::poll()
+
+Mesh update:
+	previous mesh index: 3
+	new mesh index     : 2
+
+
+end of iteration 19
+
+	terminate MADS           : no
+	iteration status         : dominating
+	new feasible incumbent   : #234 X=( 0.000985625 1.0625  1 ) F(X)=[ -2.954109266  0 -0.02258064516 ] h=0 f=-2.954109266
+	new infeasible incumbent : NULL
+
+iteration 20:
+--------------
+	black-box evaluations : 80
+	best feasible point   : ( 0.000985625 1.0625  1 ) h=0 f=-2.954109266
+	best infeasible point : ( 7e-05  2  1 ) h=0.009677419355 f=-0.2626926143
+	poll center           : ( 0.000985625 1.0625  1 )
+	mesh size             : ( 6.25e-07 0.0625 0.625 )
+	poll size             : ( 2.5e-06 0.25 2.5 )
+	sec. poll center      : ( 7e-05  2  1 )
+	mesh index            : 2
+	h_max                 : 0.009677419355
+
+iteration 20, begin of Mads::search()
+
+	speculative search
+	speculative search point #235: (0.0009875 1.25  1)
+
+begin of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+	evaluation 1/1: point #235 ( 0.0009875 1.25  1 )
+	direction  : ( 2.5e-06 0.25  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.235.input > ./nomad.0.235.output"
+
+	MADS speculative search unsuccessful point #235
+
+end of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+iteration 20, end of Mads::search()
+
+iteration 20, begin of Mads::poll()
+
+	poll center: ( 0.000985625 1.0625  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : ( 6.25e-07 0.125 -1.25 ) type=Ortho-MADS 2n
+		dir 1 : ( -6.25e-07 -0.125 1.25 ) type=Ortho-MADS 2n
+		dir 2 : ( 1.25e-06 0.0625 1.25 ) type=Ortho-MADS 2n
+		dir 3 : ( -1.25e-06 -0.0625 -1.25 ) type=Ortho-MADS 2n
+		dir 4 : ( -1.25e-06 0.125 0.625 ) type=Ortho-MADS 2n
+		dir 5 : ( 1.25e-06 -0.125 -0.625 ) type=Ortho-MADS 2n
+
+	point #236 (dir 0) has been snapped to bounds
+
+	point #239 (dir 3) has been snapped to bounds
+
+	point #241 (dir 5) has been snapped to bounds
+
+	re-ordered list of 6 poll trial points:
+		point #236 : (0.00098625 1.1875  1) (dir 0)
+		point #240 : (0.000984375 1.1875 1.625) (dir 4)
+		point #238 : (0.000986875 1.125 2.25) (dir 2)
+		point #237 : (0.000985 0.9375 2.25) (dir 1)
+		point #241 : (0.000986875 0.9375  1) (dir 5)
+		point #239 : (0.000984375  1  1) (dir 3)
+
+
+	secondary poll center: ( 7e-05  2  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 6 : ( 1.25e-06 -0.1875 -0.625 ) type=Ortho-MADS 2
+		dir 7 : ( -1.25e-06 0.1875 0.625 ) type=Ortho-MADS 2
+
+	point #242 (dir 6) has been snapped to bounds
+
+	re-ordered list of 8 poll trial points:
+		point #243 : (6.875e-05 2.1875 1.625) (dir 7)
+		point #242 : (7.125e-05 1.8125  1) (dir 6)
+		point #236 : (0.00098625 1.1875  1) (dir 0)
+		point #240 : (0.000984375 1.1875 1.625) (dir 4)
+		point #238 : (0.000986875 1.125 2.25) (dir 2)
+		point #237 : (0.000985 0.9375 2.25) (dir 1)
+		point #241 : (0.000986875 0.9375  1) (dir 5)
+		point #239 : (0.000984375  1  1) (dir 3)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/8: point #243 ( 6.875e-05 2.1875 1.625 )
+	direction  : ( -1.25e-06 0.1875 0.625 ) type=Ortho-MADS 2
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.243.input > ./nomad.0.243.output"
+
+	point #243 surrogate evaluation: h=0 f=0.6518572999
+
+	surrogate evaluation 2/8: point #242 ( 7.125e-05 1.8125  1 )
+	direction  : ( 1.25e-06 -0.1875  0 ) type=Ortho-MADS 2
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.242.input > ./nomad.0.242.output"
+
+	point #242 surrogate evaluation: h=0.02580645161 f=-1.801495357
+
+	surrogate evaluation 3/8: point #236 ( 0.00098625 1.1875  1 )
+	direction  : ( 6.25e-07 0.125  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.236.input > ./nomad.0.236.output"
+
+	point #236 surrogate evaluation: h=0.1225806452 f=-1.028337421
+
+	surrogate evaluation 4/8: point #240 ( 0.000984375 1.1875 1.625 )
+	direction  : ( -1.25e-06 0.125 0.625 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.240.input > ./nomad.0.240.output"
+
+	point #240 surrogate evaluation: h=0.1225806452 f=0.5177886617
+
+	surrogate evaluation 5/8: point #238 ( 0.000986875 1.125 2.25 )
+	direction  : ( 1.25e-06 0.0625 1.25 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.238.input > ./nomad.0.238.output"
+
+	point #238 surrogate evaluation: h=0.2516129032 f=1.444777843
+
+	surrogate evaluation 6/8: point #237 ( 0.000985 0.9375 2.25 )
+	direction  : ( -6.25e-07 -0.125 1.25 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.237.input > ./nomad.0.237.output"
+
+	point #237 surrogate evaluation: h=0.1548387097 f=0.3154946071
+
+	surrogate evaluation 7/8: point #241 ( 0.000986875 0.9375  1 )
+	direction  : ( 1.25e-06 -0.125  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.241.input > ./nomad.0.241.output"
+
+	point #241 surrogate evaluation: h=0.2193548387 f=-2.223730838
+
+	surrogate evaluation 8/8: point #239 ( 0.000984375  1  1 )
+	direction  : ( -1.25e-06 -0.0625  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.239.input > ./nomad.0.239.output"
+
+	point #239 surrogate evaluation: h=0 f=-1.059248703
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	new poll point #244: (6.875e-05 2.1875 1.625)
+
+	new poll point #245: (7.125e-05 1.8125  1)
+
+	new poll point #246: (0.00098625 1.1875  1)
+
+	new poll point #247: (0.000984375 1.1875 1.625)
+
+	new poll point #248: (0.000986875 1.125 2.25)
+
+	new poll point #249: (0.000985 0.9375 2.25)
+
+	new poll point #250: (0.000986875 0.9375  1)
+
+	new poll point #251: (0.000984375  1  1)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/8: point #251 ( 0.000984375  1  1 )
+	direction  : ( -1.25e-06 -0.0625  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.251.input > ./nomad.0.251.output"
+
+	poll unsuccessful point #251
+
+	evaluation 2/8: point #244 ( 6.875e-05 2.1875 1.625 )
+	direction  : ( -1.25e-06 0.1875 0.625 ) type=Ortho-MADS 2
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.244.input > ./nomad.0.244.output"
+
+	poll unsuccessful point #244
+
+	evaluation 3/8: point #245 ( 7.125e-05 1.8125  1 )
+	direction  : ( 1.25e-06 -0.1875  0 ) type=Ortho-MADS 2
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.245.input > ./nomad.0.245.output"
+
+	poll unsuccessful point #245
+
+	evaluation 4/8: point #246 ( 0.00098625 1.1875  1 )
+	direction  : ( 6.25e-07 0.125  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.246.input > ./nomad.0.246.output"
+
+	poll unsuccessful point #246
+
+	evaluation 5/8: point #247 ( 0.000984375 1.1875 1.625 )
+	direction  : ( -1.25e-06 0.125 0.625 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.247.input > ./nomad.0.247.output"
+
+	poll unsuccessful point #247
+
+	evaluation 6/8: point #249 ( 0.000985 0.9375 2.25 )
+	direction  : ( -6.25e-07 -0.125 1.25 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.249.input > ./nomad.0.249.output"
+
+	poll unsuccessful point #249
+
+	evaluation 7/8: point #250 ( 0.000986875 0.9375  1 )
+	direction  : ( 1.25e-06 -0.125  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.250.input > ./nomad.0.250.output"
+
+	poll unsuccessful point #250
+
+	evaluation 8/8: point #248 ( 0.000986875 1.125 2.25 )
+	direction  : ( 1.25e-06 0.0625 1.25 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.248.input > ./nomad.0.248.output"
+
+	poll unsuccessful point #248
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 20, end of Mads::poll()
+
+Mesh update:
+	previous mesh index: 2
+	new mesh index     : 3
+
+
+end of iteration 20
+
+	terminate MADS           : no
+	iteration status         : unsuccessful
+	new feasible incumbent   : NULL
+	new infeasible incumbent : NULL
+
+iteration 21:
+--------------
+	black-box evaluations : 89
+	best feasible point   : ( 0.000985625 1.0625  1 ) h=0 f=-2.954109266
+	best infeasible point : ( 7e-05  2  1 ) h=0.009677419355 f=-0.2626926143
+	poll center           : ( 0.000985625 1.0625  1 )
+	mesh size             : ( 1.5625e-07 0.015625 0.15625 )
+	poll size             : ( 1.25e-06 0.125 1.25 )
+	sec. poll center      : ( 7e-05  2  1 )
+	mesh index            : 3
+	h_max                 : 0.009677419355
+
+iteration 21, begin of Mads::search()
+
+iteration 21, end of Mads::search()
+
+iteration 21, begin of Mads::poll()
+
+	poll center: ( 0.000985625 1.0625  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : ( -3.125e-07 0.0625 0.625 ) type=Ortho-MADS 2n
+		dir 1 : ( 3.125e-07 -0.0625 -0.625 ) type=Ortho-MADS 2n
+		dir 2 : ( 6.25e-07 0.0625 -0.3125 ) type=Ortho-MADS 2n
+		dir 3 : ( -6.25e-07 -0.0625 0.3125 ) type=Ortho-MADS 2n
+		dir 4 : ( 6.25e-07 -0.03125 0.625 ) type=Ortho-MADS 2n
+		dir 5 : ( -6.25e-07 0.03125 -0.625 ) type=Ortho-MADS 2n
+
+	point #253 (dir 1) has been snapped to bounds
+
+	point #254 (dir 2) has been snapped to bounds
+
+	point #257 (dir 5) has been snapped to bounds
+
+	re-ordered list of 6 poll trial points:
+		point #255 : (0.000985  1 1.3125) (dir 3)
+		point #257 : (0.000985 1.09375  1) (dir 5)
+		point #252 : (0.0009853125 1.125 1.625) (dir 0)
+		point #253 : (0.0009859375  1  1) (dir 1)
+		point #256 : (0.00098625 1.03125 1.625) (dir 4)
+		point #254 : (0.00098625 1.125  1) (dir 2)
+
+
+	secondary poll center: ( 7e-05  2  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 6 : ( -7.8125e-07 0.078125 0.3125 ) type=Ortho-MADS 2
+		dir 7 : ( 7.8125e-07 -0.078125 -0.3125 ) type=Ortho-MADS 2
+
+	point #259 (dir 7) has been snapped to bounds
+
+	re-ordered list of 8 poll trial points:
+		point #258 : (6.921875e-05 2.078125 1.3125) (dir 6)
+		point #259 : (7.078125e-05 1.921875  1) (dir 7)
+		point #255 : (0.000985  1 1.3125) (dir 3)
+		point #257 : (0.000985 1.09375  1) (dir 5)
+		point #252 : (0.0009853125 1.125 1.625) (dir 0)
+		point #253 : (0.0009859375  1  1) (dir 1)
+		point #256 : (0.00098625 1.03125 1.625) (dir 4)
+		point #254 : (0.00098625 1.125  1) (dir 2)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/8: point #258 ( 6.921875e-05 2.078125 1.3125 )
+	direction  : ( -7.8125e-07 0.078125 0.3125 ) type=Ortho-MADS 2
+	mesh index : 3
+
+	surrogate cache hit: #258 --> #225
+
+	point #225 surrogate evaluation: h=0.1225806452 f=-0.461737228
+
+	surrogate evaluation 2/8: point #259 ( 7.078125e-05 1.921875  1 )
+	direction  : ( 7.8125e-07 -0.078125  0 ) type=Ortho-MADS 2
+	mesh index : 3
+
+	surrogate cache hit: #259 --> #226
+
+	point #226 surrogate evaluation: h=0 f=-0.3777889342
+
+	surrogate evaluation 3/8: point #255 ( 0.000985  1 1.3125 )
+	direction  : ( -6.25e-07 -0.0625 0.3125 ) type=Ortho-MADS 2n
+	mesh index : 3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.255.input > ./nomad.0.255.output"
+
+	point #255 surrogate evaluation: h=0.05806451613 f=-0.5059319032
+
+	surrogate evaluation 4/8: point #257 ( 0.000985 1.09375  1 )
+	direction  : ( -6.25e-07 0.03125  0 ) type=Ortho-MADS 2n
+	mesh index : 3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.257.input > ./nomad.0.257.output"
+
+	point #257 surrogate evaluation: h=0.09032258065 f=-0.7953618662
+
+	surrogate evaluation 5/8: point #252 ( 0.0009853125 1.125 1.625 )
+	direction  : ( -3.125e-07 0.0625 0.625 ) type=Ortho-MADS 2n
+	mesh index : 3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.252.input > ./nomad.0.252.output"
+
+	point #252 surrogate evaluation: h=0.1870967742 f=0.09492288176
+
+	surrogate evaluation 6/8: point #253 ( 0.0009859375  1  1 )
+	direction  : ( 3.125e-07 -0.0625  0 ) type=Ortho-MADS 2n
+	mesh index : 3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.253.input > ./nomad.0.253.output"
+
+	point #253 surrogate evaluation: h=0 f=-1.059248703
+
+	surrogate evaluation 7/8: point #256 ( 0.00098625 1.03125 1.625 )
+	direction  : ( 6.25e-07 -0.03125 0.625 ) type=Ortho-MADS 2n
+	mesh index : 3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.256.input > ./nomad.0.256.output"
+
+	point #256 surrogate evaluation: h=0.1225806452 f=-0.4056327992
+
+	surrogate evaluation 8/8: point #254 ( 0.00098625 1.125  1 )
+	direction  : ( 6.25e-07 0.0625  0 ) type=Ortho-MADS 2n
+	mesh index : 3
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.254.input > ./nomad.0.254.output"
+
+	point #254 surrogate evaluation: h=0.09032258065 f=-0.2681598384
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	new poll point #260: (6.921875e-05 2.078125 1.3125)
+
+	new poll point #261: (7.078125e-05 1.921875  1)
+
+	new poll point #262: (0.000985  1 1.3125)
+
+	new poll point #263: (0.000985 1.09375  1)
+
+	new poll point #264: (0.0009853125 1.125 1.625)
+
+	new poll point #265: (0.0009859375  1  1)
+
+	new poll point #266: (0.00098625 1.03125 1.625)
+
+	new poll point #267: (0.00098625 1.125  1)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/8: point #265 ( 0.0009859375  1  1 )
+	direction  : ( 3.125e-07 -0.0625  0 ) type=Ortho-MADS 2n
+	mesh index : 3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.265.input > ./nomad.0.265.output"
+
+	poll unsuccessful point #265
+
+	evaluation 2/8: point #261 ( 7.078125e-05 1.921875  1 )
+	direction  : ( 7.8125e-07 -0.078125  0 ) type=Ortho-MADS 2
+	mesh index : 3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.261.input > ./nomad.0.261.output"
+
+	poll unsuccessful point #261
+
+	evaluation 3/8: point #262 ( 0.000985  1 1.3125 )
+	direction  : ( -6.25e-07 -0.0625 0.3125 ) type=Ortho-MADS 2n
+	mesh index : 3
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.262.input > ./nomad.0.262.output"
+
+	poll dominating point: #262 X=( 0.000985  1 1.3125 ) F(X)=[ -1.64368326  0 0.009677419355 ] h=0.009677419355 f=-1.64368326
+
+	opportunistic strategy: terminate evaluations
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 21, end of Mads::poll()
+
+Mesh update:
+	previous mesh index: 3
+	new mesh index     : 2
+
+
+end of iteration 21
+
+	terminate MADS           : no
+	iteration status         : dominating
+	new feasible incumbent   : NULL
+	new infeasible incumbent : #262 X=( 0.000985  1 1.3125 ) F(X)=[ -1.64368326  0 0.009677419355 ] h=0.009677419355 f=-1.64368326
+
+iteration 22:
+--------------
+	black-box evaluations : 92
+	best feasible point   : ( 0.000985625 1.0625  1 ) h=0 f=-2.954109266
+	best infeasible point : ( 0.000985  1 1.3125 ) h=0.009677419355 f=-1.64368326
+	poll center           : ( 0.000985625 1.0625  1 )
+	mesh size             : ( 6.25e-07 0.0625 0.625 )
+	poll size             : ( 2.5e-06 0.25 2.5 )
+	sec. poll center      : ( 0.000985  1 1.3125 )
+	mesh index            : 2
+	h_max                 : 0.009677419355
+
+iteration 22, begin of Mads::search()
+
+	speculative search
+	speculative search point #268: (0.000983125 0.8125 2.25)
+
+begin of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+	evaluation 1/1: point #268 ( 0.000983125 0.8125 2.25 )
+	direction  : ( -2.5e-06 -0.25 1.25 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.268.input > ./nomad.0.268.output"
+
+	MADS speculative search unsuccessful point #268
+
+end of Evaluator_Control::eval_list_of_points (MADS speculative search)
+
+iteration 22, end of Mads::search()
+
+iteration 22, begin of Mads::poll()
+
+	poll center: ( 0.000985625 1.0625  1)
+
+
+	poll directions (include mesh size parameter):
+		dir 0 : ( 6.25e-07 -0.125 1.25 ) type=Ortho-MADS 2n
+		dir 1 : ( -6.25e-07 0.125 -1.25 ) type=Ortho-MADS 2n
+		dir 2 : ( -1.25e-06 0.0625 1.25 ) type=Ortho-MADS 2n
+		dir 3 : ( 1.25e-06 -0.0625 -1.25 ) type=Ortho-MADS 2n
+		dir 4 : ( 1.25e-06 0.125 0.625 ) type=Ortho-MADS 2n
+		dir 5 : ( -1.25e-06 -0.125 -0.625 ) type=Ortho-MADS 2n
+
+	point #270 (dir 1) has been snapped to bounds
+
+	point #272 (dir 3) has been snapped to bounds
+
+	point #274 (dir 5) has been snapped to bounds
+
+	re-ordered list of 6 poll trial points:
+		point #274 : (0.000984375 0.9375  1) (dir 5)
+		point #271 : (0.000984375 1.125 2.25) (dir 2)
+		point #270 : (0.000985 1.1875  1) (dir 1)
+		point #269 : (0.00098625 0.9375 2.25) (dir 0)
+		point #272 : (0.000986875  1  1) (dir 3)
+		point #273 : (0.000986875 1.1875 1.625) (dir 4)
+
+
+	secondary poll center: ( 0.000985  1 1.3125)
+
+
+	poll directions (include mesh size parameter):
+		dir 6 : ( 1.25e-06 0.0625 1.875 ) type=Ortho-MADS 2
+		dir 7 : ( -1.25e-06 -0.0625 -1.875 ) type=Ortho-MADS 2
+
+	point #276 (dir 7) has been snapped to bounds
+
+	re-ordered list of 8 poll trial points:
+		point #276 : (0.00098375 0.9375  1) (dir 7)
+		point #274 : (0.000984375 0.9375  1) (dir 5)
+		point #271 : (0.000984375 1.125 2.25) (dir 2)
+		point #270 : (0.000985 1.1875  1) (dir 1)
+		point #269 : (0.00098625 0.9375 2.25) (dir 0)
+		point #275 : (0.00098625 1.0625 3.1875) (dir 6)
+		point #272 : (0.000986875  1  1) (dir 3)
+		point #273 : (0.000986875 1.1875 1.625) (dir 4)
+
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	surrogate evaluation 1/8: point #276 ( 0.00098375 0.9375  1 )
+	direction  : ( -1.25e-06 -0.0625 -0.3125 ) type=Ortho-MADS 2
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.276.input > ./nomad.0.276.output"
+
+	point #276 surrogate evaluation: h=0.2193548387 f=-2.195159409
+
+	surrogate evaluation 2/8: point #274 ( 0.000984375 0.9375  1 )
+	direction  : ( -1.25e-06 -0.125  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.274.input > ./nomad.0.274.output"
+
+	point #274 surrogate evaluation: h=0.2193548387 f=-2.195159409
+
+	surrogate evaluation 3/8: point #271 ( 0.000984375 1.125 2.25 )
+	direction  : ( -1.25e-06 0.0625 1.25 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.271.input > ./nomad.0.271.output"
+
+	point #271 surrogate evaluation: h=0.2516129032 f=1.444777843
+
+	surrogate evaluation 4/8: point #270 ( 0.000985 1.1875  1 )
+	direction  : ( -6.25e-07 0.125  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.270.input > ./nomad.0.270.output"
+
+	point #270 surrogate evaluation: h=0.1225806452 f=-1.028337421
+
+	surrogate evaluation 5/8: point #269 ( 0.00098625 0.9375 2.25 )
+	direction  : ( 6.25e-07 -0.125 1.25 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.269.input > ./nomad.0.269.output"
+
+	point #269 surrogate evaluation: h=0.1548387097 f=0.3154946071
+
+	surrogate evaluation 6/8: point #275 ( 0.00098625 1.0625 3.1875 )
+	direction  : ( 1.25e-06 0.0625 1.875 ) type=Ortho-MADS 2
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.275.input > ./nomad.0.275.output"
+
+	point #275 surrogate evaluation: h=0.1870967742 f=1.591390936
+
+	surrogate evaluation 7/8: point #272 ( 0.000986875  1  1 )
+	direction  : ( 1.25e-06 -0.0625  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.272.input > ./nomad.0.272.output"
+
+	point #272 surrogate evaluation: h=0 f=-1.059248703
+
+	surrogate evaluation 8/8: point #273 ( 0.000986875 1.1875 1.625 )
+	direction  : ( 1.25e-06 0.125 0.625 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox_surrogate.py ./nomad.0.273.input > ./nomad.0.273.output"
+
+	point #273 surrogate evaluation: h=0.1225806452 f=0.5288997728
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+	new poll point #277: (0.00098375 0.9375  1)
+
+	new poll point #278: (0.000984375 0.9375  1)
+
+	new poll point #279: (0.000984375 1.125 2.25)
+
+	new poll point #280: (0.000985 1.1875  1)
+
+	new poll point #281: (0.00098625 0.9375 2.25)
+
+	new poll point #282: (0.00098625 1.0625 3.1875)
+
+	new poll point #283: (0.000986875  1  1)
+
+	new poll point #284: (0.000986875 1.1875 1.625)
+
+begin of Evaluator_Control::eval_list_of_points (poll)
+
+	evaluation 1/8: point #283 ( 0.000986875  1  1 )
+	direction  : ( 1.25e-06 -0.0625  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.283.input > ./nomad.0.283.output"
+
+	poll unsuccessful point #283
+
+	evaluation 2/8: point #277 ( 0.00098375 0.9375  1 )
+	direction  : ( -1.25e-06 -0.0625 -0.3125 ) type=Ortho-MADS 2
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.277.input > ./nomad.0.277.output"
+
+	poll unsuccessful point #277
+
+	evaluation 3/8: point #278 ( 0.000984375 0.9375  1 )
+	direction  : ( -1.25e-06 -0.125  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.278.input > ./nomad.0.278.output"
+
+	poll unsuccessful point #278
+
+	evaluation 4/8: point #280 ( 0.000985 1.1875  1 )
+	direction  : ( -6.25e-07 0.125  0 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.280.input > ./nomad.0.280.output"
+
+	poll unsuccessful point #280
+
+	evaluation 5/8: point #281 ( 0.00098625 0.9375 2.25 )
+	direction  : ( 6.25e-07 -0.125 1.25 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.281.input > ./nomad.0.281.output"
+
+	poll unsuccessful point #281
+
+	evaluation 6/8: point #284 ( 0.000986875 1.1875 1.625 )
+	direction  : ( 1.25e-06 0.125 0.625 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.284.input > ./nomad.0.284.output"
+
+	poll unsuccessful point #284
+
+	evaluation 7/8: point #279 ( 0.000984375 1.125 2.25 )
+	direction  : ( -1.25e-06 0.0625 1.25 ) type=Ortho-MADS 2n
+	mesh index : 2
+
+	Evaluator::eval_x() system command: "python ./blackbox.py ./nomad.0.279.input > ./nomad.0.279.output"
+
+	poll unsuccessful point #279
+
+end of Evaluator_Control::eval_list_of_points (poll)
+
+iteration 22, end of Mads::poll()
+
+end of iteration 22
+
+	terminate MADS           : yes
+	termination cause        : max number of black-box evaluations reached
+	iteration status         : unsuccessful
+	new feasible incumbent   : NULL
+	new infeasible incumbent : NULL
+
+end of Mads::run(), max number of black-box evaluations reached
+
+MADS final display:
+
+	cache:
+	------
+	# of cache points : 100
+	cache file        : -
+
+	constraints handling:
+	---------------------
+	type                        : progressive
+	h_norm                      : L2
+	h_min                       : 0
+	h_max                       : 0.009677419355
+	poll center  trigger rho    : 0.1
+	number of trigger leaps     : 6
+	# of pre-filter points      : 35
+	# of filter points          : 1
+	filter points               :
+		#262 X=( 0.000985  1 1.3125 ) F(X)=[ -1.64368326  0 0.009677419355 ] h=0.009677419355 f=-1.64368326
+
+
+	stats:
+	------
+	MADS iterations                 : 23
+	black-box evaluations           : 100
+	simulated black-box evaluations : 100
+	evaluations                     : 131
+	surrogate evaluations           : 114
+	failed evaluations              : 1
+	interrupted sequences of eval.  : 8
+	cache hits                      : 40
+	poll points                     : 135
+	poll successes                  : 6
+	speculative search points       : 11
+	speculative search successes    : 4
+	Latin-Hypercube search points   : 0
+	Latin-Hypercube search successes: 0
+	wall-clock time                 : 1h 0m 9s
+
+	misc:
+	-----
+	mesh index            : min=-5, max=3, last=2
+	best feasible point   : ( 0.000985625 1.0625 1 ) h=0 f=-2.954109266
+	best infeasible point : ( 0.000985 1 1.3125 ) h=0.009677419355 f=-1.64368326
+
