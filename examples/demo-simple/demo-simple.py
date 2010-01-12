@@ -13,21 +13,21 @@ from opal.Solvers import NOMAD
 #def avg_time(parameters,measures):
 #    return measures["CPU"].mean()
 
-# Select algorithm
-algorithm = DFO
-    
-# Select real parameters for DFO
+# Select real parameters from DFO.
 params = [par for par in DFO.parameters if par.is_real]
 
-# Select tiny unconstrained HS problems
+# Select tiny unconstrained HS problems.
 problems = [prb for prb in CUTEr.HS if prb.nvar <= 5 and prb.ncon == 0]
 
 print 'Working with parameters ', [par.name for par in params]
 print 'Testing on problems ', [prb.name for prb in problems]
 
-data = ModelData(algorithm, problems, params)
+data = ModelData(DFO, problems, params)
 structure = ModelStructure(objective=StatisticalMeasure.average('CPU'), constraints=[])  # Unconstrained
 
+# Instantiate black-box solver.
 blackbox = BlackBoxModel(modelData=data,modelStructure=structure)
-    
+
+# Solve parameter optimization problem.
+NOMAD.set_parameter(name='MAX_BB_EVAL',value=2)
 NOMAD.solve(model=blackbox)
