@@ -49,8 +49,23 @@
 \chapter{Backgrounds}
 \par The principles are built basing on the observations:
 \begin{itemize}
-  \item There are main entities Evaluator and Solver
+  \item There are main entities Information and Information Manipulator
+    \begin{enumerate}
+    \item Information is in fact set of elements with the methods set and get value. The 
+      set is organized in the different structure like a scalar, a vector or a matrix ...
+    \item Information Manipulator represent for the processes manipulate the input information to
+      get the other information as output
+    \end{enumerate}
   \item Any process is formulated by the interaction between these entities
+  \item An Information Manipulator is characterized by Input, Parameters and Output.
+    \begin{enumerate}
+    \item Input includes the Information and set of Manipulators that may 
+      be a empty set. If this set is empty, the Manipulator is called Evaluator, otherwise
+      it is called Solver. 
+    \item Parameter is actually Information, it is used to generallized a class of Manipulator.
+      Each time the parameters are set to the specific values, we have a manipulator.
+    \item Output is Information represents for the results of manipulation.
+    \end{enumerate}
 \end{itemize}
 
 \chapter{System analysis}
