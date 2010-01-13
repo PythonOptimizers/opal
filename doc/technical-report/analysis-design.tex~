@@ -1,0 +1,33 @@
+\documentclass{report}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows} 
+
+% Define block styles
+\tikzstyle{decision} = [diamond, draw, fill=blue!20, 
+    text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+    text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
+    minimum height=2em]
+%----------------------
+
+\title{Analysis and Design Document \\ for \\ OPAL}
+\begin{document}
+\maketitle
+\chapter{Introduction}
+\par The primary goal is create a framework that helps the users to realize the tunning task following the schema
+
+\begin{figure}[htpb]
+  \centering
+  
+  \caption{General schema of parameter tunning}
+  \label{fig:parameter-tunning-schema}
+\end{figure}
+\par The principles are built basing on the observations:
+\begin{itemize}
+  \item There are main entities Problem and Solver
+  \item Any process is formulated by the interaction between these entities
+\end{itemize}
+\end{document}
