@@ -186,9 +186,10 @@ We apply the principle above to describe the framework in a typical use-case.
     \node [computing, below of=initial-point](evaluator){Problem evaluators};
     \node [data, right of=evaluator, node distance=3cm](info){Point Information};
     \node [data, below of=evaluator, node distance=2cm](point){Point};
-    \node [computing, below of=info](algorithm){Target Algorithm};
+    \node [computing, right of=info, node distance=3cm](algorithm){Target Algorithm};
     \node [data, right of=algorithm](param){Parameters};
-    \node [data, below of=algorithm, node distance=2cm](solv-result){Solving result};
+    \node [data, above of=algorithm, node distance= 4cm](initial-param){Initial Parameters};
+    \node [data, below of=algorithm, node distance=4cm](solv-result){Solving result};
     \node [computing, below of=solv-result](test-observator){Test Observator};
     \node [data, below of=test-observator, node distance=2cm](measure-table){Measures table};
     \node [computing, below of=measure-table](measure-evaluators){Measure Evaluator};
@@ -196,10 +197,49 @@ We apply the principle above to describe the framework in a typical use-case.
     \node [data, below of=param](ds-solv-result){Searching result};
     \node [computing, below of=ds-solv-result,node distance=3cm](ds-solver){Direct Search Solver};
     \node [data, right of=ds-solv-result](opt-param){Optimal Parameters};
+
+    \path [line](initial-point) -- (evaluator);
+    \path [line](evaluator) -- (info);
+    \path [line](info) -- (algorithm);
+    \path [line](algorithm) -- (solv-result);
+    \path [line](solv-result) -| (point);
+    \path [line](point) -- (evaluator);
+    \path [line](solv-result) -- (test-observator);
+    \path [line](test-observator) -- (measure-table);
+    \path [line](measure-table) -- (measure-evaluators); 
+    \path [line](measure-evaluators) -- (eval-result);
+    \path [line](eval-result) -| (ds-solver);
+    \path [line](ds-solver) -- (ds-solv-result);
+    \path [line](ds-solv-result) -- (param);
+    \path [line](param) -- (algorithm);
+    \path [line](initial-param) -- (algorithm);
+    \path [line](ds-solv-result) -- (opt-param);
+    \begin{pgfonlayer}{background}
+       \path (initial-point.west |- initial-param.south)+(-0.3,-0.3) node (a) {};
+       \path (opt-param.west |- eval-result.south)+(-0.3,-0.3) node (b) {};
+       \path[fill=yellow!10, draw=black!50, dashed]
+       (a) rectangle (b);
+       
+       \path (eval-result.north -| param.west)+(-0.3,0.3) node (b) {};
+       \path[fill=yellow!20, draw=black!50, dashed]
+       (a) rectangle (b);
+
+       \path (measure-table.north -| param.west)+(-0.3,0.3) node (b) {};
+       \path[fill=yellow!30, draw=black!50, dashed]
+       (a) rectangle (b);
+       
+       \path (solv-result.north -| param.west)+(-0.3,0.3) node (b) {};
+       \path[fill=yellow!40, draw=black!50, dashed]
+       (a) rectangle (b);
+
+       \path (point.north -| info.west)+(-0.3,0.3) node (b) {};
+       \path[fill=yellow!60, draw=black!50, dashed]
+       (a) rectangle (b);
+    \end{pgfonlayer}
   \end{tikzpicture}
   \caption{Algorithm view}
   \label{fig:algorithm-view}
 \end{figure}
 \chapter{System design}
-\chapter{}
+
 \end{document}
