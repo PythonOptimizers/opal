@@ -1,7 +1,7 @@
 \documentclass{report}
 
 \usepackage{tikz}
- \usetikzlibrary{shapes,arrows} 
+\usetikzlibrary{positioning,shapes,shadows,arrows} 
  
  % Define block styles
  \tikzstyle{decision} = [diamond, draw, fill=blue!20, text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
@@ -49,42 +49,87 @@
   \label{fig:parameter-tunning-schema}
 \end{figure}
 \chapter{Backgrounds}
-\par The principles are built basing on the observations:
+\par The principles are built basing on the three observations
 \begin{itemize}
-  \item There are main entities Information and Information Manipulator
-    \begin{enumerate}
-    \item Information is in fact set of elements with the methods set and get value. The 
-      set is organized in the different structure like a scalar, a vector or a matrix ...
-    \item Information Manipulator represent for the processes manipulate the input information to
-      get the other information as output
-    \end{enumerate}
-  \item Other the set and get methods for each element, the Information may be combined by the 
-    set operation like union, extract, subset vérification.
-  \item An Information Manipulator is characterized by Input, Parameters and Output.
-    \begin{enumerate}
-    \item Input includes the Information and set of Manipulators that may 
-      be a empty set. If this set is empty, the Manipulator is called Evaluator, otherwise
-      it is called Solver. 
-    \item Parameter is actually Information, it is used to generallized a class of Manipulator.
-      Each time the parameters are set to the specific values, we have a manipulator.
-    \item Output is Information represents for the results of manipulation.
-    \end{enumerate}
-  \item Any process is formulated by the combinations of the manipulators
-    \begin{enumerate}
-      \item Sequence of evaluator: Output of the first evaluator is input of the second evaluator
-      \item Support: A solver may be used the other evaluator during processing Information
-      \item Cooperation: Two manipulator have the same Input.
-    \end{enumerate}
-  \item The relations amongs Manipulators are:
-    \begin{enumerate}
-    \item Dependence: A manipulator depends on the others if it used the others to proccess 
-      the Information
-      \item Composite: A manipulator can be decomposed as combinations of the others
-    \end{enumerate}
-  \end{itemize}
+\item The Optimization of Algorithmic parameters framework can be analyzed as either a proccessing data system or black-box optimization problem solving. 
+\item We can decompose any data proccessing to the elementary things by Data-Operator principle
+\item Problem solving is can be decomposed by Data-Operator principle.
+\end{itemize}
+
+\section{Decomposition a system by Data-Operator principle}
+\begin{itemize}
+\item There are main entities Data and Operator
+  \begin{enumerate}
+  \item Data is in fact set of elements with the methods set and get value. The 
+    set is organized in the different structure like a scalar, a vector or a matrix ...
+  \item Operator represent for an operation, so it has  the input and the output.
+    It may has also parameters to generalize its functionality.
+  \end{enumerate}
+\item A Data is characterized by Name, Type, Value and Storage (file or in memory, ...). Many data entity 
+  can be grouped to create a Data Set.
+\item An Operator is characterized by its Input and Output. Input and Output may be either the Data or an Operator with
+  only constraint that their type are the same. 
+  \begin{enumerate}
+  \item Input and Ouput are Data, the Operator is called Evaluator. 
+  \item Input and Output are Operators, the Operator is called Manipulator. 
+  \end{enumerate}
+\item We can combine many Operators in different ways to get a Process that are actually 
+  an Operator.
+  \begin{enumerate}
+  \item A process of two sequenial Operators is a such combination that: Output of the first Opearator is input 
+    of the second Operator
+  \item Cooperation: Two Operators have the same Input.
+  \end{enumerate}
+\item The relations between two Operators are:
+  \begin{enumerate}
+  \item Dependence: A manipulator depends on the others if it used the others to proccess 
+    the Data
+  \item Independence.
+  \item Inclusion A manipulator can be decomposed as combinations of the others
+  \item Cooperation
+  \end{enumerate}
+\end{itemize}
+
+\section{Analyse solving proccess by Data-Operator principle}
+\par A solving process for an optimization problem is defined by the following diagram:
+\begin{figure}[htpb]
+  % We need layers to draw the block diagram
+  \centering
+  \begin{tikzpicture}[node distance = 2cm, auto]
+    
+    % Place nodes
+    \node [computing] (evaluators) {Problem Evaluators};
+    \node [data,left of=evaluators] (initial-point) {Initial Point};
+    \node [data, below of=evaluators] (point-info) {Point Informations};
+    \node [data, right of=evaluators] (point) {Point};
+    \node [computing, below of=point, node distance = 2cm] (state-evaluator) {State Evaluator};
+    \node [data, right of=state-evaluator] (opt-point) {Solving Result};
+    \node [data, below of=state-evaluator,node distance=2cm] (new-point) {New Point};
+    \node [computing, below of=new-point] (computer) {New Point Computer};
+    
+    % Draw edges
+    \path [line] (initial-point) -- (evaluators);
+    \path [line] (evaluators) -- (point-info);
+    \path [line] (point-info) |- (computer);
+    \path [line] (computer) -- (new-point);
+    \path [line] (new-point) -- (state-evaluator);
+    \path [line] (state-evaluator) -- (point);
+    \path [line] (point) -- (evaluators);
+    \path [line] (state-evaluator) -- (opt-point);
+  \end{tikzpicture}
+  \caption{Solving problem process}
+  \label{fig:test-view}
+\end{figure}
 
 \chapter{System analysis}
-We apply the principle above to describe the framework in a typical use-case.
+We apply the principle above to describe the framework in a typical use-case. So, we try to analyse the framework in following steps:
+\begin{enumerate}
+\item Decompose the framework into the elementary thingss such that they are detail enough.
+\item Identify and group the elements to describe the main components of our problem solving 
+  proccesses as well the other supporting components.
+\end{enumerate}
+
+\section{Parameter Optimization is Data proccessing}
 \begin{figure}[htpb]
   \centering
   \begin{tikzpicture}[node distance = 2cm, auto]
@@ -110,15 +155,17 @@ We apply the principle above to describe the framework in a typical use-case.
     \node [data,left of=evaluator] (initial-param) {Initial Parameter};
     \node [data, below of=evaluator, node distance = 2cm] (eval-result) {Evaluating results};
     \node [data, right of=evaluator] (param) { Parameter};
-    \node [data, right of=param] (optimal-param) {Optimal Parameter};
-    \node [computing, below of=param] (solver) {Direct search Solver};
+    \node [data, below of=param, node distance = 2cm](search-result) {Searching result};
+    \node [data, right of=search-result] (optimal-param) {Optimal Parameter};
+    \node [computing, below of=search-result] (solver) {Direct search Solver};
     % Draw edges
     \path [line] (initial-param) -- (evaluator);
     \path [line] (evaluator) -- (eval-result);
-    \path [line] (eval-result) -- (solver);
-    \path [line] (solver) -- (param);
+    \path [line] (eval-result) |- (solver);
+    \path [line] (solver) -- (search-result);
+    \path [line] (search-result) -- (param);
     \path [line] (param) -- (evaluator);
-    \path [line] (param) -- (optimal-param);
+    \path [line] (search-result) -- (optimal-param);
     % Now it's time to draw the colored tunner rectangles.
     % To draw them behind the blocks we use pgf layers. This way we  
     % can use the above block coordinates to place the backgrounds   
@@ -146,25 +193,27 @@ We apply the principle above to describe the framework in a typical use-case.
     \node [computing, below of=test-result] (evaluators) {Measure Evaluators};
     \node [data, below of=evaluators, node distance = 2cm] (eval-result) {Evaluating result};
     \node [data, right of=algo-tester] (param) { Parameter};
-    \node [data, right of=param] (optimal-param) {Optimal Parameter};
-    \node [computing, below of=param, node distance = 3cm] (solver) {Direct search Solver};
+    \node [data, below of=param] (search-result) {Searching results};
+    \node [data, right of=search-result] (optimal-param) {Optimal Parameter};
+    \node [computing, below of=search-result, node distance = 3cm] (solver) {Direct search Solver};
     
     % Draw edges
     \path [line] (initial-param) -- (algo-tester);
     \path [line] (algo-tester) -- (test-result);
     \path [line] (test-result) -- (evaluators);
     \path [line] (evaluators) -- (eval-result);
-    \path [line] (eval-result) -| (solver);
-    \path [line] (solver) -- (param);
+    \path [line] (eval-result) -- (solver);
+    \path [line] (solver) -- (search-result);
+    \path [line] (search-result) -- (param);
     \path [line] (param) -- (algo-tester);
-    \path [line] (param) -- (optimal-param);
+    \path [line] (search-result) -- (optimal-param);
     % Now it's time to draw the colored tunner rectangles.
     % To draw them behind the blocks we use pgf layers. This way we  
     % can use the above block coordinates to place the backgrounds   
     \begin{pgfonlayer}{background}
        % Compute a few helper coordinates
       \path (algo-tester.west |- algo-tester.north)+(-0.6,0.6) node (a) {};
-      \path (eval-result.south -| param.east)+(+0.3,-0.2) node (b) {};
+      \path (solver.south -| param.east)+(+0.3,-0.2) node (b) {};
       \path[fill=yellow!10, draw=black!50, dashed]
       (a) rectangle (b);
       % Compute a few helper coordinates
@@ -240,6 +289,118 @@ We apply the principle above to describe the framework in a typical use-case.
   \caption{Algorithm view}
   \label{fig:algorithm-view}
 \end{figure}
+
+\section{Parameter Optimization is Black Box Optimization problem solving}
+\par There are two opimization problem solvings involed in parameter optimization.
+\begin{itemize}
+\item A Black box optimization problem is solved by a direct search solver
+\item One or many test problems are solved by target solver 
+\end{itemize}
 \chapter{System design}
+\par We try indentify three main types of objects in the above diagram: data, process and data manipulator
+\begin{itemize}
+\item Data that is the input, output and parameter of a process or a manipulator. Data has name, data type, 
+  value and a propeties determine its physical storage that is either system standard output or a file. 
+\item A manipulator represents for a data processing. It accepts a data object as input and return the other 
+  data object that are the outputs. A manipulator may have one or many parameters that are the data objects 
+  too to generalize the function. One thing important to define a manipulator is definition his function of 
+  data processing.
+\item A process is in general the cooperation of two or many manipulators. From the black box view, a process
+  is a manipulator with input, output and parameters except that we don't need to specify its functionality.
+\end{itemize}
+
+\section{Process hiearachy}
+\par By showing  the process hiearachy, we would like emphasize that, in our system, a process can be specified 
+in two ways:
+\begin{itemize}
+\item Treat as a black box by specifying input, output and how to run.
+\item Specify the sub-processes and the evaluators of the process and the their combinations. For our 
+framework, the combinations are pre-defined, it is so enough to figure out the sub-process. In most of case, 
+the users build up a process from a sub-process and an evaluator 
+\end{itemize}
+\tikzstyle{manipulator}=[rectangle, draw=black, rounded corners, fill=blue!40, drop shadow,
+        text centered, anchor=north, text=black, text width=3cm]
+\tikzstyle{process}=[rectangle, draw=black, rounded corners, fill=yellow!40, drop shadow,
+        text centered, anchor=north, text=red!50, text width=3cm]
+\tikzstyle{belongs}=[-o,draw]
+
+\begin{figure}[hpbt]
+  \centering
+  \begin{tikzpicture}{node distance=2cm}
+    \node (tunning) [process]
+    {
+      \textbf{OPAL Tunning}
+    };
+    \node (AuxNode01) [text width=1cm, below=of tunning, node distance=3cm] {};
+    \node (evaluating) [process, below left=-0.5cm of AuxNode01]
+    {
+      \textbf{Algorithm evaluating} (Black box)
+    };
+    \node (ds-solver) [manipulator, below right=-0.5cm of AuxNode01]
+    {
+      \textbf{DS solver searching}
+    };
+    \path (tunning.west |- tunning.south) + (1.0, 0.1) node (a) {};
+    \draw[belongs] (evaluating.north) -- (a);
+    \path (tunning.south -| tunning.east) + (-1.0, 0.1) node (a) {};
+    \draw[belongs] (ds-solver.north) -- (a);
+
+    \node (AuxNode01) [text width=1cm, below=of evaluating, node distance=3cm] {};
+    \node (testing) [process, below left=-0.5cm of AuxNode01]
+    {
+      \textbf{Algorithm testing} 
+    };
+    \node (measure-evaluators) [manipulator, below right=-0.5cm of AuxNode01]
+    {
+      \textbf{Measure Evaluators}
+    };
+    \path (evaluating.west |- evaluating.south) + (1.0, 0.1) node (a) {};
+    \draw[belongs] (testing.north) -- (a);
+    \path (evaluating.south -| evaluating.east) + (-1.0, 0.1) node (a) {};
+    \draw[belongs] (measure-evaluators.north) -- (a);
+    
+    \node (AuxNode01) [text width=1cm, below=of testing, node distance=3cm] {};
+    \node (solving) [process, below left=-0.5cm of AuxNode01]
+    {
+      \textbf{Problem solving} 
+    };
+    \node (observators) [manipulator, below right=-0.5cm of AuxNode01]
+    {
+      \textbf{Test observators}
+    };
+    \path (testing.west |- testing.south) + (1.0, 0.1) node (a) {};
+    \draw[belongs] (solving.north) -- (a);
+    \path (testing.south -| testing.east) + (-1.0, 0.1) node (a) {};
+    \draw[belongs] (observators.north) -- (a);
+    
+    \node (AuxNode01) [text width=1cm, below=of solving, node distance=3cm] {};
+    \node (defining) [process, below left=-0.5cm of AuxNode01]
+    {
+      \textbf{Problem defining} 
+    };
+    \node (solver) [manipulator, below right=-0.5cm of AuxNode01]
+    {
+      \textbf{Target solver searching}
+    };
+    \path (solving.west |- solving.south) + (1.0, 0.1) node (a) {};
+    \draw[belongs] (defining.north) -- (a);
+    \path (solving.south -| solving.east) + (-1.0, 0.1) node (a) {};
+    \draw[belongs] (solver.north) -- (a);
+  \end{tikzpicture}
+  \caption{Manipulator hierachy}
+  \label{fig:manipulator-hierachy}
+\end{figure}
+\section{Problem and solver}
+\par The two elementary objects in a problem solving are built up from the Data, Evaluator and Operator.
+\begin{itemize}
+\item Problem includes a data set and one or many evaluator. For example, an optimization problem we need 
+  an initial point and one or many evaluators representing for its model like objective 
+  function computing, constraints computing, objective function gradient. Note the structure such as linearity, 
+  is embeded as the structure 
+\item Solver is specified with a searching process that created by combining the model computing process in 
+  problem definition with an evaluator that compute new point from the information of current point (or model value).
+  Search proccess is a loop process having the state, and the input is data (for example initial point) of 
+  problem definition.
+\end{itemize}
 
 \end{document}
