@@ -6,25 +6,25 @@ import pickle
 from .. import config
 from .modelstructure import ModelEvaluator
 
+__docformat__ = 'restructuredtext'
+
 class BlackBox:
     """
-    This class represent to all communication with direct solver
-    This is an abstract class. The specific implementation depends 
-    on the used solver. For example, when the solver is NOMAD, an 
-    object of this class represents for 
-    an executable file whose I/O methods depend from the specific solver.
+    This class manages the communication with the direct solver.
+    The specific implementation depends on the solver used. For example, when
+    the solver is NOMAD, an object of this class represents
+    an executable file whose I/O methods depend on the specific solver.
     """
-    def __init__(self,solver=None,model=None,**kwargs):
+    def __init__(self, solver=None, model=None, **kwargs):
         self.solver = solver
         self.model = model
         pass
-
     
-    def run(self,*args,**kwargs):
+    def run(self, *args, **kwargs):
         inputValues = []
         paramValues = []
         #print args
-        (inputValues,paramValues) = self.read_input(*args,**kwargs)
+        (inputValues, paramValues) = self.read_input(*args, **kwargs)
         if self.model is None:
             return
         #print inputValues
@@ -43,19 +43,21 @@ class BlackBox:
 
 class BlackBoxModel:
     def __init__(self, modelData=None, modelStructure=None,
-                 runFileName='blackbox.py',dataFile='blackbox.dat',logFileName='test.log',**kwargs):
+                 runFileName='blackbox.py', dataFile='blackbox.dat',
+                 logFileName='test.log', **kwargs):
         """
-        This class represent a black box that encapsulates the 
+        A `BlackBoxModel` encapsulates the 
         information of a parameter optimization problem.
-        From the parameter problem point of view, this class contains
-        two descriptions: model data and model struture
-        An object of this class have to contain the link to 
-        used solver.
-        To create an BlackBox object, users have to specify two mains 
-        component
-        blackbox = BlackBox(modelStructure,modelData)
-        The link to solver is created by the solver and add to BlackBox
-        object when the solving is activated.
+        From the parameter problem point of view, this class has 
+        two components: model data and model struture.
+
+        Example::
+
+            blackbox = BlackBoxModel(modelStructure, modelData)
+
+        An object of this class must contain a link to a solver.
+        The link to a solver is created by the solver and added to the
+        BlackBoxModel object upon solving the problem.
         """
 
         self.model_data = modelData
@@ -96,31 +98,31 @@ class BlackBoxModel:
     #    return self.surrogate
 
  
-    def evaluate(self,inputValues):
-        '''
+    def evaluate(self, inputValues):
+        """
         Evaluate the model at given point
         Input: evaluated point coordinate
         Output: Value of objective function and constrains values list
         In the case of error, two None values are returned
-        '''
-       
-       
+        """
+
         self.model_data.run(inputValues)
         testResult = self.model_data.get_test_result()
         #print 'ho ho after getTestResult', self.modelData.measures[0],\
         #      self.modelData.measures[0].valuetable
         # An evaluator object may be redudant, remove it in the future
-        modelEvaluator = ModelEvaluator(self.model_structure,self.model_data.measures)
-        (funcObj,constraints) = modelEvaluator.evaluate(testResult)
+        modelEvaluator = ModelEvaluator(self.model_structure,
+                                        self.model_data.measures)
+        (funcObj, constraints) = modelEvaluator.evaluate(testResult)
         #print funcObj
         #print constraints
         self.log()
-        return (funcObj,constraints)
+        return (funcObj, constraints)
     
     def save(self):
         try:
-            blackboxDataFile = open(self.data_file,"w")
-            pickle.dump(self,blackboxDataFile)
+            blackboxDataFile = open(self.data_file, "w")
+            pickle.dump(self, blackboxDataFile)
             blackboxDataFile.close()
         except TypeError:
             print "Error in saving"
@@ -141,7 +143,10 @@ class BlackBoxModel:
 
     def generate_surrogate(self):
         reducedModelData = self.model_data.reduce_problem_set()
-        surrogate = BlackBoxModel(modelData=reducedModelData, modelStructure=self.model_structure,
-                             dataFileName=self.dataFileName.strip('.dat') + '_surrogate.dat',
-                             logFileName=self.logFileName.strip('.log') + '_surrogate.log')
+        data_fname = self.dataFileName.strip('.dat') + '_surrogate.dat'
+        log_fname = self.logFileName.strip('.log') + '_surrogate.log'
+        surrogate = BlackBoxModel(modelData=reducedModelData,
+                                  modelStructure=self.model_structure,
+                                  dataFileName=data_fname,
+                                  logFileName=log_fame)
         return surrogate
