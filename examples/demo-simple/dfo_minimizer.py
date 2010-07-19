@@ -10,7 +10,7 @@ from string import atoi
 
 dfo_specFile = 'DFO.SPC'
 
-def write_specfile(parameter_file,problem):
+def write_specfile(parameter_file, problem):
     "Write a valid DFO.SPC given a parameter file."
     # Read parameters into a dictionary
     parms = []
@@ -39,9 +39,11 @@ def write_specfile(parameter_file,problem):
 
 
 def solve(problem_name):
-    #os.system('runcuter --package dfo --decode %s > /dev/null' % problem_name)
     os.chdir(problem_name)
-    os.system('./' + problem_name + '> run.log')
+    #os.system('runcuter --package dfo --decode %s > /dev/null' % problem_name)
+    #os.system('./' + problem_name + '> run.log')
+    os.system('sifdecode %s > /dev/null' % problem_name)
+    os.system('./dfomin > run.log')
 
     ctime = 0.0
     f = open('cuter.log', 'r')
@@ -71,59 +73,33 @@ def solve(problem_name):
     f.close()
     os.chdir('..')
     return {'EXITCODE': exitcode,'FVAL':fval,'CPU':ctime,'FEVAL':nfeval*(ncon + 1),'DESCENT':fzero-fval}
-    
-def compile_driver(problem_name,log_file='compile.log'):
-    libs = []
-    # Order of the libraries is important
-    libs.append({'path':'$HOME/opt-package/dfo-ipopt/lib/','name':'dfo_ipopt'})
-    libs.append({'path':'$HOME/opt-package/ipopt-fortran/lib','name':'ipopt'})
-    libs.append({'path':'$HOME/opt-package/hsl/lib','name':'hsl_ma57'})
-    libs.append({'path':'$HOME/opt-package/metis/lib','name':'metis'})
-    libs.append({'path':'$HOME/opt-package/lapack/lib','name':'lapack-3.2'})
-    libs.append({'path':'$HOME/opt-package/blas/lib','name':'blas-3.2'})
-    
-    
-    driverSource = os.environ['CUTER'] + '/common/src/tools/dfoma.f90'
-    linpacObj = os.environ['MYCUTER'] + '/double/bin/linpac.o'
-    compiler = 'g95'
-    testerDir = problem_name
 
-    if log_file == None:
-        indirectStr = ''
-    else:
-        indirectStr = ' > "' + log_file + '"'
 
-    shutil.copy(linpacObj,testerDir)
-    shutil.copy(driverSource,testerDir)
-    os.chdir(testerDir)
-    (head,tail) = os.path.split(driverSource)
-
-    os.system(compiler + ' -c -I$MYCUTER/double/bin ' +  tail + indirectStr)
-    os.system('sifdecode ' + problem_name + indirectStr)
-    os.system(compiler + ' -ftrace=full -c *.f' + indirectStr)
-    libStr = '-L$MYCUTER/double/lib -lcuter'
-    for i in range(len(libs)):
-        if libs[i]['path'] != '':
-            libStr = libStr + ' -L' + libs[i]['path']
-            libStr = libStr + ' -l' + libs[i]['name']
-    
-    print compiler + ' -o ' + problem_name + ' *.o ' + libStr
-    os.system(compiler + ' -ftrace=full -o ' + problem_name + ' *.o ' + libStr + indirectStr)
-    os.system('rm -fr *.f *.o')
+def compile_driver(problem_name, log_file='compile.log'):
+    if not os.path.exists(problem_name):
+        os.system('mkdir %s' % problem)
+    os.chdir(problem_name)
+    os.system('sifdecode %s > %s 2>&1' % (problem_name, log_file))
+    os.system('runcuter --package dfo --keep > /dev/null')
     os.chdir('..')
     
 
 if __name__ == '__main__':
     param_file = sys.argv[1]
     problem = sys.argv[2]
-    if not os.path.exists(problem):
-        os.system('mkdir ' + problem)
+
+    # Ensure executable is present for current problem.
+    if not os.path.exists('%s/dfomin' % problem):
         compile_driver(problem)
-    write_specfile(param_file,problem)
+
+    # Ensure spec file is in place and solve.
+    write_specfile(param_file, problem)
     #shutil.copy(dfo_specFile,problem)
     measure_values = solve(problem)
-    f = open('DFO-'+ problem + '.out','w') 
+
+    f = open('DFO-'+ problem + '.out','w')
     for measure in measure_values.keys():
         print >> f, measure, measure_values[measure]
     #print >> f,''
     f.close()
+

@@ -9,9 +9,8 @@ from opal import StatisticalMeasure
 
 from opal.Solvers import NOMAD
 
-
-#def avg_time(parameters,measures):
-#    return measures["CPU"].mean()
+def avg_time(parameters,measures):
+    return measures["CPU"].mean()
 
 # Select real parameters from DFO.
 params = [par for par in DFO.parameters if par.is_real]
@@ -23,11 +22,12 @@ print 'Working with parameters ', [par.name for par in params]
 print 'Testing on problems ', [prb.name for prb in problems]
 
 data = ModelData(DFO, problems, params)
-structure = ModelStructure(objective=StatisticalMeasure.average('CPU'), constraints=[])  # Unconstrained
+structure = ModelStructure(objective=avg_time, constraints=[])  # Unconstrained
+#structure = ModelStructure(objective=StatisticalMeasure.average('CPU'), constraints=[])  # Unconstrained
 
 # Instantiate black-box solver.
 blackbox = BlackBoxModel(modelData=data,modelStructure=structure)
 
 # Solve parameter optimization problem.
-NOMAD.set_parameter(name='MAX_BB_EVAL',value=2)
+NOMAD.set_parameter(name='MAX_BB_EVAL',value=5)
 NOMAD.solve(model=blackbox)
