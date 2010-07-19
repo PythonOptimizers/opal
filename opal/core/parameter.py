@@ -1,6 +1,9 @@
 import string
 
-class Parameter:
+from .data import Data
+from .data import DataSet
+
+class Parameter(Data):
     """
     An abstract class to represent real, integer and categorical algorithmic
     parameters. Examples:
