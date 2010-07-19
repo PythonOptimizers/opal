@@ -32,17 +32,16 @@ class TestResult:
 
 # =============================
 class ModelData:
-    '''
-    This class represents for data generators of parameter optimization problem.
-    The data is the values of the elementary measures that we need to formulate problem.
-    To specify a data generator, we need provide the information:
-    1 - The algorithm 
-    2 - The concerned elementary measure set
-    3 - The parameter set to control
-    4 - Set of the problem
+    """ 
+    This class represents a data generator for a parameter optimization
+    problem. The data is the values of the elementary measures that are needed
+    to formulate the problem. To specify a data generator, we need provide:
 
-    
-    '''
+    1. The algorithm 
+    2. the set of elementary measures concerned 
+    3. the set of parameters to control
+    4. the test problems set.
+    """
 
     def __init__(self,\
                  algorithm,\
@@ -55,6 +54,7 @@ class ModelData:
         self.algorithm = algorithm
         self.problems = problems
         self.parameters = copy.deepcopy(algorithm.parameters) 
+        
         # Store the parameter for each test,
         # this is not parameter description like on problem
         # At the first time, is the default values
