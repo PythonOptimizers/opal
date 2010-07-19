@@ -5,22 +5,34 @@ import os
 from .parameter import Parameter
 from .parameter import ParameterConstraint
 from .measure import Measure
+
+__docformat__ = 'restructuredtext'
   
 class Algorithm:
     """
-    An abstract class to gather the parameters of an algorithm. 
+    An abstract class to define the specifics of an algorithm. 
+
+    :parameters:
+        :name:  Name of the algorithm (string)
+        :purpose: Synopsis of purpose (string)
+
     Each algorithm has two aspect:
-     - Algorithmic aspect: this is the description about the name, purpose, parameters, measures and the constraints 
-       on the parameters. The measures represent for the algorithm's output
-     - Computational aspect: this is the description how to run algorithm and what is the output
+
+     1. Algorithmic aspect: the name, purpose, parameters, measures and the
+        constraints on the parameters. The measures represent the output of the
+        alorithm.
+
+     2. Computational aspect: the description of how to run algorithm and what
+        the output is.
+
     Example:
 
-      >>> dfo = Algorithm(name='DFO', purpose='Derivative-free minimization')
+      >>> dfo = Algorithm(name='DFO', purpose='Derivative-free optimization')
       >>> delmin = Parameter(default=1.0e-3, name='DELMIN')
       >>> dfo.add_param(delmin)
-      >>> mxit = Parameter(type='integer', default=100, name='MAXIT')
-      >>> dfo.add_param(mxit)
-      >>> cpuTime = Measure(type='real',name='TIME')
+      >>> maxit = Parameter(type='integer', default=100, name='MAXIT')
+      >>> dfo.add_param(maxit)
+      >>> cpuTime = Measure(type='real', name='TIME')
       >>> dfo.add_measure(cpuTime)
       >>> print [param.name for param in dfo.parameters]
       ['DELMIN', 'MAXIT']
@@ -29,7 +41,7 @@ class Algorithm:
       ['DELMIN']
     """
 
-    def __init__(self, name=None, purpose=None,**kwargs):
+    def __init__(self, name=None, purpose=None, **kwargs):
        
         # Algorithmic description
         self.name = name
@@ -37,6 +49,7 @@ class Algorithm:
         self.parameters = [] # List of parameters (of type Parameter)
         self.measures = [] # List of measures (the output of the algorithm)
         self.constraints = []
+
         # Computational description
         self.parameter_file = None
         self.parameter_writing_method = None
@@ -63,47 +76,54 @@ class Algorithm:
         self.executable = executable
         return
 
-    def set_parameter_file(self,parameter_file,writing_method=None):
-        # We consider that the parameter value setting is done through file
-        # This method is to set parameter file name. The writing_method 
-        # represent for the file format. In the default case, writing_method is
-        # set to the set_parameter_value() method. In this case, the parameters are 
-        # dump to a file named by parameter_file by pickle.dump() method
-        # if parameter_file is set to None, we consider that the parameter values 
-        # are transmitted to the executable driver as the arguments
-        # There is a constraint of defining this method. The method has the form
-        # writing_method(algo,parameters)
-        # where algo represents for the algorithm 
+    def set_parameter_file(self, parameter_file, writing_method=None):
+        """
+        Parameter values are set via file IO.
+        This method assigns the parameter file name to be use throughout the
+        optimization process. The `writing_method` argument
+        represent the file format. By default, `writing_method` is
+        set to the `set_parameter_value()` method. In this case, the parameters
+        are dumped to a file named `parameter_file` using `pickle.dump()`.
+        If parameter_file is None, the parameter values 
+        are transmitted to the executable driver as the arguments
+        `writing_method` must have the form writing_method(algo, parameters)
+        where `algo` is an Algorithm instance.
+        """
         self.parameter_file = parameter_file
-        self.parameter_writing_method = copy.copy(writing_method) 
+        self.parameter_writing_method = copy.copy(writing_method)
         return
 
-    def set_measure_file(self,measure_file=None,reading_method=None):
-        # We consider that an executable algorithm has two choices for outputing  
-        # whose content contains the measure values:
-        #  1 - Output the screen, measure_file is None, the output is indirected 
-        #      to a file named by paropt, for example DFO-HS1.out
-        #  2 - Output to a file whose name is specified by measure_file. The measure_file
-        #      may be the naming rule like ABC-[problem]-output.txt.
-        # reading_method specifies how to extract the measure values from the output
+    def set_measure_file(self, measure_file=None, reading_method=None):
+        """
+        An executable algorithm has two choices for outputting  
+        the measure values:
+
+         1. to screen (`measure_file` is None). In this case, the output is
+            also redirected to a file named after the algorithm and problem
+            being solved, for example DFO-HS1.out.
+
+         2. to a file named `measure_file`.
+
+        The `reading_method` argument specifies how to extract the measure
+        values from the output of the algorithm.
+        """
         self.measure_file = measure_file
         self.measure_reading_method = reading_method
         return
 
-    def set_parameter(self,parameters):
-        # The virtual method determines how to
-        # set values for the parameters of the algorithm
-        # The way to set values depends from the algorithm
-        # Some algorithms set values through the file, the 
-        # others set directly by the program argument
-        # This method is realized in the class of a specific 
-        # algorithm
-        # Input: list of parameter whose values are set
-        # Output: void
+    def set_parameter(self, parameters):
+        """
+        This virtual method determines how values for the parameters of the
+        algorithm are set. Some algorithms set values through file, others
+        directly by argument.
+
+        :parameters:
+            :parameters: List of parameter whose values are set.
+        """
         if self.parameter_writing_method is not None:
-            self.parameter_writing_method(self,parameters)
+            self.parameter_writing_method(self, parameters)
         else:
-            f = open(self.parameter_file,'w')
+            f = open(self.parameter_file, 'w')
             pardict = {}
             for param in parameters:
                 pardict[param.name] = param
@@ -114,20 +134,26 @@ class Algorithm:
     def get_output(self):
         return 'file'
 
-    def get_measure_file(self,problem):
+    def get_measure_file(self, problem):
+        "Return measure file name."
         return self.name + '-' + problem.name + '.out'
 
-    def get_measure(self,problem,measures):
-        # The virtual method determines how to 
-        # extract the measure value from the running result
-        # Input: List of measures we want to get
-        # Output: A mapping measure name --> measure value
-        # By default, the algorithm will return 
-        # the measure values to the standard output
-        # In the run() method, we will redirect the output
-        # to the file, say, ALGORITHM-PROBLEM.out
+    def get_measure(self, problem, measures):
+        """
+        Ths virtual method determines how to extract a measure value from the
+        output of the algorithm.
+
+        :parameters:
+            :problem:
+            :measures: List of measures we want to extract
+
+        :returns: A mapping measure name --> measure value
+
+        By default, the algorithm returns the measure values to the standard
+        output. In the `run()` method, the output is redirected to file.
+        """
         if self.measure_reading_method is not None:
-            return self.measure_reading_method(self,problem,measures)
+            return self.measure_reading_method(self, problem, measures)
         #allValues = []
         #allValues = {}
         measureFile = self.name + '-' + problem.name + '.out' 
@@ -137,7 +163,7 @@ class Algorithm:
         lines = f.readlines()
         f.close()
         os.remove(measureFile)
-        converters = {'categorical':str,'integer':int,'real':float}
+        converters = {'categorical':str, 'integer':int, 'real':float}
         measure_values = {}
         for line in lines:
             line.strip('\n')
@@ -154,28 +180,46 @@ class Algorithm:
         #print 'print in algorithm.py',measure_values
         return measure_values
 
-    def get_full_executable_command(self,paramValues=None,problem=None):
-        # The virtual method determines how to
-        # run algorithm
-        # Input: List of parameter values
-        #        Problem
-        # Output: The command for executing the algorithm
-        # By default, we assume that the algorithm is called by
-        # the command 
-        # ./algorithm paramfile problem
-        executingCmd = self.executable + ' ' + self.parameter_file + ' ' + problem.name
-        return executingCmd
+    def get_full_executable_command(self, paramValues=None, problem=None):
+        """
+        .. warning::
+
+            Why do we need `paramValues` here???
+            What kind of object is `problem`???
+
+        This virtual method determines how to run the algorithm.
+
+        :parameters:
+            :paramValues: List of parameter values
+            :problem: Problem (???)
+
+        :returns: The command for executing the algorithm.
+
+        By default, the algorithm is called by the command 
+
+            `./algorithm paramfile problem`
+        """
+        cmd = self.executable + ' ' + self.parameter_file + ' ' + problem.name
+        return cmd
 
     def add_parameter_constraint(self, paramConstraint):
-        if isinstance(paramConstraint,ParameterConstraint):
+        """
+        Specify the domain of a parameter.
+        """
+        if isinstance(paramConstraint, ParameterConstraint):
             self.constraints.append(paramConstraint)
-        elif isinstance(paramConstraint,str):
+        elif isinstance(paramConstraint, str):
             self.constraints.append(ParameterConstraint(paramConstraint))
         else:
-            raise TypeError, 'Parameter Constraint is a String or ParameterConstraint'
+            msg = 'paramConstraint must be a String or ParameterConstraint'
+            raise TypeError, msg
         return
 
-    def are_parameters_valid(self,parameters):
+    def are_parameters_valid(self, parameters):
+        """
+        Return True if all parameters are in their domain and satisfy the
+        constraints. Return False otherwise.
+        """
         #print '[algorithm.py]',[param.value for param in parameters]
         for constraint in self.constraints:
             if constraint(parameters) is ParameterConstraint.violated:
