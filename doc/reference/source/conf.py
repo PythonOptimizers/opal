@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# ParOpt documentation build configuration file, created by
+# opal documentation build configuration file, created by
 # sphinx-quickstart on Thu May 21 22:41:01 2009.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -19,29 +19,33 @@ import sys, os
 # If your extensions are in another directory, add it here. If the directory
 # is relative to the documentation root, use os.path.abspath to make it
 # absolute, like shown here.
-#sys.path.append(os.path.abspath('.'))
-sys.path.append(os.path.abspath('../paropt/Algorithms'))
-sys.path.append(os.path.abspath('../paropt/components'))
-sys.path.append(os.path.abspath('../paropt/components/directsearch'))
-sys.path.append(os.path.abspath('../paropt/components/modeler'))
-sys.path.append(os.path.abspath('../paropt/components/platform'))
-sys.path.append(os.path.abspath('../paropt/components/testenv'))
-sys.path.append(os.path.abspath('../paropt/core'))
-sys.path.append(os.path.abspath('../paropt/Drivers'))
-sys.path.append(os.path.abspath('../paropt/Measures'))
-sys.path.append(os.path.abspath('../paropt/Platforms'))
-sys.path.append(os.path.abspath('../paropt/plugins'))
-sys.path.append(os.path.abspath('../paropt/plugins/algorithms'))
-sys.path.append(os.path.abspath('../paropt/Solvers'))
-sys.path.append(os.path.abspath('../paropt/TestProblemCollections'))
-sys.path.append(os.path.abspath('../paropt/utilities'))
-sys.path.append(os.path.abspath('../paropt/utilities/performance'))
-sys.path.append(os.path.abspath('../paropt/utilities/testproblems'))
+sys.path.append(os.path.abspath('.'))
+sys.path.append(os.path.abspath('../../../opal/environment'))
+sys.path.append(os.path.abspath('../../../opal/environment/Algorithms'))
+#sys.path.append(os.path.abspath('../opal/components'))
+#sys.path.append(os.path.abspath('../opal/components/directsearch'))
+#sys.path.append(os.path.abspath('../opal/components/modeler'))
+#sys.path.append(os.path.abspath('../opal/components/platform'))
+#sys.path.append(os.path.abspath('../opal/components/testenv'))
+#sys.path.append(os.path.abspath('../opal/Drivers'))
+#sys.path.append(os.path.abspath('../opal/Measures'))
+sys.path.append(os.path.abspath('../../../opal/environment/Platforms'))
+sys.path.append(os.path.abspath('../../../opal/environment/Problems'))
+sys.path.append(os.path.abspath('../../../opal/environment/Processes'))
+#sys.path.append(os.path.abspath('../opal/plugins'))
+#sys.path.append(os.path.abspath('../opal/plugins/algorithms'))
+sys.path.append(os.path.abspath('../../../opal/environment/Solvers'))
+sys.path.append(os.path.abspath('../../../opal/environment/TestProblemCollections'))
+#sys.path.append(os.path.abspath('../opal/utilities'))
+#sys.path.append(os.path.abspath('../opal/utilities/performance'))
+#sys.path.append(os.path.abspath('../opal/utilities/testproblems'))
+sys.path.insert(0, os.path.abspath('../../../opal/core'))
 sys.path.append('sphinxext')
 
 # Import support for ipython console session syntax highlighting (lives
 # in the sphinxext directory defined above)
 import ipython_console_highlighting
+import inheritance_diagram
 
 # General configuration
 # ---------------------
@@ -51,6 +55,7 @@ import ipython_console_highlighting
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest']
 extensions += ['sphinx.ext.todo']
 extensions += ['ipython_console_highlighting']
+extensions += ['inheritance_diagram']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']
@@ -65,7 +70,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'ParOpt'
+project = u'opal'
 copyright = u'2009, C. Audet, K. C. Dang, D. Orban'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -177,7 +182,7 @@ html_static_path = ['.static']
 #html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'ParOptdoc'
+htmlhelp_basename = 'opaldoc'
 
 
 # Options for LaTeX output
@@ -192,7 +197,7 @@ htmlhelp_basename = 'ParOptdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, document class [howto/manual]).
 latex_documents = [
-  ('index', 'ParOpt.tex', ur'ParOpt Documentation',
+  ('index', 'opal.tex', ur'OPAL Documentation',
    ur'C. Audet, K. C. Dang, D. Orban', 'manual'),
 ]
 

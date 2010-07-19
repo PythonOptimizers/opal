@@ -1,17 +1,17 @@
-.. ParOpt documentation master file, created by sphinx-quickstart on Thu May 21 22:41:01 2009.
+.. OPAL documentation master file, created by sphinx-quickstart on Thu May 21 22:41:01 2009.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-============================
-ParOpt General Documentation
-============================
+==========================
+OPAL General Documentation
+==========================
 
 :Release: |version|
 :Date: |today|
 
-.. module:: paropt
+.. module:: opal
 
-This is the general documentation for ParOpt, a pure Python package for
+This is the general documentation for OPAL, a pure Python package for
 the optimization of algorithmic parameters.
 
 Contents:
@@ -21,6 +21,7 @@ Contents:
    :maxdepth: 2
 
    Introduction <introduction>
+   Basic Objects <basic>
 
 
 TODO List
