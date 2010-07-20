@@ -12,10 +12,8 @@ class TestProblem:
     >>> print chem.name, chem.description
     """
 
-    def __init__(self, name=None, description=None,classifyStr=None, **kwargs):
-        """
-        Any test problem has three general information
-        """
+    def __init__(self, name=None, description=None, classifyStr=None,
+                 **kwargs):
         self.name = name
         self.description = description
         self.classify_string = classifyStr
@@ -29,6 +27,7 @@ class TestProblem:
     def get_classify_string(self):
         return self.classify_string
 
+
 class OptimizationTestProblem(TestProblem):
     """
     An abstract class to represent a test problem in the field of optimization.
@@ -39,10 +38,12 @@ class OptimizationTestProblem(TestProblem):
     HS26 3 1
     """
 
-    def __init__(self, name=None, description=None, classifyStr=None,nvar=0, ncon=0, **kwargs):
-        TestProblem.__init__(self, name, description,classifyStr, **kwargs)
+    def __init__(self, name=None, description=None, classifyStr=None,
+                 nvar=0, ncon=0, **kwargs):
+        TestProblem.__init__(self, name, descriptiona, classifyStr, **kwargs)
         self.nvar = nvar
         self.ncon = ncon
+
 
 class ProblemSet:
     """
@@ -58,12 +59,12 @@ class ProblemSet:
     >>> print [prob.name for prob in HS]
     ['HS13', 'HS26']
 
-    In the above example, note that a ``ProblemSet`` is iterable.
+    In the above example, note that a `ProblemSet` is iterable.
     """
 
     def __init__(self, name=None, **kwargs):
         self.name = name
-        self.problems = []       # List of problems in this collection
+        self.problems = []       # List of problems in this collection.
 
     def __len__(self):
         return len(self.problems)
@@ -103,24 +104,26 @@ class ProblemSet:
         "Return a list of all problems in this collection."
         return self.problems.copy()
     
-    def select(self,query):
+    def select(self, query):
         """
-        Return a list of problem that match with the query
-        The query object is any object that has a function match that
-        figure out a given problem is satisified the searching criteria.
-        The information of problem is given via two arguments: name and 
-        the classify string
+        Return the list of problems matching the given query.
+        The `query` object is any object that possesses a `match()` method.
+        The result of `match(name, string)` must be True if `name` matches
+        `string`. During the query, `name` is the problem name and `string`
+        is its classification string.
         """
         queryResult = []
         for prob in self.problems:
-            if query.match(prob.name,prob.get_classify_string()):
+            if query.match(prob.name, prob.get_classify_string()):
                 queryResult.append(prob)
         return queryResult
 
+
 class ProblemCollection:
     """
-    An abstract class to represet a collection of test problems. A collection is
-    made up of subcollections, each of which is a ProblemSet.
+    An abstract class to represet a collection of test problems. A collection
+    is made up of subcollections, each of which is a `ProblemSet`.
+
     Example:
 
     >>> HS = ProblemSet(name='Hock and Schittkowski set')
@@ -140,8 +143,9 @@ class ProblemCollection:
     ['HS13', 'HS26', 'NCVXQP2']
     """
 
-    def __init__(self, name=None, **kwargs):
+    def __init__(self, name=None, description=None, **kwargs):
         self.name = name
+        self.description = description
         self.all = ProblemSet('Physic set of the collection. It contains all problem of collection')
         self.subcollections = [] # List of subcollections of this collection
 
