@@ -66,15 +66,15 @@ Performance Measures: The :mod:`measure` Module
    :inherited-members: 
    :undoc-members:
 
-.. autoclass:: MeasureList
-   :show-inheritance: 
-   :members: 
-   :inherited-members: 
-   :undoc-members:
-
-.. autoclass:: MeasureTable
-   :show-inheritance: 
-   :members: 
-   :inherited-members: 
-   :undoc-members:
+.. .. autoclass:: MeasureList
+..    :show-inheritance: 
+..    :members: 
+..    :inherited-members: 
+..    :undoc-members:
+.. 
+.. .. autoclass:: MeasureTable
+..    :show-inheritance: 
+..    :members: 
+..    :inherited-members: 
+..    :undoc-members:
 

@@ -57,6 +57,8 @@ extensions += ['sphinx.ext.todo']
 extensions += ['ipython_console_highlighting']
 extensions += ['inheritance_diagram']
 
+todo_include_todos = True
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']
 

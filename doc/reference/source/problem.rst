@@ -32,11 +32,20 @@ black box model.
 The :class:`ModelStructure` Class
 =================================
 
+.. inheritance-diagram:: opal.core.modelstructure
+
+.. automodule:: opal.core.modelstructure
+   
+.. autoclass:: ModelStructure
+   :show-inheritance: 
+   :members: 
+   :inherited-members: 
+   :undoc-members:
 
 The :class:`ModelData` Class
 ============================
 
-.. inheritance-diagram:: opal.core.modeldata.ModelData
+.. inheritance-diagram:: opal.core.modeldata
 
 .. automodule:: opal.core.modeldata
    
