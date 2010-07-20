@@ -1,4 +1,4 @@
-# A sample gateway to DFO to be used by Paropt.
+# A sample gateway to DFO to be used by OPAL.
 # Will be run as 'python dfo_minimizer.py parameter_file problem'
 
 import os
@@ -42,7 +42,6 @@ def solve(problem_name):
     os.chdir(problem_name)
     #os.system('runcuter --package dfo --decode %s > /dev/null' % problem_name)
     #os.system('./' + problem_name + '> run.log')
-    os.system('sifdecode %s > /dev/null' % problem_name)
     os.system('./dfomin > run.log')
 
     ctime = 0.0
@@ -72,7 +71,8 @@ def solve(problem_name):
 	
     f.close()
     os.chdir('..')
-    return {'EXITCODE': exitcode,'FVAL':fval,'CPU':ctime,'FEVAL':nfeval*(ncon + 1),'DESCENT':fzero-fval}
+    return {'EXITCODE' : exitcode, 'FVAL' : fval, 'CPU' : ctime,
+            'FEVAL' : nfeval*(ncon + 1), 'DESCENT' : fzero-fval}
 
 
 def compile_driver(problem_name, log_file='compile.log'):
@@ -82,14 +82,15 @@ def compile_driver(problem_name, log_file='compile.log'):
     os.system('sifdecode %s > %s 2>&1' % (problem_name, log_file))
     os.system('runcuter --package dfo --keep > /dev/null')
     os.chdir('..')
-    
+ 
 
 if __name__ == '__main__':
     param_file = sys.argv[1]
     problem = sys.argv[2]
 
     # Ensure executable is present for current problem.
-    if not os.path.exists('%s/dfomin' % problem):
+    executable = os.path.join(problem, 'dfomin')
+    if not os.path.exists(executable):
         compile_driver(problem)
 
     # Ensure spec file is in place and solve.

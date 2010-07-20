@@ -5,7 +5,6 @@ from opal.Algorithms import DFO
 from opal import ModelStructure
 from opal import ModelData
 from opal import BlackBoxModel
-from opal import StatisticalMeasure
 
 from opal.Solvers import NOMAD
 
@@ -23,11 +22,10 @@ print 'Testing on problems ', [prb.name for prb in problems]
 
 data = ModelData(DFO, problems, params)
 structure = ModelStructure(objective=avg_time, constraints=[])  # Unconstrained
-#structure = ModelStructure(objective=StatisticalMeasure.average('CPU'), constraints=[])  # Unconstrained
 
 # Instantiate black-box solver.
 blackbox = BlackBoxModel(modelData=data,modelStructure=structure)
 
 # Solve parameter optimization problem.
-NOMAD.set_parameter(name='MAX_BB_EVAL',value=5)
+NOMAD.set_parameter(name='MAX_BB_EVAL',value=10)
 NOMAD.solve(model=blackbox)
