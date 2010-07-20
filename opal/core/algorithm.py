@@ -180,7 +180,7 @@ class Algorithm:
         #print 'print in algorithm.py',measure_values
         return measure_values
 
-    def get_full_executable_command(self, paramValues=None, problem=None):
+    def get_full_executable_command(self, paramValues, problem):
         """
         .. warning::
 
