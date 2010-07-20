@@ -3,7 +3,11 @@ import os
 from ..core.solver import Solver
 from ..core.blackbox import BlackBox
 
+__docformat__ = 'restructuredtext'
+
 class Parameter:
+    "Used to specify black-box solver options."
+
     def __init__(self,name=None,value=None,**kwargs):
         self.name = name
         self.value = value
@@ -13,6 +17,7 @@ class Parameter:
         if (self.name is not None) and (self.value is not None):
             return self.name + ' ' + str(self.value)
         return ""
+
     
 class NOMADBlackbox(BlackBox):
     '''
@@ -101,13 +106,16 @@ class NOMADBlackbox(BlackBox):
     
 class NOMADSolver(Solver):
     """
-    An implemtation of Solver abstract class. 
-    An object of NOMADSolver represent for the NOMAD solver
-    For more information about the NOMAD, go to
-    http://wwww.gerad.ca/NOMAD
+    An instance of the abstract Solver class. 
+    A NOMADSolver object specifies the particulars of the NOMAD direct search
+    solver for black-box optimization.
+    For more information about the NOMAD, see `http://wwww.gerad.ca/NOMAD`_.
     """
-    def __init__(self,**kwargs):
-        Solver.__init__(self,name='NOMAD',command='nomad',parameter='nomad-param.txt',**kwargs)
+
+    def __init__(self, **kwargs):
+
+        Solver.__init__(self, name='NOMAD', command='nomad',
+                        parameter='nomad-param.txt', **kwargs)
         self.paramFileName = 'nomad-param.txt'
         self.resultFileName = 'nomad-result.txt'
         self.solutionFileName = 'nomad-solution.txt'
@@ -133,7 +141,7 @@ class NOMADSolver(Solver):
 #            print ""
 #        return
     
-    def solve(self,model=None,surrogate=None):
+    def solve(self, model=None, surrogate=None):
         self.blackbox.model = model
         self.blackbox.generate_executable_file()
         if surrogate is not None:
@@ -144,7 +152,10 @@ class NOMADSolver(Solver):
         return
 
     def initialize(self):
-        descriptionFile = open(self.paramFileName,"w")
+        "Write NOMAD config to file based on parameter optimization problem."
+
+        descriptionFile = open(self.paramFileName, "w")
+
         # Create problem descriptions basing on
         # the model of blackbox
         if self.blackbox.model is not None:
@@ -176,7 +187,7 @@ class NOMADSolver(Solver):
         descriptionFile.close()
         return
 
-    def set_parameter(self,name=None,value=None):
+    def set_parameter(self, name=None, value=None):
         #descriptionFile = open(self.paramFileName,'a')
         #descriptionFile.write(param.str() + '\n')
         #descriptionFile.close()
