@@ -19,8 +19,9 @@ class Measure:
     
     nullValue = {'real':0.0,'integer':0}
   
-    def __init__(self,name=None, kind=None, **kwargs):
+    def __init__(self, name=None, description='', kind=None, **kwargs):
         self.name = name
+        self.description = description
         self.kind = kind
         self.is_real = (kind == 'real')
         self.is_integer = (kind == 'integer')
