@@ -6,7 +6,7 @@ class Solver:
                  output=None, **kwargs):
         self.name = name
         self.command = command
-        self.args = [input,parameter,output]
+        self.args = [input, parameter, output]
         return
 
     #def run(self):
