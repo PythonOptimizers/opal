@@ -191,7 +191,7 @@ class NOMADSolver(Solver):
             model = self.blackbox.model
             descrFile.write('DIMENSION ' + str(model.n_var) + '\n')
             # descrFile.write('DISPLAY_DEGREE 4\n')
-            descrFile.write('DISPLAY_STATS EVAL & BBE & SOL & & OBJ \\\\ \n')
+            descrFile.write('DISPLAY_STATS EVAL BBE [ SOL, ] OBJ TIME \\\\\n')
             descrFile.write('BB_EXE "$python ' + \
                     self.blackbox.file_name + '"\n')
             bbTypeStr = 'BB_OUTPUT_TYPE OBJ'
@@ -212,7 +212,7 @@ class NOMADSolver(Solver):
         # Write other settings.
         descrFile.write('SOLUTION_FILE ' + self.solutionFileName + '\n')
         descrFile.write('STATS_FILE ' + self.resultFileName + \
-                ' EVAL & BBE & BBO & SOL & & OBJ \\\\ \n')
+                '$EVAL$ & $BBE$ & $BBO$ & [ $SOL$ ] & $OBJ$ & $TIME$ \\\\\n')
         for param_setting in self.parameter_settings:
             descrFile.write(param_setting + '\n')
         descrFile.close()
