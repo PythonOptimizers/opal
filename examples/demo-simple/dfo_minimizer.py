@@ -4,7 +4,6 @@
 import os
 import sys
 import pickle
-import shutil
 from string import atof
 from string import atoi
 
@@ -40,8 +39,6 @@ def write_specfile(parameter_file, problem):
 
 def solve(problem_name):
     os.chdir(problem_name)
-    #os.system('runcuter --package dfo --decode %s > /dev/null' % problem_name)
-    #os.system('./' + problem_name + '> run.log')
     os.system('./dfomin > run.log')
 
     ctime = 0.0
@@ -95,12 +92,10 @@ if __name__ == '__main__':
 
     # Ensure spec file is in place and solve.
     write_specfile(param_file, problem)
-    #shutil.copy(dfo_specFile,problem)
     measure_values = solve(problem)
 
     f = open('DFO-'+ problem + '.out','w')
     for measure in measure_values.keys():
         print >> f, measure, measure_values[measure]
-    #print >> f,''
     f.close()
 
