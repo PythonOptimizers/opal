@@ -7,9 +7,7 @@ import pickle
 from string import atof
 from string import atoi
 
-dfo_specFile = 'DFO.SPC'
-
-def write_specfile(parameter_file, problem):
+def write_specfile(parameter_file, loc='.', name='DFO.SPC'):
     "Write a valid DFO.SPC given a parameter file."
     # Read parameters into a dictionary
     parms = []
@@ -21,7 +19,7 @@ def write_specfile(parameter_file, problem):
     f.close()
 
     # Write out DFO.SPC. Parameters must be in order.
-    f = open(problem + '/' + dfo_specFile, 'w')
+    f = open(os.path.join(loc, name), 'w')
     f.write('%10i\n' % parms['NX'].value)
     f.write('%10i\n' % parms['MAXIT'].value)
     f.write('%10i\n' % parms['MAXNF'].value)
@@ -91,7 +89,7 @@ if __name__ == '__main__':
         compile_driver(problem)
 
     # Ensure spec file is in place and solve.
-    write_specfile(param_file, problem)
+    write_specfile(param_file, loc=problem)
     measure_values = solve(problem)
 
     f = open('DFO-'+ problem + '.out','w')
