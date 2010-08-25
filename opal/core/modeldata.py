@@ -43,36 +43,25 @@ class ModelData:
     4. the test problems set.
     """
 
-    def __init__(self,\
-                 algorithm,\
-                 problems,\
-                 activeParameters,\
-                 platform=config.platform,\
-                 logging=log.TestLogging(),\
-                 **kwargs):
+    def __init__(self, algorithm, problems, activeParameters,
+                platform=config.platform, logging=log.TestLogging(), **kwargs):
         # The core variables
         self.algorithm = algorithm
         self.problems = problems
-        self.parameters = copy.deepcopy(algorithm.parameters) 
         
-        # Store the parameter for each test,
-        # this is not parameter description like on problem
-        # At the first time, is the default values
-        # The self.parameters is not a reference
-        # to descriptions of algorithm parameter. It is really a
-        # the storage of the parameters in run-time
-        # So create new storage and copy the algorithm.parameters to there.
-        self.active_parameter_names = [param.name for param in activeParameters]
-        # active_parameters_names stores the name of parameters that are the variables in
-        # parameter optimization problem.
-        # For the other parameters, we set them as constant
+        # active_parameters_names are the name of parameters that are
+        # variables in the parameter optimization problem.
+        # The other parameters remain fixed.
+        self.active_parameter_names = [par.name for par in activeParameters]
         for param in self.parameters:
             if param.name not in self.active_parameter_names:
                 param.set_as_const()
         
+        self.parameters = copy.deepcopy(algorithm.parameters)
         self.measures = copy.deepcopy(algorithm.measures)
         
-        # The options
+        # TODO
+        # This is unrelated to the model data. It should be moved elsewhere.
         self.platformName = ''
         self.platform = platform
 
@@ -84,20 +73,14 @@ class ModelData:
 
         # The output
         self.test_is_failed = False
-        self.measure_value_table = MeasureValueTable(problem_names=[prob.name for prob in self.problems],
-                                                     measure_names=[measure.name for measure in self.measures])
-        # It is important to make the link between
-        # the measure function and measure value table obtained by test
-        #for measure in self.measures:
-        #    measure.set_data(self.measure_value_table)
-        # Because these links are established by the reference,
-        # After loading from the hardisk (by pickle), we have resolve the links
-        
-        # Set the options
+        pNames = [prob.name for prob in self.problems]
+        mNames = [measure.name for measure in self.measures]
+        self.measure_value_table = MeasureValueTable(problem_names=pNames,
+                                                     measure_names=mNames)
+        # Set options
         self.set_options(**kwargs)
         pass
 
-    #-----------------------------------------
 
     def set_options(self,**kwargs):
         # set the log file
@@ -107,11 +90,10 @@ class ModelData:
             self.logFileName  = os.path.join(os.getcwd(), 'test-bed.log')
         return
 
-    #---------------------------------------------
 
     def get_active_parameters(self):
         return [param for param in self.parameters if not param.is_const()]
-    #---------------------------------------------
+
 
     def fill_parameter_value(self,values):
         j = 0
@@ -121,8 +103,7 @@ class ModelData:
                 j = j + 1
         return
 
-    #---------------------------------------------
-               
+
     def run(self,parameter_values):
         self.fill_parameter_value(parameter_values)
         #print '[modeldata.py]',[param.value for param in self.parameters]

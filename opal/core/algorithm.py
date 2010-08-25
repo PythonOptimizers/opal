@@ -72,7 +72,7 @@ class Algorithm:
             raise TypeError, 'measure must be a Measure object'
         return
 
-    def set_executable_command(self,executable):
+    def set_executable_command(self, executable):
         self.executable = executable
         return
 
@@ -154,12 +154,8 @@ class Algorithm:
         """
         if self.measure_reading_method is not None:
             return self.measure_reading_method(self, problem, measures)
-        #allValues = []
-        #allValues = {}
         measureFile = self.name + '-' + problem.name + '.out' 
         f = open(measureFile)
-        #map(lambda l: allValues.extend(l.strip('\n').strip(' ').split(' ')), f.readlines())
-        #valueStr = f.read()
         lines = f.readlines()
         f.close()
         os.remove(measureFile)
@@ -174,10 +170,9 @@ class Algorithm:
                 continue
             measure_values[fields[0].strip(' ')] = fields[1].strip(' ')
         for i in range(len(measures)):
-            measure_values[measures[i].name] = converters[measures[i].kind](measure_values[measures[i].name])
-        #print '[algorithm.py]', allValues, [measure.name for measure in measures]
-        # measure_values = eval(valueStr)
-        #print 'print in algorithm.py',measure_values
+            kind = converters[measures[i].kind]
+            measure_values[measures[i].name] = \
+                    kind(measure_values[measures[i].name])
         return measure_values
 
     def get_full_executable_command(self, paramValues, problem):
