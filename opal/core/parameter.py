@@ -217,7 +217,7 @@ class ParameterSet(DataSet):
     def __contains__(self,parameterName):
         return (parameterName in self.indices.keys())
 
-    def set_values(self,parameterValues=None,*args,**kwargs):
+    def set_values(self, parameterValues=None, *args, **kwargs):
         # Verify if the parameter values are provided
         # if not, run the process with default values
         # Create the two value storages: a list and a dictionary
