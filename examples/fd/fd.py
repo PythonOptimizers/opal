@@ -21,7 +21,7 @@ params = FD.parameters   # All.
 problems = [dummy]
 
 # Define parameter optimization problem.
-data = ModelData(FD, [dummy], FD.parameters['h'])
+data = ModelData(FD, [dummy], params) # FD.parameters['h'])
 struct = ModelStructure(objective=get_error, constraints=[])  # Unconstrained
 blackbox = BlackBoxModel(modelData=data, modelStructure=struct)
 
