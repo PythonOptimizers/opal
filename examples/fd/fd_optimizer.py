@@ -1,25 +1,24 @@
-from fd_algorithm import compute_error
-from math import pi
+from fd_algorithm import fd
+from math import pi, sin, cos
 import pickle
 import sys
 
-x = pi/4   # This is where the derivative will be approximated.
-cmd = 'python fd_algorithm.py'
+f = sin ; df = cos  # Target function and its derivative.
+x = pi/4     # This is where the derivative will be approximated.
+dfx = df(x)  # "Exact" derivative at x.
 
-def solve(param_file, problem):
+def run(param_file, problem):
     "Run FD with given parameters."
 
-    f = open(param_file, 'rb')
+    pf = open(param_file, 'rb')
     try:
-        parms = pickle.load(f)
+        parms = pickle.load(pf)
     except:
         raise IOError, 'Parameter file does not have expected format'
-    f.close()
+    pf.close()
     h = parms['h'].value
 
-    error = compute_error(x, h)
-
-    return {'ERROR': error}
+    return {'ERROR': abs(dfx - fd(f,x,h))}
 
 
 if __name__ == '__main__':
@@ -27,7 +26,7 @@ if __name__ == '__main__':
     problem = sys.argv[2]
 
     # Solve and gather measures.
-    measure_vals = solve(param_file, problem)
+    measure_vals = run(param_file, problem)
 
     # Write measures to file.
     f = open('FD-' + problem + '.out', 'w')
