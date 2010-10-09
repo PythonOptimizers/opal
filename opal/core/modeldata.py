@@ -49,6 +49,9 @@ class ModelData:
         self.algorithm = algorithm
         self.problems = problems
         
+        self.parameters = copy.deepcopy(algorithm.parameters)
+        self.measures = copy.deepcopy(algorithm.measures)
+        
         # active_parameters_names are the name of parameters that are
         # variables in the parameter optimization problem.
         # The other parameters remain fixed.
@@ -56,9 +59,6 @@ class ModelData:
         for param in self.parameters:
             if param.name not in self.active_parameter_names:
                 param.set_as_const()
-        
-        self.parameters = copy.deepcopy(algorithm.parameters)
-        self.measures = copy.deepcopy(algorithm.measures)
         
         # TODO
         # This is unrelated to the model data. It should be moved elsewhere.
