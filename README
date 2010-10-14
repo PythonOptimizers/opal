@@ -7,6 +7,7 @@ The bare minimum (for now):
 
 1 - REQUIREMENTS
     + Python version 2.6
+    (Could we get rid of Py2.6 requirements?)
 
 2 - INSTALL
     + Unzip the package
