@@ -8,6 +8,8 @@ import copy
 
 #import utility
 from measure import MeasureValueTable
+from testproblem import TestProblem
+
 from .. import config
 
 
@@ -47,10 +49,12 @@ class ModelData:
                 platform=config.platform, logging=log.TestLogging(), **kwargs):
         # The core variables
         self.algorithm = algorithm
-        self.problems = problems
-        
-        self.parameters = copy.deepcopy(algorithm.parameters)
-        self.measures = copy.deepcopy(algorithm.measures)
+        if (problems is None) or (len(problems) == 0):
+            self.problems = [TestProblem(name='TESTPROB')]
+        else:
+            self.problems = problems
+
+        self.parameters = activeParameters
         
         # active_parameters_names are the name of parameters that are
         # variables in the parameter optimization problem.
@@ -59,6 +63,9 @@ class ModelData:
         for param in self.parameters:
             if param.name not in self.active_parameter_names:
                 param.set_as_const()
+        
+        #self.parameters = copy.deepcopy(algorithm.parameters)
+        self.measures = copy.deepcopy(algorithm.measures)
         
         # TODO
         # This is unrelated to the model data. It should be moved elsewhere.
