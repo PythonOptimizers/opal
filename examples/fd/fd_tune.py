@@ -1,7 +1,6 @@
 # Define a parameter optimization problem in relation to the FD algorithm.
-from fd_description import FD
+from fd_declaration import FD
 
-from opal.core.testproblem import TestProblem
 from opal import ModelStructure
 from opal import ModelData
 from opal import BlackBoxModel
@@ -12,17 +11,24 @@ def get_error(parameters, measures):
     val = measures["ERROR"].mean()
     return val
 
-# Define a dummy test problem.
-dummy = TestProblem(name='Dummy', description='Make believe')
-
 # Parameters being tuned.
 params = FD.parameters   # All.
-problems = [dummy]
+problems = []            # None.
 
 # Define parameter optimization problem.
-data = ModelData(FD, [dummy], params) # FD.parameters['h'])
+data = ModelData(FD, problems, params)
 struct = ModelStructure(objective=get_error, constraints=[])  # Unconstrained
 blackbox = BlackBoxModel(modelData=data, modelStructure=struct)
 
 # Solve parameter optimization problem.
 NOMAD.solve(model=blackbox)
+
+# Inform user of expected optimal value for information.
+try:
+    import numpy as np
+    from math import sqrt
+    eps = np.finfo(np.double).eps
+except:
+    eps = 2.2e-16
+
+print 'Expected optimal value is approximately %21.15e' % sqrt(eps)

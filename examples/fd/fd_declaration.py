@@ -8,13 +8,13 @@ from opal.core.measure   import Measure
 FD = Algorithm(name='FD', purpose='Forward Finite Differences')
 
 # Register executable for FD.
-FD.set_executable_command('python fd_optimizer.py')
+FD.set_executable_command('python fd_run.py')
 
 # Register parameter file used by black-box solver to communicate with FD.
 FD.set_parameter_file('fd.param')  # Should be chosen automatically and hidden.
 
 # Define parameter and register it with algorithm.
-h = Parameter(kind='real', default=0.5, bound=(0, 1),
+h = Parameter(kind='real', default=0.5, bound=(0, None),
               name='h', description='Step size')
 FD.add_param(h)
 

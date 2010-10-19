@@ -24,12 +24,13 @@ def run(param_file, problem):
 if __name__ == '__main__':
     param_file = sys.argv[1]
     problem = sys.argv[2]
+    output_file = sys.argv[3]
 
     # Solve and gather measures.
     measure_vals = run(param_file, problem)
 
     # Write measures to file.
-    f = open('FD-' + problem + '.out', 'w')
+    f = open(output_file, 'w')
     for measure in measure_vals:
         print >> f, measure, measure_vals[measure]
     f.close()
