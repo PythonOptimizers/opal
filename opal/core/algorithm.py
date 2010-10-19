@@ -194,7 +194,10 @@ class Algorithm:
 
             `./algorithm paramfile problem`
         """
-        cmd = self.executable + ' ' + self.parameter_file + ' ' + problem.name
+        outputFile = self.get_measure_file(problem)
+        #if outputFile == 'STDOUT': # algorithm wrapper will output the measure value to screen
+        cmd = self.executable + ' ' + self.parameter_file + ' ' + problem.name + ' ' + outputFile 
+        #cmd = self.executable + ' ' + self.parameter_file + ' ' + problem.name
         return cmd
 
     def add_parameter_constraint(self, paramConstraint):
