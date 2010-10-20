@@ -53,9 +53,9 @@ class ModelData:
             self.problems = [TestProblem(name='TESTPROB')]
         else:
             self.problems = problems
-
-        self.parameters = activeParameters
         
+        self.parameters = activeParameters
+
         # active_parameters_names are the name of parameters that are
         # variables in the parameter optimization problem.
         # The other parameters remain fixed.
@@ -131,17 +131,16 @@ class ModelData:
         
         for prob in self.problems:
             #print '[modeldata.py]:Executing ' + prob
-            if self.algorithm.get_output() is None:
+            #if self.algorithm.get_output() is None:
                 # The algorithm out the measues to standard output
                 # We will redirect the output to the corresponding measure file
                 # Otherwise, the output of runing is outed to the /dev/null
-                output_file_name = algorithm.get_measure_file(prob)
-            else:
-                output_file_name = '/dev/null'
+            #    output_file_name = algorithm.get_measure_file(prob)
+            #else:
+            #    output_file_name = '/dev/null'
             #output_file_name = self.algorithm.name + '-' + prob.name + '.out'
-            self.platform.execute(self.algorithm.get_full_executable_command(self.parameters,prob),
-                                  output_file_name,
-                                  self.run_id + '-' + prob.name)
+            self.platform.execute(self.algorithm.get_full_executable_command(self.parameters, prob),
+                                  commandId=self.run_id + '-' + prob.name)
         return 
 
     def get_test_result(self):
