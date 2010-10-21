@@ -24,8 +24,7 @@ data = ModelData(DFO, problems, params)
 structure = ModelStructure(objective=avg_time, constraints=[])  # Unconstrained
 
 # Instantiate black-box solver.
-blackbox = BlackBoxModel(modelData=data,modelStructure=structure)
+blackbox = BlackBoxModel(modelData=data, modelStructure=structure)
 
 # Solve parameter optimization problem.
-NOMAD.set_parameter(name='MAX_BB_EVAL',value=10)
 NOMAD.solve(model=blackbox)

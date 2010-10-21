@@ -1,5 +1,4 @@
 # A sample gateway to DFO to be used by OPAL.
-# Will be run as 'python dfo_minimizer.py parameter_file problem'
 
 import os
 import sys
