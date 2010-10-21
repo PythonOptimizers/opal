@@ -11,7 +11,7 @@ def get_error(parameters, measures):
     val = measures["ERROR"].mean()
     return val
 
-# Parameters being tuned.
+# Parameters being tuned and problem list.
 params = FD.parameters   # All.
 problems = []            # None.
 

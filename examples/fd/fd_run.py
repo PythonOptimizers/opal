@@ -1,4 +1,4 @@
-from fd_algorithm import fd
+from fd import fd
 from math import pi, sin, cos
 import pickle
 import sys

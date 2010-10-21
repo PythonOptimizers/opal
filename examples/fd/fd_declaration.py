@@ -1,5 +1,4 @@
 # Description of the foward finite-difference "algorithm".
-
 from opal.core.algorithm import Algorithm
 from opal.core.parameter import Parameter
 from opal.core.measure   import Measure
