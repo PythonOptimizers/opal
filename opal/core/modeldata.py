@@ -6,12 +6,9 @@ import shutil
 import log
 import copy
 
-#import utility
-from measure import MeasureValueTable
-from testproblem import TestProblem
-
-from .. import config
-
+from opal import config
+from opal.core.measure import MeasureValueTable
+from opal.core.testproblem import TestProblem
 
 class TestResult:
 

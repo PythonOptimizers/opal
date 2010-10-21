@@ -2,9 +2,8 @@ import pickle
 import copy
 import os
 
-from .parameter import Parameter
-from .parameter import ParameterConstraint
-from .measure import Measure
+from opal.core.parameter import Parameter, ParameterConstraint
+from opal.core.measure import Measure
 
 __docformat__ = 'restructuredtext'
   

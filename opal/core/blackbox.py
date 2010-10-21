@@ -3,8 +3,7 @@ import sys
 import os.path
 import pickle
 
-from .. import config
-from .modelstructure import ModelEvaluator
+from opal.core.modelstructure import ModelEvaluator
 
 __docformat__ = 'restructuredtext'
 

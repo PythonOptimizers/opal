@@ -1,7 +1,6 @@
 import string
 
-from .data import Data
-from .data import DataSet
+from opal.core.data import Data, DataSet
 
 class Parameter(Data):
     """
