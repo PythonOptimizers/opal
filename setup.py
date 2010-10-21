@@ -8,7 +8,6 @@ setup(name='OPAL - OPtimization of ALgorithm',
       url='http://www.gerad.ca/~kiendc',
       packages=['opal',
                 'opal.core', 
-                'opal.Algorithms',
                 'opal.Platforms',
                 'opal.Solvers',
                 'opal.TestProblemCollections']
