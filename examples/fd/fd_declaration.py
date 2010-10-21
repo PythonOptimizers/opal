@@ -10,7 +10,7 @@ FD = Algorithm(name='FD', purpose='Forward Finite Differences')
 FD.set_executable_command('python fd_run.py')
 
 # Register parameter file used by black-box solver to communicate with FD.
-FD.set_parameter_file('fd.param')  # Should be chosen automatically and hidden.
+#FD.set_parameter_file('fd.param')  # Should be chosen automatically and hidden.
 
 # Define parameter and register it with algorithm.
 h = Parameter(kind='real', default=0.5, bound=(0, None),

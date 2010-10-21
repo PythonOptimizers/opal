@@ -1,4 +1,4 @@
-import pickle
+#import pickle
 import copy
 import os
 
@@ -50,7 +50,7 @@ class Algorithm:
         self.constraints = []
 
         # Computational description
-        self.parameter_file = None
+        self.parameter_file = self.name + '.param'
         self.parameter_writing_method = None
         self.measure_reading_method = None
         self.executable = None
@@ -82,7 +82,7 @@ class Algorithm:
         optimization process. The `writing_method` argument
         represent the file format. By default, `writing_method` is
         set to the `set_parameter_value()` method. In this case, the parameters
-        are dumped to a file named `parameter_file` using `pickle.dump()`.
+        are dumped to a file named `parameter_file`.
         If parameter_file is None, the parameter values 
         are transmitted to the executable driver as the arguments
         `writing_method` must have the form writing_method(algo, parameters)
@@ -110,7 +110,7 @@ class Algorithm:
         self.measure_reading_method = reading_method
         return
 
-    def set_parameter(self, parameters):
+    def set_parameter(self):
         """
         This virtual method determines how values for the parameters of the
         algorithm are set. Some algorithms set values through file, others
@@ -123,10 +123,8 @@ class Algorithm:
             self.parameter_writing_method(self, parameters)
         else:
             f = open(self.parameter_file, 'w')
-            pardict = {}
-            for param in parameters:
-                pardict[param.name] = param
-            pickle.dump(pardict, f)
+            for param in self.parameters:
+                f.write(param.name + ':' +  param.kind + ':' + str(param.value) + '\n')
             f.close()
         return
     
