@@ -6,8 +6,8 @@ The bare minimum (for now):
 -------------------
 
 1 - REQUIREMENTS
-    + Python version 2.6
-    (Could we get rid of Py2.6 requirements?)
+    + Python version 2.3 (maybe earlier?)
+    + NOMAD (download from http://www.gerad.ca/NOMAD)
 
 2 - INSTALL
     + Unzip the package
@@ -15,9 +15,7 @@ The bare minimum (for now):
     + Launch the command: 
       #shell:> python setup.py install
 
-3 - FIRST RUN
-    The first example of running paropt works on very simple problem.
-    To run paropt with an algorithm, we need 
-    i.   Insert the algorithm description
-    ii.  Insert the test problems description
-    iii. Define the parameter optimization problem
+3 - TESTING
+    Assuming your PYTHONPATH is set correctly, you should be able to do:
+    #shell:> cd examples/fd
+    #shell:> python fd_optimize.py
