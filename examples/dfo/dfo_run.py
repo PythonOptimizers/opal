@@ -5,31 +5,26 @@ import sys
 import pickle
 from string import atof
 from string import atoi
+from opal.core.io import *
 
 def write_specfile(parameter_file, loc='.', name='DFO.SPC'):
     "Write a valid DFO.SPC given a parameter file."
     # Read parameters into a dictionary
-    parms = []
-    f = open(parameter_file, 'rb')
-    try:
-        parms = pickle.load(f)
-    except:
-        raise IOError, 'Parameter file does not have expected format'
-    f.close()
+    parms = read_params_from_file(parameter_file)
 
     # Write out DFO.SPC. Parameters must be in order.
     f = open(os.path.join(loc, name), 'w')
-    f.write('%10i\n' % parms['NX'].value)
-    f.write('%10i\n' % parms['MAXIT'].value)
-    f.write('%10i\n' % parms['MAXNF'].value)
-    f.write('%10i\n' % parms['STPCRTR'].value)
-    f.write('%10.3e\n' % float(parms['DELMIN'].value))
-    f.write('%10.3e\n' % float(parms['STPTHR'].value))
-    f.write('%10.3e\n' % float(parms['CNSTOL'].value))
-    f.write('%10.3e\n' % float(parms['DELTA'].value))
-    f.write('%10.3e\n' % float(parms['PP'].value))
-    f.write('%10i\n' % parms['SCALE'].value)
-    f.write('%10i\n' % parms['IPRINT'].value)
+    f.write('%10i\n' % parms['NX'])
+    f.write('%10i\n' % parms['MAXIT'])
+    f.write('%10i\n' % parms['MAXNF'])
+    f.write('%10i\n' % parms['STPCRTR'])
+    f.write('%10.3e\n' % float(parms['DELMIN']))
+    f.write('%10.3e\n' % float(parms['STPTHR']))
+    f.write('%10.3e\n' % float(parms['CNSTOL']))
+    f.write('%10.3e\n' % float(parms['DELTA']))
+    f.write('%10.3e\n' % float(parms['PP']))
+    f.write('%10i\n' % parms['SCALE'])
+    f.write('%10i\n' % parms['IPRINT'])
     f.close()
     return
 
@@ -65,8 +60,11 @@ def solve(problem_name):
 	
     f.close()
     os.chdir('..')
-    return {'EXITCODE' : exitcode, 'FVAL' : fval, 'CPU' : ctime,
-            'FEVAL' : nfeval*(ncon + 1), 'DESCENT' : fzero-fval}
+    return {'EXITCODE' : exitcode,
+            'FVAL' : fval,
+            'CPU' : ctime,
+            'FEVAL' : nfeval*(ncon + 1),
+            'DESCENT' : fzero-fval}
 
 
 def compile_driver(problem_name, log_file='compile.log'):
@@ -79,8 +77,9 @@ def compile_driver(problem_name, log_file='compile.log'):
  
 
 if __name__ == '__main__':
-    param_file = sys.argv[1]
-    problem = sys.argv[2]
+    param_file  = sys.argv[1]
+    problem     = sys.argv[2]
+    output_file = sys.argv[3]
 
     # Ensure executable is present for current problem.
     executable = os.path.join(problem, 'dfomin')
@@ -90,9 +89,5 @@ if __name__ == '__main__':
     # Ensure spec file is in place and solve.
     write_specfile(param_file, loc=problem)
     measure_values = solve(problem)
-
-    f = open('DFO-'+ problem + '.out','w')
-    for measure in measure_values.keys():
-        print >> f, measure, measure_values[measure]
-    f.close()
+    write_measures_to_file(output_file, measure_values)
 
