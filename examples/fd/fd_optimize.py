@@ -26,9 +26,12 @@ NOMAD.solve(model=blackbox)
 # Inform user of expected optimal value for information.
 try:
     import numpy as np
-    from math import sqrt
     eps = np.finfo(np.double).eps
 except:
-    eps = 2.2e-16
+    # Approximate machine epsilon.
+    eps = 1.0
+    while 1+eps > 1: eps /= 2
+    eps *= 2
 
+from math import sqrt
 print 'Expected optimal value is approximately %21.15e' % sqrt(eps)
