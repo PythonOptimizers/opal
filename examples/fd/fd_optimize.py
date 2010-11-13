@@ -8,7 +8,7 @@ from opal.Solvers import NOMAD
 
 # Return the error measure.
 def get_error(parameters, measures):
-    val = measures["ERROR"].mean()
+    val = sum(measures["ERROR"])
     return val
 
 # Parameters being tuned and problem list.
