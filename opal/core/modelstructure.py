@@ -7,16 +7,60 @@ class ModelStructure:
     """
     *** THIS IS LACKING DOCUMENTATION ***
     """
-    def __init__(self, objective=None, constraints=[], **kwargs):
+    def __init__(self,
+                 name='modelstruct',
+                 objective=None, 
+                 constraints=[], 
+                 log=None,
+                 **kwargs):
+        self.name = name
+        self.working_directory = './' + name
+        self.log = log
+        if not os.path.exists(self.working_directory):
+            os.mkdir(self.working_directory)
         self.objective = MeasureFunction(objective)
-        self.constraints = constraints
-        #for constraint in constraints:
-        #    if type(constraint) == type((1,2)):
-        #        self.constraints.append()
-        #    else:
-        #        self.constraints.append((MeasureFunction(constraint),0))
-        self.log = None
-        pass
+        self.objective.dump(dir=self.working_directory)
+        #self.constraints = constraints
+        self.constraints = []
+        if constraints is not None:
+            for cons in constraints:
+                constraint = Constraint(lowerBound=cons[0], 
+                                        function=cons[1],
+                                        upperBound=cons[2])
+                self.constraint.append(constraint)
+                constraint.function.dump(dir=self.working_directory)
+                
+        return
+        
+    def evaluate(self,testResult):
+        if testResult.test_is_failed:
+            consValues = []
+            for i in range(len(self.constraints)):
+                consValues.append(1.0e20)
+            return (1.0e20,consValues)
+        
+        # Set the data for the used measures
+        # This setting helps to take the value of the elementary measure
+        #for measure in self.measures:
+        #    measure.set_data(testResult.measure_value_table)
+        
+        # Get the value of parameter vector p
+        # paramValues = [param.value for param in testResult.parameters if not param.is_const()]
+        # Get the optimizing parameter
+        parameterSet = {}
+        for param in testResult.parameters:
+            if not param.is_const():
+                parameterSet[param.name] = param
+        measureValues = testResult.measure_value_table
+        # Evaluate the objective function by passing the parameter vector and measure vector
+        # The 
+        objValue = self.objective(parameterSet,measureValues)
+        consValues = []
+        for i in range(len(self.constraints)):
+            #consValues.append(self.model.constraints[i][0](paramValues,self.measures) - self.model.constraints[i][1]) 
+            #consValues.append(self.model.constraints[i][0](parameterSet,measureValues) - self.model.constraints[i][1])
+            consValues.extend([val for val in self.constraints[i].evaluate(parameterSet,measureValues) if val is not None])
+        return (objValue,consValues)
 
 class MeasureFunction:
     """
@@ -26,22 +70,41 @@ class MeasureFunction:
     def __init__(self,function=None):
         if function is None:
             return
-        # It's important to define a function with two arguments: the parameter and the measure
-        # We check if the given function sastifies this constraint:
+        '''
+        It's important to define a function with two arguments: 
+        the parameter and the measure
+        We check if the given function sastifies this constraint:
+        '''
         if function.__code__.co_argcount < 2:
             return
-        self.file_name = os.path.dirname(os.path.abspath(function.__code__.co_filename)) + '/' + function.__code__.co_name + '.code'
-        f = open(self.file_name,'w')
-        marshal.dump(function.__code__,f)
-        f.close()
-        self.name = function.__code__.co_name
+        self.func = function
+        self.name = function.__code__.co_name    
+        #self.name = function.__code__.co_name
         pass
 
-    def evaluate(self,*args,**kwargs):
-
+    def evaluate(self, *args, **kwargs):
+        if self.func is not  None:
+            return self.func(*args, **kwargs)
+            
         f = open(self.file_name)
-        function = new.function(marshal.load(f),globals())
-        return function(*args,**kwargs)
+        func = new.function(marshal.load(f),globals()) # Keep self.func is None for the next pickling
+        f.close()
+        return func(*args, **kwargs)
+            
+        
+   
+    def dump(self, dir='./', fileName=None):
+        if fileName is None:
+            self.file_name = os.path.abspath(dir) + '/' + self.func.__code__.co_name + '.code'
+        else: 
+            self.file_name = os.path.abspath(dir) + '/' + fileName 
+        if self.func is None:
+            return
+        f = open(self.file_name,'w')
+        marshal.dump(self.func.__code__,f)
+        f.close()
+        self.func = None # This is neccessary for pickling a measure function. 
+        return
 
     def __call__(self,*args,**kwargs):
         return self.evaluate(*args,**kwargs)
@@ -59,7 +122,7 @@ class Constraint:
         self.function = MeasureFunction(function)
         self.lower_bound = lowerBound
         self.upper_bound = upperBound
-        pass
+        return
     
     def evaluate(self,*args,**kwargs):
         funcVal = self.function(*args,**kwargs)
@@ -69,7 +132,7 @@ class Constraint:
         if self.upper_bound is not None:
             values[1] = funcVal - self.upper_bound
         return values
-
+'''
 class ModelEvaluator:
     def __init__(self,model=None,measures=None,logging=None,**kwargs):
         self.model = model
@@ -77,37 +140,9 @@ class ModelEvaluator:
         self.logging = logging
         pass
 
-    def evaluate(self,testResult):
-        if testResult.test_is_failed:
-            consValues = []
-            for i in range(len(self.model.constraints)):
-                consValues.append(1.0e20)
-            return (1.0e20,consValues)
-        
-        # Set the data for the used measures
-        # This setting helps to take the value of the elementary measure
-        for measure in self.measures:
-            measure.set_data(testResult.measure_value_table)
-        
-        # Get the value of parameter vector p
-        # paramValues = [param.value for param in testResult.parameters if not param.is_const()]
-        # Get the optimizing parameter
-        parameterSet = {}
-        for param in testResult.parameters:
-            if not param.is_const():
-                parameterSet[param.name] = param
-        measureValues = testResult.measure_value_table
-        # Evaluate the objective function by passing the parameter vector and measure vector
-        # The 
-        objValue = self.model.objective(parameterSet,measureValues)
-        consValues = []
-        for i in range(len(self.model.constraints)):
-            #consValues.append(self.model.constraints[i][0](paramValues,self.measures) - self.model.constraints[i][1]) 
-            #consValues.append(self.model.constraints[i][0](parameterSet,measureValues) - self.model.constraints[i][1])
-            consValues.extend([val for val in self.model.constraints[i].evaluate(parameterSet,measureValues) if val is not None])
-        return (objValue,consValues)
-
+   
     def log(self,fileName):
         if self.logging is not None:
             self.logging.write(fileName,self.result_string)
         return
+'''

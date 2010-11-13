@@ -3,7 +3,7 @@ import sys
 import os.path
 import pickle
 
-from opal.core.modelstructure import ModelEvaluator
+#from opal.core.modelstructure import ModelEvaluator
 
 __docformat__ = 'restructuredtext'
 
@@ -64,7 +64,7 @@ class BlackBoxModel:
         #self.runFileName = runFileName
         self.data_file = dataFile
         self.logFileName = logFileName
-        activeParameters = self.model_data.get_active_parameters()
+        activeParameters = self.model_data.get_parameters()
         
         self.n_var = len(activeParameters)
         self.m_con = len(self.model_structure.constraints)
@@ -110,9 +110,9 @@ class BlackBoxModel:
         #print 'ho ho after getTestResult', self.modelData.measures[0],\
         #      self.modelData.measures[0].valuetable
         # An evaluator object may be redudant, remove it in the future
-        modelEvaluator = ModelEvaluator(self.model_structure,
-                                        self.model_data.measures)
-        (funcObj, constraints) = modelEvaluator.evaluate(testResult)
+        #modelEvaluator = ModelEvaluator(self.model_structure,
+        #                                self.model_data.measures)
+        (funcObj, constraints) = self.model_structure.evaluate(testResult)
         #print funcObj
         #print constraints
         self.log()
