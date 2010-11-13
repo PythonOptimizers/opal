@@ -1,2 +1,2 @@
 #from NOMAD import NOMADBlackbox
-from NOMAD import NOMAD
+from nomad import NOMAD
