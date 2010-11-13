@@ -1,2 +1,2 @@
-from LSF import LSF
-from LINUX import LINUX
+from lsf import LSF
+from linux import LINUX
