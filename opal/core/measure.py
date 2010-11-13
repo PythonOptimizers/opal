@@ -1,4 +1,4 @@
-import numpy
+#import numpy
 import copy
 
 class Measure:
@@ -102,7 +102,12 @@ class MeasureValueTable:
         col = []
         for prob in sorted(self.problem_names):
             col.append(self.table[prob][measure])
-        return numpy.array(col)
+        try:
+            import numpy
+            return numpy.array(col)
+        except ImportError:
+            import array
+            return array.array('d', col)
 
     def get_row(self,prob):
         row = []
