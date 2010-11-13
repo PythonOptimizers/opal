@@ -77,6 +77,7 @@ class Algorithm:
 
     def set_parameter_file(self, parameter_file, writing_method=None):
         """
+        
         Parameter values are set via file IO.
         This method assigns the parameter file name to be use throughout the
         optimization process. The `writing_method` argument
@@ -110,34 +111,58 @@ class Algorithm:
         self.measure_reading_method = reading_method
         return
 
-    def set_parameter(self):
+    def set_parameter(self, parameters, testId=''):
         """
-        This virtual method determines how values for the parameters of the
-        algorithm are set. Some algorithms set values through file, others
-        directly by argument.
+        
+        This method return an unique identity for the 
+        test basing on the parameter values
 
-        :parameters:
-            :parameters: List of parameter whose values are set.
+        The identity obtains by hashing the parameter values string. 
+        This is an inversable function. It means that we can get 
+        the parameter_values form the id
+
+
+        This virtual method determines how values for the parameters of the
+        algorithm are written to intermediated file that are read after by 
+        algorithm driver. 
+        
+        The format of intermediated file depend on this method. By default, 
+        the parameter set are written by pickle.
+       
         """
+        # Fill the values to parameter set
+        j = 0
+        for i in range(len(parameters)):
+            if self.parameters[i].name == parameters[j].name:
+                self.parameters[i].set_value(parameters[j].value)
+                j = j + 1
+    
+        # Write the values to a temporary parameter file 
+        # for communicating with an executable wrapper
         if self.parameter_writing_method is not None:
-            self.parameter_writing_method(self, parameters)
+            self.parameter_writing_method(self)
         else:
-            f = open(self.parameter_file, 'w')
+            paramFileName = self.get_parameter_file(testId=testId) 
+            f = open(paramFileName, 'w')
             for param in self.parameters:
                 f.write(param.name + ':' +  param.kind + ':' + str(param.value) + '\n')
             f.close()
-        return
+        return 
     
     def get_output(self):
         return 'file'
 
-    def get_measure_file(self, problem):
-        "Return measure file name."
-        return self.name + '-' + problem.name + '.out'
+    def get_parameter_file(self, testId=''):
+        return self.name + '_' + testId + '.param'
 
-    def get_measure(self, problem, measures):
+    def get_measure_file(self, problem, testId=''):
+        "Return measure file name."
+        return self.name + '_' + problem.name + '_' + testId + '.out' 
+
+    def get_measure(self, problem, testId):
         """
-        Ths virtual method determines how to extract a measure value from the
+
+        Ths virtual method determines how to  measure value from the
         output of the algorithm.
 
         :parameters:
@@ -150,8 +175,8 @@ class Algorithm:
         output. In the `run()` method, the output is redirected to file.
         """
         if self.measure_reading_method is not None:
-            return self.measure_reading_method(self, problem, measures)
-        measureFile = self.name + '-' + problem.name + '.out' 
+            return self.measure_reading_method(self, problem)
+        measureFile = self.get_measure_file(problem=problem, testId=testId)
         f = open(measureFile)
         lines = f.readlines()
         f.close()
@@ -166,13 +191,21 @@ class Algorithm:
             if len(fields) < 2:
                 continue
             measure_values[fields[0].strip(' ')] = fields[1].strip(' ')
-        for i in range(len(measures)):
-            kind = converters[measures[i].kind]
-            measure_values[measures[i].name] = \
-                    kind(measure_values[measures[i].name])
+        for i in range(len(self.measures)):
+            kind = converters[self.measures[i].kind]
+            try:
+                measure_values[self.measures[i].name] = \
+                    kind(measure_values[self.measures[i].name])
+            except ValueError:
+                return None # Return a signal indicating that certain error occurs
+                #raise Exception('Error in tranform ' + \
+                #                    measure_values[self.measures[i].name] + ' to ' + \
+                #                    self.measures[i].name + ' in ' +\
+                #                    measureFile + ': ' + line)
+
         return measure_values
 
-    def get_full_executable_command(self, paramValues, problem):
+    def get_full_executable_command(self, problem, testId=''):
         """
         .. warning::
 
@@ -191,12 +224,18 @@ class Algorithm:
 
             `./algorithm paramfile problem`
         """
-        outputFile = self.get_measure_file(problem)
+        outputFile = self.get_measure_file(problem=problem, testId=testId)
+        paramFile = self.get_parameter_file(testId=testId)
         #if outputFile == 'STDOUT': # algorithm wrapper will output the measure value to screen
-        cmd = self.executable + ' ' + self.parameter_file + ' ' + problem.name + ' ' + outputFile 
-        #cmd = self.executable + ' ' + self.parameter_file + ' ' + problem.name
+        cmd = self.executable + ' ' + paramFile + ' ' + problem.name + ' ' + outputFile 
         return cmd
 
+    def clean_running_data(self, testId=''):
+        paramFile = self.get_parameter_file(testId=testId)
+        if os.path.exists(paramFile):
+            os.remove(paramFile)
+        return
+    
     def add_parameter_constraint(self, paramConstraint):
         """
         Specify the domain of a parameter.
@@ -210,16 +249,16 @@ class Algorithm:
             raise TypeError, msg
         return
 
-    def are_parameters_valid(self, parameters):
+    def are_parameters_valid(self):
         """
         Return True if all parameters are in their domain and satisfy the
         constraints. Return False otherwise.
         """
         #print '[algorithm.py]',[param.value for param in parameters]
         for constraint in self.constraints:
-            if constraint(parameters) is ParameterConstraint.violated:
+            if constraint(self.parameters) is ParameterConstraint.violated:
                 return ParameterConstraint.violated
-        for param in parameters:
+        for param in self.parameters:
             if not param.is_valid():
                 return False
         return True

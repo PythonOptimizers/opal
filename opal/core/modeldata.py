@@ -5,10 +5,14 @@ import time
 import shutil
 import log
 import copy
+import logging
 
-from opal import config
-from opal.core.measure import MeasureValueTable
-from opal.core.testproblem import TestProblem
+#import utility
+from measure import MeasureValueTable
+from testproblem import TestProblem
+
+from .. import config
+
 
 class TestResult:
 
@@ -56,24 +60,24 @@ class ModelData:
         # active_parameters_names are the name of parameters that are
         # variables in the parameter optimization problem.
         # The other parameters remain fixed.
-        self.active_parameter_names = [par.name for par in activeParameters]
-        for param in self.parameters:
-            if param.name not in self.active_parameter_names:
-                param.set_as_const()
+        #activeParamNames = [par.name for par in activeParameters]
+        #for param in self.algorithm.parameters:
+        #    if param.name not in activeParamNames:
+        #        param.set_as_const()
         
         #self.parameters = copy.deepcopy(algorithm.parameters)
         self.measures = copy.deepcopy(algorithm.measures)
         
         # TODO
         # This is unrelated to the model data. It should be moved elsewhere.
-        self.platformName = ''
+        #self.platformName = ''
         self.platform = platform
 
         self.logging = logging
 
         # The monitor variables
         self.test_number = 0
-        self.run_id = None
+        self.test_id = None
 
         # The output
         self.test_is_failed = False
@@ -95,36 +99,69 @@ class ModelData:
         return
 
 
-    def get_active_parameters(self):
-        return [param for param in self.parameters if not param.is_const()]
+    def get_parameters(self):
+        return self.parameters
 
 
-    def fill_parameter_value(self,values):
+    #def fill_parameter_value(self,values):
+    #    j = 0
+    #    for i in range(len(self.parameters)):
+    #        if not self.parameters[i].is_const():
+    #            self.parameters[i].set_value(values[j])
+    #            j = j + 1
+    #    return
+
+    def initialize(self, parameterValues):
+        '''
+        
+        This method return an unique identity for the 
+        test basing on the parameter values
+    
+        The identity obtains by hashing the parameter values string. 
+        This is an inversable function. It means that we can get 
+        the parameter_values form the id
+        '''
+        logging.basicConfig(filename='debug.log',
+                            level=logging.DEBUG)
+        logger = logging.getLogger('modeldata.initialize')
+        valuesStr = '_'
         j = 0
         for i in range(len(self.parameters)):
-            if not self.parameters[i].is_const():
-                self.parameters[i].set_value(values[j])
-                j = j + 1
-        return
-
-
-    def run(self,parameter_values):
-        self.fill_parameter_value(parameter_values)
-        #print '[modeldata.py]',[param.value for param in self.parameters]
+            self.parameters[i].set_value(parameterValues[j])
+            valuesStr = valuesStr + str(parameterValues[j]) + '_'
+            j = j + 1
+    
+        self.test_id = str(hash(valuesStr))
         self.test_number += 1
         self.test_is_failed = False
-        if not self.algorithm.are_parameters_valid(self.parameters):
+        logger.debug('  valueStr:' + valuesStr)
+        logger.debug('  test_id:' + self.test_id)
+        return 
+
+    def finalize(self):
+        self.algorithm.clean_running_data(testId=self.test_id)
+        return
+        
+    def run(self, parameterValues):
+        self.initialize(parameterValues=parameterValues)
+        #print '[modeldata.py]',[param.value for param in self.parameters]
+        
+        self.algorithm.set_parameter(parameters=self.parameters, 
+                                     testId=self.test_id)
+        if not self.algorithm.are_parameters_valid():
             #print '[modeldata.py]','Parameter values are invalid, test fails'
             self.test_is_failed = True
             return
         #print '[modeldata.py]','Parameter values are valid'
         
-        ltime = time.localtime()
-        self.run_id = str(ltime.tm_year) +  str(ltime.tm_mon) + str(ltime.tm_mday) + \
-                 str(ltime.tm_hour) + str(ltime.tm_min) + str(ltime.tm_sec)
+        #ltime = time.localtime()
+        #self.run_id = str(ltime.tm_year) +  str(ltime.tm_mon) + str(ltime.tm_mday) + \
+        #         str(ltime.tm_hour) + str(ltime.tm_min) + str(ltime.tm_sec)
         # Launches the algorithm routines
         
-        self.algorithm.set_parameter()
+        #self.run_id = get_test_id(self, parameterValues)
+        
+        self.platform.initialize(self.test_id)
         
         for prob in self.problems:
             #print '[modeldata.py]:Executing ' + prob
@@ -136,53 +173,68 @@ class ModelData:
             #else:
             #    output_file_name = '/dev/null'
             #output_file_name = self.algorithm.name + '-' + prob.name + '.out'
-            self.platform.execute(self.algorithm.get_full_executable_command(self.parameters, prob),
-                                  commandId=self.run_id + '-' + prob.name)
+            self.platform.execute(\
+                self.algorithm.get_full_executable_command(problem=prob, 
+                                                           testId=self.test_id))
+            
+        resultIsReady = "numended(/g" + self.test_id + ", *)"
+        self.platform.waitForCondition(resultIsReady)
+        
         return 
 
     def get_test_result(self):
         self.measure_value_table.clear()
         if self.test_is_failed is True:
+            self.finalize()
             return TestResult(testIsFailed=True)
-        resultIsReady = "ended(" + self.run_id + "*-LSF)"
-        self.platform.waitForCondition(resultIsReady)
-
+       
         for prob in self.problems:
-            measure_values = self.algorithm.get_measure(prob,self.measures)
+            # We accept only a perfect measure values table, this means the 
+            # atomic measure are get from all of the problems. Any error 
+            # causes the test failed signal.
+            measure_values = self.algorithm.get_measure(prob, self.test_id)
+            if measure_values is None: # Some error in running the algorithm, 
+                                       # so we could not get the meaure
+                self.finalize()
+                return TestResult(testIsFailed=True)
             #print measure_values
-            if len(measure_values) != 0:
-                self.measure_value_table.add_problem_measures(prob.name,measure_values)
+            if len(measure_values) == 0: # Some error in getting the measure, 
+                                         # so we could not get the meaure
+                self.finalize()
+                return TestResult(testIsFailed=True) 
+            self.measure_value_table.add_problem_measures(prob.name,measure_values)
         #print "ho ho test.py ",self.problems
+        self.finalize()
         return TestResult(testIsFailed=False,
                           testNumber=self.test_number,
                           problems=self.problems,
                           parameters=self.parameters,
                           measureValueTable=self.measure_value_table)
 
-    def synchronize_measures(self):
-        for i in range(len(self.measures)):
-            tmp = self.measures[i]
-            self.measures[i] = self.measures[i].get_global_object()
-            del tmp
-        # Resolve the link betwwen the measure functions and the value table
-        return
+    #def synchronize_measures(self):
+    #    for i in range(len(self.measures)):
+    #        tmp = self.measures[i]
+    #        self.measures[i] = self.measures[i].get_global_object()
+    #        del tmp
+    #    # Resolve the link betwwen the measure functions and the value table
+    #    return
 
     def log(self,fileName):
         self.logging.write(self,fileName)
     
-    def reduce_problem_set(self):
-        newProblemSet = []
-        i = 1
-        for prob in self.problems:
-            if i % 2 == 0:
-                newProblemSet.append(prob)
-            i = i + 1
-        activeParameters = self.get_active_parameters()
-        reducedData = ModelData(algorithm=self.algorithm,
-                                problems=newProblemSet,
-                                activeParameters=activeParameters,
-                                platform=self.platform)
-        return reducedData
+    #def reduce_problem_set(self):
+    #    newProblemSet = []
+    #    i = 1
+    #    for prob in self.problems:
+    #        if i % 2 == 0:
+    #            newProblemSet.append(prob)
+    #        i = i + 1
+    #    activeParameters = self.get_active_parameters()
+    #    reducedData = ModelData(algorithm=self.algorithm,
+    #                            problems=newProblemSet,
+    #                            activeParameters=activeParameters,
+    #                            platform=self.platform)
+    #    return reducedData
 
         
         
