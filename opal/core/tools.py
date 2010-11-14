@@ -1,4 +1,5 @@
 # Miscellaneous tools.
+import re
 
 def extract_measure(content, description, name, valueType = 'int'):
     numberPattern = {'int':'\d+',
