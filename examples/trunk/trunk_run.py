@@ -6,7 +6,6 @@ import tempfile
 import os
 import sys
 import shutil
-import time
 import re
 
 src = 'trunk.src'
@@ -69,9 +68,9 @@ def get_measures(stats_file):
         measures['FVAL'] = float(match.groupdict()['FVAL'])
     return measures
 
-def write_specfile(params):
-    if params is None: # No spc file is created
-        return
+
+def write_specfile(param_file):
+    params = read_params_from_file(param_file)
     f = open('trunk.spc','w')
     f.write('{0:<10d} ## Max. number of iterations         : (I4)\n'\
                 .format(params['maxit']))
@@ -114,13 +113,13 @@ def write_specfile(params):
     f.close()
     return
 
+
 def run(param_file, problem):
-    params = read_params_from_file(param_file)
     curDir = os.getcwd()
     workDir = tempfile.mkdtemp()
     copy_tree(src, workDir)
     os.chdir(workDir)
-    write_specfile(params)
+    write_specfile(param_file)
     os.system('sifdecode ' + problem + ' > /dev/null')
     os.system('make trunkd > /dev/null')
     os.system('./trunkd > ' + problem + '.sol')
