@@ -70,7 +70,7 @@ trunk.add_parameter_constraint(ParameterConstraint('eta1 < eta2'))
 trunk.add_parameter_constraint(ParameterConstraint('eta1 > 0'))
 trunk.add_parameter_constraint(ParameterConstraint('eta2 < 1'))
 trunk.add_parameter_constraint(ParameterConstraint('gamma1 > 0'))
-trunk.add_parameter_constraint(ParameterConstraint('gamma1 < gamma2'))
+trunk.add_parameter_constraint(ParameterConstraint('gamma1 <= gamma2'))
 trunk.add_parameter_constraint(ParameterConstraint('gamma2 < 1'))
 trunk.add_parameter_constraint(ParameterConstraint('gamma3 > 1'))
 
