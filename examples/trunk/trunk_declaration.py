@@ -30,6 +30,7 @@ trunk.add_param(Parameter(name='gamma1',
 trunk.add_param(Parameter(name='gamma2',
                           kind='real',
                           default=1.000,
+                          bound=[0,1],
                           description='Trust-region moderate shrink factor'))
 trunk.add_param(Parameter(name='gamma3',
                           kind='real',
@@ -66,12 +67,13 @@ trunk.add_param(Parameter(name='level',
                           description='Level, used for interpolation'))
 
 # Register constraints on the parameters.
+
 trunk.add_parameter_constraint(ParameterConstraint('eta1 < eta2'))
 trunk.add_parameter_constraint(ParameterConstraint('eta1 > 0'))
 trunk.add_parameter_constraint(ParameterConstraint('eta2 < 1'))
 trunk.add_parameter_constraint(ParameterConstraint('gamma1 > 0'))
 trunk.add_parameter_constraint(ParameterConstraint('gamma1 <= gamma2'))
-trunk.add_parameter_constraint(ParameterConstraint('gamma2 < 1'))
+#trunk.add_parameter_constraint(ParameterConstraint('gamma2 < 1'))
 trunk.add_parameter_constraint(ParameterConstraint('gamma3 > 1'))
 
 # Register atomic measures.
