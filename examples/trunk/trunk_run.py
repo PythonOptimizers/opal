@@ -135,6 +135,7 @@ if __name__ == '__main__':
     output_file = sys.argv[3]
 
     # Solve, gather measures and write to file.
+    param_file = os.path.abspath(param_file)
     measures = run(param_file, problem)
     write_measures_to_file(output_file, measures)
 
