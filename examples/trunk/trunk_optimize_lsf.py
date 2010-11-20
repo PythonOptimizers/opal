@@ -20,9 +20,9 @@ params = [param for param in trunk.parameters if param.name in par_names]
 problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
                                                              'BROYDN7D',
                                                              'BRYBND',
-                                                            # 'CURLY10',
-                                                            # 'CURLY20',
-                                                            # 'CURLY30',
+                                                             'CURLY10',
+                                                             'CURLY20',
+                                                             'CURLY30',
                                                              'CRAGGLVY',
                                                              'DIXON3DQ',
                                                              'EIGENALS',
@@ -31,6 +31,9 @@ problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
                                                              'GENROSE',
                                                              'HIELOW',
                                                              'MANCINO',
+                                                             'NCB20',
+                                                             'NCB20B',
+                                                             'NONDQUAR',
                                                              'NONDQUAR',
                                                              'POWER',
                                                              'SENSORS',
@@ -39,7 +42,6 @@ problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
                                                              'TRIDIA',
                                                              'WOODS']]
 
-# 'NCB20', 'NCB20B' does not work
 # Define parameter optimization problem.
 LSF.set_config(parameterName="-m",
                parameterValue='"lin01 lin02 lin03 lin04"')
