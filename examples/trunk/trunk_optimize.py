@@ -1,4 +1,5 @@
 # Define a parameter optimization problem in relation to the TRUNK solver.
+# This is the sequential version.
 from trunk_declaration import trunk
 
 from opal import ModelStructure

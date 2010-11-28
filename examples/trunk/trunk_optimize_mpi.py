@@ -1,4 +1,7 @@
 # Define a parameter optimization problem in relation to the TRUNK solver.
+# This is a parallel version in which the black box solver evaluates the
+# worth of neighbors in parallel. The black box evaluation itself is
+# sequential.
 from trunk_declaration import trunk
 
 from opal import ModelStructure

@@ -1,4 +1,8 @@
 # Define a parameter optimization problem in relation to the TRUNK solver.
+# This is a parallel version in which the test problems are placed in a
+# LSF queue to be solved in parallel. This strategy effectively
+# parallelizes the black box. This is an alternative to the parallelization
+# implemented in trunk_optimize_opalmpi.py.
 from trunk_declaration import trunk
 
 from opal import ModelStructure
