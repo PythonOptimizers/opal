@@ -3,14 +3,16 @@ import os
 import time
 
 from ..core.platform import Platform
+from ..core import log
 
 class MPIPlatform(Platform):
-    def __init__(self,**kwargs):
+    def __init__(self,logHandlers=[],**kwargs):
         Platform.__init__(self,'MPI',**kwargs)
         #self.communicator = MPI.COMM_WORLD
         self.children = []
-        self.wrapper_name = 'run_wrapper_'
+        self.wrapper_name = ''
         self.configuration = {}
+        self.logger = log.OPALLogger(name='mpiPlatform', handlers=logHandlers)
         pass
    
     def set_config(self, parameterName, parameterValue):
@@ -18,10 +20,11 @@ class MPIPlatform(Platform):
         return
 
     def initialize(self, testId):
-        self.wrapper_name = self.wrapper_name + testId + '.py'
+        self.wrapper_name = 'run_wrapper_' + testId + '.py'
         if not os.path.exists(self.wrapper_name):
             self.create_wrapper()            
         self.children = []
+        #self.logger.log('Platform is initialized')
         return
 
     def execute(self, command, output='/dev/null'):
@@ -34,6 +37,7 @@ class MPIPlatform(Platform):
         #child = self.communicator.Spawn('python',
         #                        [self.wrapper_name, command])
         from mpi4py import MPI
+        #self.logger.log('Execute command: '+ command)
         child = MPI.COMM_WORLD.Spawn('python',
                                      [self.wrapper_name, command])
         self.children.append(child)
