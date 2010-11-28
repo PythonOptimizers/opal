@@ -2,6 +2,7 @@ import sys
 import os.path
 import marshal
 import new
+import log
 
 class ModelStructure:
     """
@@ -11,11 +12,10 @@ class ModelStructure:
                  name='modelstruct',
                  objective=None, 
                  constraints=[], 
-                 log=None,
+                 logHandlers=[],
                  **kwargs):
         self.name = name
         self.working_directory = './' + name
-        self.log = log
         if not os.path.exists(self.working_directory):
             os.mkdir(self.working_directory)
         self.objective = MeasureFunction(objective)
@@ -30,13 +30,18 @@ class ModelStructure:
                 self.constraint.append(constraint)
                 constraint.function.dump(dir=self.working_directory)
                 
+        self.logger = log.OPALLogger(name='modelStructure',
+                                     handlers=logHandlers)
         return
         
     def evaluate(self,testResult):
+        self.logger.log('Begin of a model evaluation')
         if testResult.test_is_failed:
             consValues = []
             for i in range(len(self.constraints)):
                 consValues.append(1.0e20)
+            self.logger.log(' - The model values are infinite')
+            self.logger.log('End of a model evaluation')
             return (1.0e20,consValues)
         
         # Set the data for the used measures
@@ -57,9 +62,13 @@ class ModelStructure:
         objValue = self.objective(parameterSet,measureValues)
         consValues = []
         for i in range(len(self.constraints)):
-            #consValues.append(self.model.constraints[i][0](paramValues,self.measures) - self.model.constraints[i][1]) 
-            #consValues.append(self.model.constraints[i][0](parameterSet,measureValues) - self.model.constraints[i][1])
-            consValues.extend([val for val in self.constraints[i].evaluate(parameterSet,measureValues) if val is not None])
+            consValues.extend([val for val \
+                                   in self.constraints[i].evaluate(parameterSet,
+                                                                   measureValues) \
+                                   if val is not None])
+        self.logger.log(' - OBJ: ' + str(objValue) + \
+                         ', CONS: ' + str(consValues))
+        self.logger.log('End of model evaluation')
         return (objValue,consValues)
 
 class MeasureFunction:

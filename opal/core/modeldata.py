@@ -5,7 +5,7 @@ import time
 import shutil
 import log
 import copy
-import logging
+#import logging
 
 #import utility
 from measure import MeasureValueTable
@@ -47,7 +47,7 @@ class ModelData:
     """
 
     def __init__(self, algorithm, problems, activeParameters,
-                platform=config.platform, logging=log.TestLogging(), **kwargs):
+                platform=config.platform, logHandlers=[], **kwargs):
         # The core variables
         self.algorithm = algorithm
         if (problems is None) or (len(problems) == 0):
@@ -73,8 +73,9 @@ class ModelData:
         #self.platformName = ''
         self.platform = platform
 
-        self.logging = logging
-
+        # By default, logger is Logger object of Python's logging module
+        # Logger is set name to modeldata, level is info.
+        self.logger = log.OPALLogger(name='modelData', handlers=logHandlers)
         # The monitor variables
         self.test_number = 0
         self.test_id = None
@@ -86,17 +87,18 @@ class ModelData:
         self.measure_value_table = MeasureValueTable(problem_names=pNames,
                                                      measure_names=mNames)
         # Set options
-        self.set_options(**kwargs)
-        pass
 
-
-    def set_options(self,**kwargs):
-        # set the log file
-        if 'logFile' in kwargs.keys():
-            self.logFileName  = os.path.join(os.getcwd(), logFile)
-        else:
-            self.logFileName  = os.path.join(os.getcwd(), 'test-bed.log')
+        #self.set_options(**kwargs)
         return
+
+
+    #def set_options(self,**kwargs):
+    #    # set the log file
+    #    if 'logFile' in kwargs.keys():
+    #        self.logFileName  = os.path.join(os.getcwd(), logFile)
+    #    else:
+    #        self.logFileName  = os.path.join(os.getcwd(), 'test-bed.log')
+    #    return
 
 
     def get_parameters(self):
@@ -121,36 +123,38 @@ class ModelData:
         This is an inversable function. It means that we can get 
         the parameter_values form the id
         '''
-        logging.basicConfig(filename='debug.log',
-                            level=logging.DEBUG)
-        logger = logging.getLogger('modeldata.initialize')
+        
         valuesStr = '_'
         j = 0
         for i in range(len(self.parameters)):
             self.parameters[i].set_value(parameterValues[j])
             valuesStr = valuesStr + str(parameterValues[j]) + '_'
-            j = j + 1
-    
+            j = j + 1    
         self.test_id = str(hash(valuesStr))
         self.test_number += 1
         self.test_is_failed = False
-        logger.debug('  valueStr:' + valuesStr)
-        logger.debug('  test_id:' + self.test_id)
+        self.measure_value_table.clear()
+        self.logger.log('Initialize the ' + str(self.test_number) + \
+                         ' test with id ' + str(self.test_id))
+        self.logger.log(' - Parameter values: ' + valuesStr.replace('_', ' ')) 
         return 
 
     def finalize(self):
         self.algorithm.clean_running_data(testId=self.test_id)
+        self.logger.log('Finalize the test ' + str(self.test_id))
         return
         
     def run(self, parameterValues):
         self.initialize(parameterValues=parameterValues)
         #print '[modeldata.py]',[param.value for param in self.parameters]
-        
+        self.logger.log('Run the test ' + str(self.test_id))
         self.algorithm.set_parameter(parameters=self.parameters, 
                                      testId=self.test_id)
         if not self.algorithm.are_parameters_valid():
             #print '[modeldata.py]','Parameter values are invalid, test fails'
             self.test_is_failed = True
+            self.logger.log(' - The parameter values are invalid, ' + \
+                             'the test is stopped')
             return
         #print '[modeldata.py]','Parameter values are valid'
         
@@ -162,7 +166,7 @@ class ModelData:
         #self.run_id = get_test_id(self, parameterValues)
         
         self.platform.initialize(self.test_id)
-        
+        self.logger.log(' - Solve the test problems') 
         for prob in self.problems:
             #print '[modeldata.py]:Executing ' + prob
             #if self.algorithm.get_output() is None:
@@ -179,11 +183,11 @@ class ModelData:
             
         resultIsReady = "numended(/g" + self.test_id + ", *)"
         self.platform.waitForCondition(resultIsReady)
-        
+        self.logger.log(' - All problems are solved, the test is stopped')
         return 
 
     def get_test_result(self):
-        self.measure_value_table.clear()
+        self.logger.log('Collect the test result')
         if self.test_is_failed is True:
             self.finalize()
             return TestResult(testIsFailed=True)
@@ -204,7 +208,9 @@ class ModelData:
                 return TestResult(testIsFailed=True) 
             self.measure_value_table.add_problem_measures(prob.name,measure_values)
         #print "ho ho test.py ",self.problems
+        self.logger.log(str(self.measure_value_table))
         self.finalize()
+        
         return TestResult(testIsFailed=False,
                           testNumber=self.test_number,
                           problems=self.problems,

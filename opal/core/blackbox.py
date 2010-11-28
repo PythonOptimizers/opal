@@ -2,6 +2,7 @@ import os
 import sys
 import os.path
 import pickle
+import log
 
 #from opal.core.modelstructure import ModelEvaluator
 
@@ -43,7 +44,7 @@ class BlackBox:
 class BlackBoxModel:
     def __init__(self, modelData=None, modelStructure=None,
                  runFileName='blackbox.py', dataFile='blackbox.dat',
-                 logFileName='test.log', **kwargs):
+                 logHandlers=[], **kwargs):
         """
         A `BlackBoxModel` encapsulates the 
         information of a parameter optimization problem.
@@ -63,7 +64,10 @@ class BlackBoxModel:
         self.model_structure = modelStructure
         #self.runFileName = runFileName
         self.data_file = dataFile
-        self.logFileName = logFileName
+        self.logger = log.OPALLogger(name='opalBlackboxModel',
+                                     handlers=logHandlers)
+        
+      
         activeParameters = self.model_data.get_parameters()
         
         self.n_var = len(activeParameters)
@@ -87,8 +91,8 @@ class BlackBoxModel:
         self.save()
         pass
 
-    def set_options(self,**kwargs):
-        return
+    #def set_options(self,**kwargs):
+    #    return
     
     #def has_surrogate(self):
     #    return self.surrogate is not None
@@ -104,7 +108,7 @@ class BlackBoxModel:
         Output: Value of objective function and constrains values list
         In the case of error, two None values are returned
         """
-
+        self.logger.log('Begin a blackbox evaluation')
         self.model_data.run(inputValues)
         testResult = self.model_data.get_test_result()
         #print 'ho ho after getTestResult', self.modelData.measures[0],\
@@ -115,24 +119,24 @@ class BlackBoxModel:
         (funcObj, constraints) = self.model_structure.evaluate(testResult)
         #print funcObj
         #print constraints
-        self.log()
+        self.logger.log('End of blackbox evaluation')
         return (funcObj, constraints)
     
     def save(self):
-        try:
-            blackboxDataFile = open(self.data_file, "w")
-            pickle.dump(self, blackboxDataFile)
-            blackboxDataFile.close()
-        except TypeError:
-            print "Error in saving"
+        #try:
+        blackboxDataFile = open(self.data_file, "w")
+        pickle.dump(self, blackboxDataFile)
+        blackboxDataFile.close()
+        #except TypeError:
+        #    print "Error in saving"
         return
     
-    def log(self):
-        if self.model_data.log != None:
-            self.model_data.log(self.logFileName)
-        if self.model_structure.log != None:
-            self.model_structure.log(self.logFileName)
-        return
+    #def log(self):
+    #    if self.model_data.log != None:
+    #        self.model_data.log(self.logFileName)
+    #    if self.model_structure.log != None:
+    #        self.model_structure.log(self.logFileName)
+    #    return
     
     def get_iniitial_points(self):
         return self.initial_points
@@ -140,12 +144,12 @@ class BlackBoxModel:
     def get_bound_constraints(self):
         return self.bounds
 
-    def generate_surrogate(self):
-        reducedModelData = self.model_data.reduce_problem_set()
-        data_fname = self.dataFileName.strip('.dat') + '_surrogate.dat'
-        log_fname = self.logFileName.strip('.log') + '_surrogate.log'
-        surrogate = BlackBoxModel(modelData=reducedModelData,
-                                  modelStructure=self.model_structure,
-                                  dataFileName=data_fname,
-                                  logFileName=log_fame)
-        return surrogate
+    #def generate_surrogate(self):
+    #    reducedModelData = self.model_data.reduce_problem_set()
+    #    data_fname = self.dataFileName.strip('.dat') + '_surrogate.dat'
+    #    log_fname = self.logFileName.strip('.log') + '_surrogate.log'
+    #    surrogate = BlackBoxModel(modelData=reducedModelData,
+    #                              modelStructure=self.model_structure,
+    #                              dataFileName=data_fname,
+    #                              logFileName=log_fame)
+    #    return surrogate
