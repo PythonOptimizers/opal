@@ -1,4 +1,8 @@
 # Define a parameter optimization problem in relation to the TRUNK solver.
+# This is a parallel version in which the test problems are solved in
+# parallel in independent subprocesses. This strategy effectively
+# parallelizes the black box. This is an alternative to the parallelization
+# implemented in trunk_optimize_opalmpi.py.
 from trunk_declaration import trunk
 
 from opal import ModelStructure
@@ -57,4 +61,3 @@ NOMADMPI.set_mpi_config(name='np', value=5)
 NOMADMPI.set_parameter(name='MAX_BB_EVAL', value=5)
 NOMADMPI.set_parameter(name='DISPLAY_DEGREE', value=2)
 NOMADMPI.solve(model=blackbox)
-
