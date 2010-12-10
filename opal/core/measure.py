@@ -1,5 +1,6 @@
-#import numpy
 import copy
+
+from tools import TableFormatter
 
 class Measure:
     '''
@@ -13,12 +14,12 @@ class Measure:
     # the same measure are created. There are only one object that created in module paropt.Measures is used
     # to evaluated the optimization model. This object call global measure object
     # The __instances__ variable have two roles:
-    #   1 - Keep only one object for one measure. We have to synchronize or remove the clonned object (that may be 
+    #   1 - Keep only one object for one measure. We have to synchronize or remove the clonned object (that may be
     #       created by pickling
     #   2 - Set the data table for global measure object
-    
+
     nullValue = {'real':0.0,'integer':0}
-  
+
     def __init__(self, name=None, description='', kind=None, **kwargs):
         self.name = name
         self.description = description
@@ -34,11 +35,11 @@ class Measure:
 
     def get_global_object(self):
         # The function is used to determine the global measure object.
-        # When a measure object is cloned (not created by __init__), the uniqueness is 
+        # When a measure object is cloned (not created by __init__), the uniqueness is
         # not assured. In this case, we have to replace the clonned object by the global measure object
         # pickle.load is an example
         # Return None if it is itself the global measure object or the the global measure object is not defined
-        
+
         if self.name not in Measure.__instances__.keys():
             Measure.__instances__[self.name] = self
             return self
@@ -67,10 +68,9 @@ class Measure:
             return self.get_vector_value(p)
         else:
             return self.get_problem_value(p,prob)
-          
+
 
 class MeasureValueTable:
-
 
     def __init__(self,problem_names,measure_names):
         sortedProblemNames = sorted(problem_names)
@@ -92,7 +92,7 @@ class MeasureValueTable:
         if type(key) == type(('Problem','Measure')):
             return self.get_cell(key[0],key[1])
         return self.get_column(key)
-        
+
 
     def get_cell(self,prob,measure):
         #print prob,measure,self.table[measure],self.problem_indices[prob]
@@ -114,7 +114,7 @@ class MeasureValueTable:
         for measure in sorted(self.measure_names):
             row.append(self.table[prob][measure])
         return row
-  
+
     def get_problems(self):
         return sorted(self.problem_names)
 
@@ -132,16 +132,22 @@ class MeasureValueTable:
             del self.table[problem]
         return
 
-    def __string__(self):
+    def __str__(self, formatter=TableFormatter()):
         #print self.table
         #print self.problem_indices
         #print self.measure_names
+        return self.toString(formatter=formatter)
+
+
+    def toString(self, formatter=TableFormatter()):
         tableStr = ''
+        headerStr = formatter.set_header(headers=self.measure_names)
+        if headerStr is None:
+            return None
+        tableStr = tableStr + headerStr
         for prob in sorted(self.table.keys()):
-            tableStr = tableStr + prob 
-            for measure in sorted(self.table[prob].keys()): 
-                tableStr = tableStr + ' ' + str(self.table[prob][measure])
-            tableStr = tableStr + '\n'
-        tableStr = tableStr.strip('\n')
+            recordStr = formatter.format(prob, self.table[prob])
+            if recordStr is not None:
+                tableStr = tableStr + recordStr
         return tableStr
 
