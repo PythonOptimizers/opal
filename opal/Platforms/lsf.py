@@ -11,9 +11,9 @@ class LSFPlatform(Platform):
         self.configuration = {}
         self.group_id = None
         pass
-   
+
     def set_config(self, parameterName, parameterValue):
-        self.configuration[parameterName] = parameterValue 
+        self.configuration[parameterName] = parameterValue
         return
 
     def initialize(self, testId):
@@ -107,6 +107,6 @@ class LSFPlatform(Platform):
         os.system('echo ' + timeStr + ' End waiting >> lsf-sync.log')
         os.remove('synchronizer.py')
         return
-    
+
 
 LSF = LSFPlatform()

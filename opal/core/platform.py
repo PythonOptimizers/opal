@@ -3,4 +3,4 @@ class Platform:
         self.name = name
         self.logFile = logFile
         pass
-    
+

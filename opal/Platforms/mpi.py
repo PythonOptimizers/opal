@@ -14,15 +14,15 @@ class MPIPlatform(Platform):
         self.configuration = {}
         self.logger = log.OPALLogger(name='mpiPlatform', handlers=logHandlers)
         pass
-   
+
     def set_config(self, parameterName, parameterValue):
-        self.configuration[parameterName] = parameterValue 
+        self.configuration[parameterName] = parameterValue
         return
 
     def initialize(self, testId):
         self.wrapper_name = 'run_wrapper_' + testId + '.py'
         if not os.path.exists(self.wrapper_name):
-            self.create_wrapper()            
+            self.create_wrapper()
         self.children = []
         #self.logger.log('Platform is initialized')
         return
@@ -41,7 +41,7 @@ class MPIPlatform(Platform):
         child = MPI.COMM_WORLD.Spawn('python',
                                      [self.wrapper_name, command])
         self.children.append(child)
-        return 
+        return
 
     def create_wrapper(self):
         tab = ' '*4
@@ -58,8 +58,8 @@ class MPIPlatform(Platform):
         f.write('parent.Barrier()\n')
         f.write('parent.Disconnect()\n')
         f.close()
-        
-        
+
+
     def waitForCondition(self,condition):
         for child in self.children:
             child.Barrier()
@@ -67,6 +67,6 @@ class MPIPlatform(Platform):
         os.remove(self.wrapper_name)
         self.children = []
         return
-    
+
 
 OPALMPI = MPIPlatform()
