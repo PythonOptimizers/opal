@@ -7,10 +7,18 @@ from opal.core.measure import Measure
 
 __docformat__ = 'restructuredtext'
   
-class Algorithm:
+class AlgorithmWrapper:
     """
-    An abstract class to define the specifics of an algorithm. 
+    
+    An abstract class to define the specifics of a wrapper of an algorithm. 
+    An object of this class works as an interface of the target algorithm 
+    with OPAL. It contains at least three informations:
+    
+    1. What are the parammeters
+    2. How to invoke the algorithm to solve a problem
+    3. What are the measures we get after running algorithm
 
+    
     :parameters:
         :name:  Name of the algorithm (string)
         :purpose: Synopsis of purpose (string)

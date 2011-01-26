@@ -180,18 +180,6 @@ class ModelData:
             self.platform.execute(\
                 self.algorithm.get_full_executable_command(problem=prob, 
                                                            testId=self.test_id))
-            measure_values = self.algorithm.get_measure(prob, self.test_id)
-            if measure_values is None: # Some error in running the algorithm, 
-                                       # so we could not get the meaure
-                self.finalize()
-                return TestResult(testIsFailed=True)
-            #print measure_values
-            if len(measure_values) == 0: # Some error in getting the measure, 
-                                         # so we could not get the meaure
-                self.finalize()
-                return TestResult(testIsFailed=True) 
-            self.measure_value_table.add_problem_measures(prob.name,measure_values)
-            
         resultIsReady = "numended(/g" + self.test_id + ", *)"
         self.platform.waitForCondition(resultIsReady)
         self.logger.log(' - All problems are solved, the test is stopped')

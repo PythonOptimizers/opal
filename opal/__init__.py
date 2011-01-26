@@ -4,6 +4,6 @@ from core.blackbox import BlackBox
 from core.blackbox import BlackBoxModel
 from core.parameter import Parameter
 from core.measure import Measure
-from core.algorithm import Algorithm
+from core.algorithm import AlgorithmWrapper
 from core.testproblem import TestProblem
 from core.statsmeasure import StatisticalMeasure
