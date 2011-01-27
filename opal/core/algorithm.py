@@ -11,6 +11,11 @@ class AlgorithmWrapper:
     """
     
     An abstract class to define the specifics of a wrapper of an algorithm. 
+    An object of this class represent to an executable 
+    wrapper of target algorithm. It provoke the target
+    algorithm to solve a problem and collect the elementary
+    measures
+
     An object of this class works as an interface of the target algorithm 
     with OPAL. It contains at least three informations:
     

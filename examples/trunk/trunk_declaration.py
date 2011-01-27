@@ -1,11 +1,11 @@
 # Description of TRUNK.
-from opal.core.algorithm import Algorithm
+from opal.core.algorithm import AlgorithmWrapper
 from opal.core.parameter import Parameter
 from opal.core.parameter import ParameterConstraint
 from opal.core.measure   import Measure
 
 # Define Algorithm object.
-trunk = Algorithm(name='TRUNK',
+trunk = AlgorithmWrapper(name='TRUNK',
                   purpose='Trust Region for UNConstrained problems')
 
 # Register executable command.
