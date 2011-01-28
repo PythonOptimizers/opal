@@ -43,7 +43,7 @@ class BlackBox:
 
 class BlackBoxModel:
     def __init__(self, modelData=None, modelStructure=None,
-                 runFileName='blackbox.py', dataFile='blackbox.dat',
+                 dataFile='blackbox.dat',
                  logHandlers=[], **kwargs):
         """
         A `BlackBoxModel` encapsulates the 
@@ -68,13 +68,17 @@ class BlackBoxModel:
                                      handlers=logHandlers)
         
       
-        activeParameters = self.model_data.get_parameters()
-        
-        self.n_var = len(activeParameters)
-        self.m_con = len(self.model_structure.constraints)
-        self.initial_points = [param.value for param in activeParameters]
+        self.variables = self.model_data.get_parameters()
+        self.n_var = len(self.variables)
+        # Compute number of constraints in form c(x) <= b
+        # from the constraints of form l <= c(x) <= u
+        self.m_con = 0
+        for cons in self.model_structure.constraints:
+            self.m_con = self.m_con + cons.n_size
+        #self.m_con = len(self.model_structure.constraints)
+        self.initial_points = [param.value for param in self.variables]
        
-        self.bounds = [param.bound for param in activeParameters]
+        self.bounds = [param.bound for param in self.variables]
         # The "simple constraints" that contain only the function of
         # parameters. This constraints will be verified before running 
         # the test.
@@ -119,7 +123,7 @@ class BlackBoxModel:
         (funcObj, constraints) = self.model_structure.evaluate(testResult)
         #print funcObj
         #print constraints
-        self.logger.log('End of blackbox evaluation')
+        self.logger.log('End of blackbox evaluation\n')
         return (funcObj, constraints)
     
     def save(self):
