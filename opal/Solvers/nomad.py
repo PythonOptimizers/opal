@@ -19,7 +19,6 @@ class NOMADSpecification:
             return self.name + ' ' + str(self.value)
         return ""
 
-
 class NOMADBlackbox:
     """
 
@@ -31,7 +30,6 @@ class NOMADBlackbox:
     the model evaluator of a problem. An executable of wrapper is
     created to communicate with NOMAD. In this executable, the I/O
     stubs obey NOMAD's IO rule: input is a file, output to screen.
-    The
 
     The descriptions include the executable file name
     The communicating methods are read_input and write_output
@@ -110,18 +108,6 @@ class NOMADBlackbox:
         bb.write('import pickle\n')
         bb.write('import logging\n')
         bb.write('from opal.Solvers.nomad import NOMADBlackbox\n')
-
-        #bb.write('from ' + rootPackage + '.core import modeldata\n')
-        #bb.write('from ' + rootPackage + '.core import blackbox\n')
-        #if self.solver is not None:
-        #    bb.write('from ' + rootPackage + '.Solvers import ' + \
-        #             self.solver.name + '\n')
-        #bb.write('from ' + self.modelEvaluator.model.moduleName + \
-        #         ' import '+ self.modelEvaluator.model.objFuncName + '\n')
-        #for constraint in self.modelEvaluator.model.constraintNames:
-        #    bb.write('from ' + self.modelEvaluator.model.moduleName + \
-        #             ' import '+ constraint + '\n')
-
         bb.write('# Load test data.\n')
         bb.write('try:\n')
         bb.write(tab + 'blackboxDataFile = open("' + \
@@ -131,19 +117,9 @@ class NOMADBlackbox:
         bb.write('except TypeError:\n')
         bb.write(tab+'print "Error in loading"\n')
         bb.write('blackbox = NOMADBlackbox(model=blackboxModel)\n')
-        #bb.write('blackbox.opt_data.synchronize_measures()\n')
         bb.write('blackbox.run(*sys.argv)\n')
-        #bb.write('try:\n')
-        #bb.write(tab + 'blackboxDataFile = open("' + self.dataFileName + \
-        #         '", "w")\n')
-        #bb.write(tab+'pickle.dump(blackbox,blackboxDataFile)\n')
-        #bb.write(tab+'blackboxDataFile.close()\n')
-        #bb.write('except TypeError:\n')
-        #bb.write(tab+'print "Error in loading"\n')
         bb.write('blackboxModel.save()\n')
-        #bb.write('blackboxRunLogFile.close()\n')
         bb.close()
-        #os.chmod(self.runFileName,0755)
         return
 
     def run(self, *args, **kwargs):
@@ -176,24 +152,6 @@ class NOMADSolver(Solver):
         self.parameter_settings = [] # List of line in parameter file
         return
 
-#   def blackbox_read_input(self,argv):
-#        inputValues = [] # blackbox input = algorithm parameter
-#        paramValues = [] # blackbox parameter
-#        if len(argv) < 1:
-#            return (inputValues,paramValues)
-#        f = open(argv[1])
-#        map(lambda l: inputValues.extend(l.strip('\n').strip(' ').split(' ')), f.readlines()) # Extract every words from the file and save to a list
-#        f.close()
-#        return (inputValues,paramValues)
-
-#    def blackbox_write_output(self,objectiveValue,constraintValues):
-#        print >> sys.stdout, objectiveValue,
-#        if len(constraintValues) > 0:
-#            for i in range(len(constraintValues)):
-#                print >> sys.stdout,constraintValues[i],
-#            print ""
-#        return
-
     def solve(self, model=None, surrogate=None):
         self.blackbox = NOMADBlackbox(model=model)
         self.blackbox.generate_executable_file()
@@ -218,13 +176,25 @@ class NOMADSolver(Solver):
             descrFile.write('BB_EXE "$python ' + \
                     self.blackbox.file_name + '"\n')
             bbTypeStr = 'BB_OUTPUT_TYPE OBJ'
-            for i in range(model.m_con):
-                bbTypeStr = bbTypeStr + ' PB'
+            #for cons in model.m_:
+            bbTypeStr = bbTypeStr + ' PB'*model.m_con # All constraints are traited as progressive constraints
             descrFile.write(bbTypeStr + '\n')
             #surrogate = self.surrogate
             if self.surrogate is not None:
                 descrFile.write('SGTE_EXE "$python ' + \
                                     self.surrogate.file_name + '"\n')
+            varTypeStr = '( '
+            for var in model.variables:
+                if var.kind == 'real':
+                    varTypeStr = varTypeStr + 'R '
+                elif var.kind == 'integer':
+                    varTypeStr = varTypeStr + 'I '
+                elif var.kind == 'binary':
+                    varTypeStr = varTypeStr + 'B '
+                else:
+                    varTypeStr = varTypeStr + 'C '
+            varTypeStr = varTypeStr + ')\n'
+            descrFile.write('BB_INPUT_TYPE ' + varTypeStr)
             pointStr = str(model.initial_points)
             descrFile.write('X0 ' +  pointStr.replace(',',' ') + '\n')
             if model.bounds is not None:
@@ -242,7 +212,7 @@ class NOMADSolver(Solver):
         # Write other settings.
         descrFile.write('SOLUTION_FILE ' + self.solutionFileName + '\n')
         descrFile.write('STATS_FILE ' + self.resultFileName + \
-                '$EVAL$ & $BBE$ & $BBO$ & [ $SOL$ ] & $OBJ$ & $TIME$ \\\\\n')
+                '$EVAL$ & $BBE$ &  [ $SOL$ ] & $OBJ$ & $TIME$ \\\\\n')
         for param_setting in self.parameter_settings:
             descrFile.write(param_setting + '\n')
         descrFile.close()
@@ -265,9 +235,9 @@ class NOMADMPISolver(NOMADSolver):
                  **kwargs):
         NOMADSolver.__init__(self, name=name, parameterFile=parameterFile)
         self.mpi_config = {}  # Contains the settings for MPI environment
-        self.mpi_config['np'] = None # If set this to None, the number process is
-                                 # determined idealy by the dimension of
-                                 # solving problem.
+        self.mpi_config['np'] = None  # If set this to None, the number process is 
+                                      # determined idealy by the dimension of 
+                                      # solving problem.
         return
 
     def set_mpi_config(self, name, value):
@@ -278,7 +248,6 @@ class NOMADMPISolver(NOMADSolver):
         optionStr = ''
         for opt in self.mpi_config.keys():
             optionStr = ' -' + opt + ' ' + str(self.mpi_config[opt])
-
         os.system('mpirun' + optionStr + ' ' + \
                       'nomad.MPI ' + self.paramFileName)
         return
