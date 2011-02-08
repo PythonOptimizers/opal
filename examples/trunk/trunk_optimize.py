@@ -1,16 +1,19 @@
 # Define a parameter optimization problem in relation to the TRUNK solver.
-# This is the sequential version.
 from trunk_declaration import trunk
 
-from opal import ModelStructure
-from opal import ModelData
-from opal import BlackBoxModel
+from opal import OPALModelStructure
+from opal import DataGenerator
+from opal import OPALModel
 from opal.Solvers import NOMAD
 
 from opal.TestProblemCollections import CUTEr
 
 def get_error(parameters, measures):
-    val = sum(measures["FEVAL"])
+    val = sum(measures["ECODE"])
+    return val
+
+def sum_heval(parameters, measures):
+    val = sum(measures['ECODE'])
     return val
 
 # Parameters being tuned and problem list.
@@ -41,14 +44,21 @@ problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
                                                              'TRIDIA',
                                                              'WOODS']]
 
+SMP.set_parameter(name='MAX_PROC', value=5);
+
 # Define parameter optimization problem.
-data = ModelData(algorithm=trunk,
-                 problems=problems,
-                 activeParameters=params)
-struct = ModelStructure(objective=get_error,
-                        constraints=[])  # Unconstrained
-blackbox = BlackBoxModel(modelData=data, modelStructure=struct)
+dataGen = DataGenerator(algorithmWrapper=trunk,
+                        problems=problems,
+                        parameters=params,
+                        platform=SMP,
+                        synchronization=False,
+                        interruption=True)
+
+struct = ModelStructure(objective=(sum_heval, True)
+                        constraints=[(None, get_error, 0, True)])  # Unconstrained
+prob = OPALModel(dataSource=dataGen, 
+                 modelStructure=struct)
 
 # Solve parameter optimization problem.
 NOMAD.set_parameter(name='MAX_BB_EVAL', value=10)
-NOMAD.solve(model=blackbox)
+NOMAD.solve(problem=prob)

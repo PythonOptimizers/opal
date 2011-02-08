@@ -1,9 +1,10 @@
-# Define a parameter optimization problem in relation to the FD algorithm.
+# Define a parameter optimization problem in relation to the 
+# FD algorithm.
 from fd_declaration import FD
 
-from opal import ModelStructure
-from opal import ModelData
-from opal import BlackBoxModel
+from opal import OPALModelStructure
+from opal import DataGenerator
+from opal import OPALModel
 from opal.Solvers import NOMAD
 
 # Return the error measure.
@@ -16,12 +17,20 @@ params = FD.parameters   # All.
 problems = []            # None.
 
 # Define parameter optimization problem.
-data = ModelData(FD, problems, params)
-struct = ModelStructure(objective=get_error, constraints=[])  # Unconstrained
-blackbox = BlackBoxModel(modelData=data, modelStructure=struct)
+dataGen = DataGenerator(algorithmWrapper=FD, 
+                        problems=problems, 
+                        parameters=FD.parameters,
+                        measures=FD.measures,
+                        platform=SMP,
+                        synchronization=True,
+                        interruption=False)
+struct = ModelStructure(objective=(get_error, False),  
+                        constraints=[])  # Unconstrained
+prob = OPALModel(dataSource=dataGen, 
+                 modelStructure=struct)
 
 # Solve parameter optimization problem.
-NOMAD.solve(model=blackbox)
+NOMAD.solve(problem=prob)
 
 # Inform user of expected optimal value for information.
 try:
