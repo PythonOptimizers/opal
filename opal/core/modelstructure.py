@@ -23,11 +23,11 @@ class ModelStructure:
         #self.constraints = constraints
         self.constraints = []
         if constraints is not None:
-            for cons in constraints:
+            for cons in constraints: 
                 constraint = Constraint(lowerBound=cons[0], 
                                         function=cons[1],
                                         upperBound=cons[2])
-                self.constraint.append(constraint)
+                self.constraints.append(constraint)
                 constraint.function.dump(dir=self.working_directory)
                 
         self.logger = log.OPALLogger(name='modelStructure',
@@ -129,17 +129,22 @@ class Constraint:
     """
     def __init__(self, function=None,lowerBound=None,upperBound=None,**kwargs):
         self.function = MeasureFunction(function)
+        self.n_size = 2
         self.lower_bound = lowerBound
+        if self.lower_bound is None:
+            self.n_size = self.n_size - 1
         self.upper_bound = upperBound
+        if self.upper_bound is None:
+            self.n_size = self.n_size - 1
         return
     
     def evaluate(self,*args,**kwargs):
         funcVal = self.function(*args,**kwargs)
-        values = [None,None]
+        values = []
         if self.lower_bound is not None:
-            values[0] = self.lower_bound - funcVal
+            values.append(self.lower_bound - funcVal)
         if self.upper_bound is not None:
-            values[1] = funcVal - self.upper_bound
+            values.append(funcVal - self.upper_bound)
         return values
 '''
 class ModelEvaluator:

@@ -8,9 +8,12 @@ from opal import BlackBoxModel
 from opal.Solvers import NOMAD
 
 from opal.TestProblemCollections import CUTEr
+def sum_heval(parameters, measures):
+    val = sum(measures['HEVAL'])
+    return val
 
 def get_error(parameters, measures):
-    val = sum(measures["FEVAL"])
+    val = sum(measures["ECODE"])
     return val
 
 # Parameters being tuned and problem list.
@@ -20,23 +23,23 @@ params = [param for param in trunk.parameters if param.name in par_names]
 problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
                                                              'BROYDN7D',
                                                              'BRYBND',
-                                                             'CURLY10',
-                                                             'CURLY20',
-                                                             'CURLY30',
-                                                             'CRAGGLVY',
-                                                             'DIXON3DQ',
-                                                             'EIGENALS',
-                                                             'FMINSRF2',
-                                                             'FMINSURF',
-                                                             'GENROSE',
+#                                                             'CURLY10',
+#                                                             'CURLY20',
+#                                                             'CURLY30',
+#                                                             'CRAGGLVY',
+#                                                             'DIXON3DQ',
+#                                                             'EIGENALS',
+#                                                             'FMINSRF2',
+#                                                             'FMINSURF',
+#                                                             'GENROSE',
                                                              'HIELOW',
-                                                             'MANCINO',
-                                                             'NCB20',
-                                                             'NCB20B',
-                                                             'NONDQUAR',
-                                                             'POWER',
-                                                             'SENSORS',
-                                                             'SINQUAD',
+#                                                             'MANCINO',
+#                                                             'NCB20',
+#                                                             'NCB20B',
+#                                                             'NONDQUAR',
+#                                                             'POWER',
+#                                                             'SENSORS',
+#                                                             'SINQUAD',
                                                              'TESTQUAD',
                                                              'TRIDIA',
                                                              'WOODS']]
@@ -45,8 +48,8 @@ problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
 data = ModelData(algorithm=trunk,
                  problems=problems,
                  activeParameters=params)
-struct = ModelStructure(objective=get_error,
-                        constraints=[])  # Unconstrained
+struct = ModelStructure(objective=sum_heval,
+                        constraints=[(None, get_error, 0)])  
 blackbox = BlackBoxModel(modelData=data, modelStructure=struct)
 
 # Solve parameter optimization problem.
