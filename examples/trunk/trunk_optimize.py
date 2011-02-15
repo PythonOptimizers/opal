@@ -49,7 +49,7 @@ data = ModelData(algorithm=trunk,
                  problems=problems,
                  activeParameters=params)
 struct = ModelStructure(objective=sum_heval,
-                        constraints=[(None, get_error, 0)])  
+                        constraints=[(None, get_error, 0)])
 blackbox = BlackBoxModel(modelData=data, modelStructure=struct)
 
 # Solve parameter optimization problem.
