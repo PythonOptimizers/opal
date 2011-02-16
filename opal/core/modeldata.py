@@ -46,8 +46,11 @@ class ModelData:
     4. the test problems set.
     """
 
-    def __init__(self, algorithm, problems, activeParameters,
-                platform=config.platform, logHandlers=[], **kwargs):
+    def __init__(self, 
+                 algorithm, 
+                 parameters=None, 
+                 measures=None,
+                 problems=[])
         # The core variables
         self.algorithm = algorithm
         if (problems is None) or (len(problems) == 0):
@@ -55,40 +58,15 @@ class ModelData:
         else:
             self.problems = problems
         
-        self.parameters = activeParameters
+        if parameters is None:
+            self.parameters = algorithm.parameters
+        else:
+            self.parameters = parameters
 
-        # active_parameters_names are the name of parameters that are
-        # variables in the parameter optimization problem.
-        # The other parameters remain fixed.
-        #activeParamNames = [par.name for par in activeParameters]
-        #for param in self.algorithm.parameters:
-        #    if param.name not in activeParamNames:
-        #        param.set_as_const()
-        
-        #self.parameters = copy.deepcopy(algorithm.parameters)
-        self.measures = copy.deepcopy(algorithm.measures)
-        
-        # TODO
-        # This is unrelated to the model data. It should be moved elsewhere.
-        #self.platformName = ''
-        self.platform = platform
-
-        # By default, logger is Logger object of Python's logging module
-        # Logger is set name to modeldata, level is info.
-        self.logger = log.OPALLogger(name='modelData', handlers=logHandlers)
-        # The monitor variables
-        self.test_number = 0
-        self.test_id = None
-
-        # The output
-        self.test_is_failed = False
-        pNames = [prob.name for prob in self.problems]
-        mNames = [measure.name for measure in self.measures]
-        self.measure_value_table = MeasureValueTable(problem_names=pNames,
-                                                     measure_names=mNames)
-        # Set options
-
-        #self.set_options(**kwargs)
+        if measures is None:
+            self.measures = algorithm.measures
+        else:
+            self.measures = measures
         return
 
 

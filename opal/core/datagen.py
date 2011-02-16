@@ -12,92 +12,9 @@ import threading
 from measure import MeasureValueTable
 from testproblem import TestProblem
 
-from .. import config
-
-
-class TestResult:
-
-
-    def __init__(self,
-                 testIsFailed=None,
-                 testNumber=None,
-                 problems=None,
-                 parameters=None,
-                 measureValueTable=None,
-                 **kwargs):
-        self.test_is_failed = testIsFailed
-        self.test_number = testNumber
-        self.problems = problems
-        self.parameters = parameters
-        self.measure_value_table = measureValueTable
-        pass
-    
-# =============================
-
-class DataController(threeding.Thread):
-    """
-    
-    An object of this class is responsable to collect data, 
-    support access to data of a test corresponding to one set 
-    of parameter
-
-    During a session working of data generator, it is activated 
-    at first, wait for signal of a task to collect the data and
-    store data following its rules. Normally, the data is stored 
-    in external memory (for example a file) but a part can be loaded 
-    into memory (a variable of DataController object).
-
-    The other components needing data sends to this object a 
-    request and get the data.
-    """
-    def __init__(self, storage=None):
-        self.file_name = 'data_storage.txt'
-        self.requests = []
-        self.events = []
-        self.stop_signal = False
-        return
-
-    def reply_request(self, request):
-        return
-
-    def handle_event(self, event):
-        return
-
-    def get_data(self, parameterValues, dataId=None):
-        return
-
-    def collect_data(self, problem, measureFile):
-         measure_values = self.wrapper.get_measure(prob, self.test_id)
-            if measure_values is None: # Some error in running the wrapper, 
-                                       # so we could not get the meaure
-                self.finalize()
-                return TestResult(testIsFailed=True)
-            #print measure_values
-            if len(measure_values) == 0: # Some error in getting the measure, 
-                                         # so we could not get the meaure
-                self.finalize()
-                return TestResult(testIsFailed=True) 
-            self.measure_value_table.add_problem_measures(prob.name,measure_values)
-        return
-
-    def run(self):
-        while not self.stop_signal:
-            self.events.extend(self.fetch_events())
-            while len(self.events) > 0:
-                event = self.events.pop()
-                (problem, measureFile) = self.decrypt_event(event)
-                measure_values = self.collect_data(problem, measureFile)
-            self.requests.extend(self.fetch_requests())
-            while len(self.requests) > 0:
-                req = self.requests.pop()
-                (dataId, requestor) = decrypt_request(req)
-                data = self.get_data(dataId)
-                self.send(requestor, data)
-            pass
-        return
 
 # =============================
-class DataGenerator(threading.Thread):
+class DataGenerator(Broker):
     """ 
     This class represents a data generator for a parameter optimization
     problem. The data is the values of the elementary measures that are needed
@@ -109,33 +26,17 @@ class DataGenerator(threading.Thread):
     4. the test problems set.
     """
 
-    def __init__(self, wrapper, parameters=None, measures=None,
+    def __init__(self, 
+                 wrapper, 
                  problem=[],
-                 platform=config.platform, synchronous=True, interruptible=False, 
-                 logHandlers=[], **kwargs):
+                 platform=config.platform, 
+                 synchronous=True, 
+                 interruptible=False, 
+                 logHandlers=[]):
         # The core variables
         self.wrapper = wrapper
-        if parameters is None: # No parameter subset is specified
-            self.parameters = wrapper.parameters # All parameters of wrapper
-                                                 # is considered
-        else:
-            self.parameters = parameters
-
-        if measures is None: # No measure subset is specified
-            self.measures = wrapper.measures # All measures of wrapper is
-                                             # is considered
-        else:
-            self.measures = measures
-
-        if (problems is None) or (len(problems) == 0): # No test problem is 
-                                                       # is specified, wrapper 
-                                                       # can be run without 
-                                                       # indicating problem
-            self.problems = [TestProblem(name='TESTPROB')] # A list of one 
-                                                           # one problem is
-                                                           # is created
-        else:
-            self.problems = problems
+    
+        self.problems = problems
         
         self.platform = platform
 
@@ -143,50 +44,10 @@ class DataGenerator(threading.Thread):
         # Logger is set name to modeldata, level is info.
         self.logger = log.OPALLogger(name='modelData', handlers=logHandlers)
         # The monitor variables
-        self.test_number = 0
-        self.test_id = None
+        self.request_id = {} # This variables store a map the test id and 
+                             # requestor id
 
-        # The output
-        self.test_is_failed = False
-        pNames = [prob.name for prob in self.problems]
-        mNames = [measure.name for measure in self.measures]
-        self.measure_value_table = MeasureValueTable(problem_names=pNames,
-                                                     measure_names=mNames)
-        # Set options
-
-        #self.set_options(**kwargs)
         return
-
-    def get_parameters(self):
-        return self.parameters
-
-
-    def initialize(self, parameterValues):
-        '''
-        
-        This method return an unique identity for the 
-        test basing on the parameter values
-    
-        The identity obtains by hashing the parameter values string. 
-        This is an inversable function. It means that we can get 
-        the parameter_values form the id
-        '''
-        
-        valuesStr = '_'
-        j = 0
-        for i in range(len(self.parameters)):
-            self.parameters[i].set_value(parameterValues[j])
-            valuesStr = valuesStr + str(parameterValues[j]) + '_'
-            j = j + 1    
-        self.test_id = str(hash(valuesStr))
-        self.test_number += 1
-        self.test_is_failed = False
-        #self.measure_value_table.clear()
-        self.data_controller.start()
-        self.logger.log('Initialize the ' + str(self.test_number) + \
-                         ' test with id ' + str(self.test_id))
-        self.logger.log(' - Parameter values: ' + valuesStr.replace('_', ' ')) 
-        return 
 
     def finalize(self):
         #self.wrapper.clean_running_data(testId=self.test_id)
@@ -194,15 +55,21 @@ class DataGenerator(threading.Thread):
         self.logger.log('Finalize the test ' + str(self.test_id))
         return
 
-    def generate_data(self, parameterValues):
+    def generate_data(self, parameterValues, runId):
         self.initialize(parameterValues=parameterValues)
         #print '[modeldata.py]',[param.value for param in self.parameters]
         self.logger.log('Run the test ' + str(self.test_id))
-        self.wrapper.set_parameter(parameters=self.parameters, 
-                                     testId=self.test_id)
+        self.wrapper.set_parameter(parameterValues=self.parameterValues, 
+                                   testId=runId)
+        # The parameter values are not valid
         if not self.wrapper.are_parameters_valid():
-            #print '[modeldata.py]','Parameter values are invalid, test fails'
-            self.test_is_failed = True
+            # Send a signal to indicate that no test is executed
+            msg = Message(performative='SIG',
+                          sender=self.agent_name,
+                          content=self.encypt(data=Non),
+                          reference=self.
+                          
+            self.stop_signal = True
             self.logger.log(' - The parameter values are invalid, ' + \
                              'the test is stopped')
             return
@@ -235,9 +102,11 @@ class DataGenerator(threading.Thread):
     def run(self):
         self.initialize()
         while True:
-            self.requests = self.fetch_messages()
-            for req in self.requests:
-                parameterValues = self.decrypt(req)
+            messages = self.fetch_messages()
+            while len(messages) > 0:
+                msg = messages.pop()
+                self.handle_message()
+                parameterValues = self.decrypt(msg)
                 self.generate_data(parameterValues)
         # After exitting from the loop of launching, data generator will 
         # wait for all tasks finish to finailize a working session
@@ -258,7 +127,7 @@ class DataGenerator(threading.Thread):
         requests = []
         return requests
 
-    def descrypt(self, message):
+    def decrypt(self, msgContent):
         """
         
         Data generator decrypts a request to get the parameter values or 
@@ -267,61 +136,10 @@ class DataGenerator(threading.Thread):
         parameterValues = []
         return parameterValues
 
-    def get_test_result(self):
-        self.logger.log('Collect the test result')
-        if self.test_is_failed is True:
-            self.finalize()
-            return TestResult(testIsFailed=True)
-       
-        for prob in self.problems:
-            # We accept only a perfect measure values table, this means the 
-            # atomic measure are get from all of the problems. Any error 
-            # causes the test failed signal.
-            measure_values = self.wrapper.get_measure(prob, self.test_id)
-            if measure_values is None: # Some error in running the wrapper, 
-                                       # so we could not get the meaure
-                self.finalize()
-                return TestResult(testIsFailed=True)
-            #print measure_values
-            if len(measure_values) == 0: # Some error in getting the measure, 
-                                         # so we could not get the meaure
-                self.finalize()
-                return TestResult(testIsFailed=True) 
-            self.measure_value_table.add_problem_measures(prob.name,measure_values)
-        #print "ho ho test.py ",self.problems
-        self.logger.log(str(self.measure_value_table))
-        self.finalize()
-        
-        return TestResult(testIsFailed=False,
-                          testNumber=self.test_number,
-                          problems=self.problems,
-                          parameters=self.parameters,
-                          measureValueTable=self.measure_value_table)
-
-    #def synchronize_measures(self):
-    #    for i in range(len(self.measures)):
-    #        tmp = self.measures[i]
-    #        self.measures[i] = self.measures[i].get_global_object()
-    #        del tmp
-    #    # Resolve the link betwwen the measure functions and the value table
-    #    return
-
-    def log(self,fileName):
-        self.logging.write(self,fileName)
-    
-    #def reduce_problem_set(self):
-    #    newProblemSet = []
-    #    i = 1
-    #    for prob in self.problems:
-    #        if i % 2 == 0:
-    #            newProblemSet.append(prob)
-    #        i = i + 1
-    #    activeParameters = self.get_active_parameters()
-    #    reducedData = ModelData(wrapper=self.wrapper,
-    #                            problems=newProblemSet,
-    #                            activeParameters=activeParameters,
-    #                            platform=self.platform)
-    #    return reducedData
-
-        
+    def handle_message(self, message):
+        # This is a data request 
+        if message.performative == 'REQ':
+            parameterValues = decrypt(message.content)
+            runId = self.get_id(parameterValues)
+            self.request_id[message]
         

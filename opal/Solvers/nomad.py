@@ -2,6 +2,7 @@ import sys
 import os
 import logging
 from ..core.solver import Solver
+from opal import ModelEvaluator
 #from ..core.blackbox import BlackBox
 
 __docformat__ = 'restructuredtext'
@@ -20,18 +21,23 @@ class NOMADSpecification:
         return ""
 
 
-class NOMADBlackbox:
+class NOMADBlackbox(ModelEvaluator):
     """
 
     NOMADBlackbox contains
     the description and the method of communication between
     NOMAD solver and an executable blackbox.
 
-    In other words, NOMAD blackbox is a wrapper that cover
-    the model evaluator of a problem. An executable of wrapper is
-    created to communicate with NOMAD. In this executable, the I/O
-    stubs obey NOMAD's IO rule: input is a file, output to screen.
-    The
+    In other words, NOMAD blackbox is a specific model evaluator that has two:
+    particularities:
+    - Executed as an external executable
+    - Inputet by a file, outputs to standard output with a list of values of 
+      functions (objective and constraints).
+    The executable is created to communicate with NOMAD has 
+    - the I/O stubs obey NOMAD's IO rule: input is a file, output to screen.
+    - Initialize the agents (worker and broker): DataGenerator, 
+      StructureComputer
+   
 
     The descriptions include the executable file name
     The communicating methods are read_input and write_output
@@ -47,7 +53,7 @@ class NOMADBlackbox:
         #self.surrogate = None
         pass
 
-    def read_input(self, *args, **kwargs):
+    def read_input(self, inputFile=None):
         """
         .. warning::
 
@@ -57,11 +63,11 @@ class NOMADBlackbox:
         paramValues = []
         #print args
         #print ""
-        if len(args) < 1:
+        if inputFile is None:
             return (inputValues, paramValues)
 
         # Extract every words from the file and save to a list
-        f = open(args[1])
+        f = open(inputFile)
         map(lambda l: inputValues.extend(l.strip('\n').strip(' ').split(' ')),
                                          f.readlines())
         f.close()
@@ -94,59 +100,38 @@ class NOMADBlackbox:
         """
 
         tab = ' '*4
+        endl = '\n'
+        comment = '# '
         bb = open(self.file_name, 'w')
-        # To avoid the error compability of python version (local version
-        # intalled by user) and global version (system), we don't make black
-        # box an executable but call it via `python blackbox.py`
-        # --------
-        # or predifine config.python to the used python
-        # rootPackage = config.__name__.replace('.config','')
-        #bb.write(config.python + '\n')
-        bb.write('#!/usr/bin/env python\n')
-        bb.write('import os\n')
-        bb.write('import sys\n')
-        bb.write('import string\n')
-        bb.write('import shutil\n')
-        bb.write('import pickle\n')
-        bb.write('import logging\n')
-        bb.write('from opal.Solvers.nomad import NOMADBlackbox\n')
-
-        #bb.write('from ' + rootPackage + '.core import modeldata\n')
-        #bb.write('from ' + rootPackage + '.core import blackbox\n')
-        #if self.solver is not None:
-        #    bb.write('from ' + rootPackage + '.Solvers import ' + \
-        #             self.solver.name + '\n')
-        #bb.write('from ' + self.modelEvaluator.model.moduleName + \
-        #         ' import '+ self.modelEvaluator.model.objFuncName + '\n')
-        #for constraint in self.modelEvaluator.model.constraintNames:
-        #    bb.write('from ' + self.modelEvaluator.model.moduleName + \
-        #             ' import '+ constraint + '\n')
-
-        bb.write('# Load test data.\n')
-        bb.write('try:\n')
-        bb.write(tab + 'blackboxDataFile = open("' + \
-                self.model.data_file + '","r")\n')
-        bb.write(tab + 'blackboxModel = pickle.load(blackboxDataFile)\n')
-        bb.write(tab+'blackboxDataFile.close()\n')
-        bb.write('except TypeError:\n')
-        bb.write(tab+'print "Error in loading"\n')
-        bb.write('blackbox = NOMADBlackbox(model=blackboxModel)\n')
-        #bb.write('blackbox.opt_data.synchronize_measures()\n')
-        bb.write('blackbox.run(*sys.argv)\n')
-        #bb.write('try:\n')
-        #bb.write(tab + 'blackboxDataFile = open("' + self.dataFileName + \
-        #         '", "w")\n')
-        #bb.write(tab+'pickle.dump(blackbox,blackboxDataFile)\n')
-        #bb.write(tab+'blackboxDataFile.close()\n')
-        #bb.write('except TypeError:\n')
-        #bb.write(tab+'print "Error in loading"\n')
-        bb.write('blackboxModel.save()\n')
-        #bb.write('blackboxRunLogFile.close()\n')
+        # Import the neccessary modules
+        bb.write('import os' + endl)
+        bb.write('import sys' + endl)
+        bb.write('import string' + endl)
+        bb.write('import shutil' + endl)
+        bb.write('import pickle' + endl)
+        bb.write('import logging' + endl)
+        bb.write('from opal.Solvers.nomad import NOMADBlackbox' + endl)
+        
+        bb.write(comment + 'Create an evaluator (model evaluation environment' + \
+                     endl)
+        bb.write('env = NOMADBlackbox()' + endl)
+        bb.write('env.load(file="env.conf")' + endl)
+        bb.write(comment + 'Activate the environment' + endl)
+        bb.write('env.start()')
+        bb.write(comment + 'Creeate a message that request to model values' + \ 
+                 endl)
+        bb.write(comment + 'The content of message is values read from a ' + \ 
+                 'input file' + endl) 
+        bb.write('msg = Message()' + endl)
+        bb.write(comment + 'Raise an event by created message' + endl)
+        bb.write('env.send_message(message=msg)' + endl)
+        bb.write(comment + 'Wait for environement finish his life time' + endl)
+        bb.write('env.join()' + endl)
+        bb.write('env.dump(file="env.conf"' + endl)
         bb.close()
-        #os.chmod(self.runFileName,0755)
         return
 
-    def run(self, *args, **kwargs):
+    def run(self):
         inputValues = []
         paramValues = []
         #print args

@@ -135,4 +135,14 @@ class Environment(thread.Threading):
         return
 
 
-    def add_message(
+    def add_message(self, message):
+        return
+
+    def remove_message(self, messageId, agentId):
+        return
+
+    def add_agent(self, agent):
+        return
+    
+    
+    
