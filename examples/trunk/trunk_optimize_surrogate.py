@@ -63,7 +63,8 @@ surr_data = ModelData(algorithm=trunk,
                       activeParameters=params)
 surr_struct = ModelStructure(objective=sum_heval,
                              constraints=[])
-surr_model = BlackBoxModel(modelData=surr_data, modelStructure=surr_struct)
+surr_model = BlackBoxModel(modelData=surr_data, modelStructure=surr_struct,
+                           dataFile='surrogate.dat')
 
 # Solve parameter optimization problem.
 NOMAD.set_parameter(name='MAX_BB_EVAL', value=10)
