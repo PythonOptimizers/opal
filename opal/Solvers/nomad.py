@@ -156,7 +156,7 @@ class NOMADSolver(Solver):
         self.blackbox = NOMADBlackbox(model=model)
         self.blackbox.generate_executable_file()
         if surrogate is not None:
-            self.surrogate = NOMADBlackbox(model=surrogate)
+            self.surrogate = NOMADBlackbox(model=surrogate, fileName='surrogate.py')
             self.surrogate.generate_executable_file()
         #   surrogate.save()
         self.initialize()
