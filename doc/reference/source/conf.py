@@ -20,26 +20,6 @@ import sys, os
 # is relative to the documentation root, use os.path.abspath to make it
 # absolute, like shown here.
 sys.path.append(os.path.abspath('.'))
-sys.path.append(os.path.abspath('../../../opal/environment'))
-sys.path.append(os.path.abspath('../../../opal/environment/Algorithms'))
-#sys.path.append(os.path.abspath('../opal/components'))
-#sys.path.append(os.path.abspath('../opal/components/directsearch'))
-#sys.path.append(os.path.abspath('../opal/components/modeler'))
-#sys.path.append(os.path.abspath('../opal/components/platform'))
-#sys.path.append(os.path.abspath('../opal/components/testenv'))
-#sys.path.append(os.path.abspath('../opal/Drivers'))
-#sys.path.append(os.path.abspath('../opal/Measures'))
-sys.path.append(os.path.abspath('../../../opal/environment/Platforms'))
-sys.path.append(os.path.abspath('../../../opal/environment/Problems'))
-sys.path.append(os.path.abspath('../../../opal/environment/Processes'))
-#sys.path.append(os.path.abspath('../opal/plugins'))
-#sys.path.append(os.path.abspath('../opal/plugins/algorithms'))
-sys.path.append(os.path.abspath('../../../opal/environment/Solvers'))
-sys.path.append(os.path.abspath('../../../opal/environment/TestProblemCollections'))
-#sys.path.append(os.path.abspath('../opal/utilities'))
-#sys.path.append(os.path.abspath('../opal/utilities/performance'))
-#sys.path.append(os.path.abspath('../opal/utilities/testproblems'))
-sys.path.insert(0, os.path.abspath('../../../opal/core'))
 sys.path.append('sphinxext')
 
 # Import support for ipython console session syntax highlighting (lives
@@ -56,6 +36,8 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest']
 extensions += ['sphinx.ext.todo']
 extensions += ['ipython_console_highlighting']
 extensions += ['inheritance_diagram']
+extensions += ['mathjax']
+mathjax_path = 'http://mathjax.connectmv.com/MathJax.js'
 
 todo_include_todos = True
 
@@ -66,14 +48,14 @@ templates_path = ['.templates']
 source_suffix = '.rst'
 
 # The encoding of source files.
-#source_encoding = 'utf-8'
+source_encoding = 'utf-8'
 
 # The master toctree document.
 master_doc = 'index'
 
 # General information about the project.
 project = u'opal'
-copyright = u'2009, C. Audet, K. C. Dang, D. Orban'
+copyright = u'2009-2011, C. Audet, K. C. Dang, D. Orban'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -146,7 +128,7 @@ html_style = 'default.css'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['.static']
+html_static_path = ['_static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -191,7 +173,7 @@ htmlhelp_basename = 'opaldoc'
 # ------------------------
 
 # The paper size ('letter' or 'a4').
-#latex_paper_size = 'letter'
+latex_paper_size = 'letter'
 
 # The font size ('10pt', '11pt' or '12pt').
 #latex_font_size = '10pt'
