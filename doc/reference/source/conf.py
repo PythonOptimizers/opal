@@ -26,6 +26,7 @@ sys.path.append('sphinxext')
 # in the sphinxext directory defined above)
 import ipython_console_highlighting
 import inheritance_diagram
+import mathjax
 
 # General configuration
 # ---------------------
