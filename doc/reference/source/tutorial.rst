@@ -31,6 +31,10 @@ parameters of our new algorithm to formulate the problem based on existing or
 newly-defined ``performance measures``. In particular, we use such measures to
 define the objective and constraints (if any) of our problem.
 
+.. math::
+
+    \min_{p \in \mathbb{P}} \ \psi(p) \quad \text{subject to } \phi(p) \geq 0.
+
 .. todo::
 
     Expand description.
