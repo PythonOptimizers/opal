@@ -40,21 +40,21 @@ Parameter
 .. automodule:: opal.core.parameter
 
 .. autoclass:: Parameter
-   :show-inheritance: 
-   :members: 
-   :inherited-members: 
+   :show-inheritance:
+   :members:
+   :inherited-members:
    :undoc-members:
 
 .. autoclass:: ParameterSet
-   :show-inheritance: 
-   :members: 
-   :inherited-members: 
+   :show-inheritance:
+   :members:
+   :inherited-members:
    :undoc-members:
 
 .. autoclass:: ParameterConstraint
-   :show-inheritance: 
-   :members: 
-   :inherited-members: 
+   :show-inheritance:
+   :members:
+   :inherited-members:
    :undoc-members:
 
 
@@ -67,18 +67,18 @@ Measure
 .. automodule:: opal.core.measure
 
 .. autoclass:: Measure
-   :show-inheritance: 
-   :members: 
-   :inherited-members: 
+   :show-inheritance:
+   :members:
+   :inherited-members:
    :undoc-members:
 
 MeasureTable
 ------------
 
 .. autoclass:: MeasureValueTable
-    :show-inheritance: 
-    :members: 
-    :inherited-members: 
+    :show-inheritance:
+    :members:
+    :inherited-members:
     :undoc-members:
 
 Problem
@@ -89,15 +89,15 @@ Problem
 .. automodule:: opal.core.testproblem
 
 .. autoclass:: TestProblem
-    :show-inheritance: 
-    :members: 
-    :inherited-members: 
+    :show-inheritance:
+    :members:
+    :inherited-members:
     :undoc-members:
 
 .. autoclass:: OptimizationTestProblem
-    :show-inheritance: 
-    :members: 
-    :inherited-members: 
+    :show-inheritance:
+    :members:
+    :inherited-members:
     :undoc-members:
 
 Algorithm experiment description object
@@ -108,10 +108,10 @@ Algorithm experiment description object
 Parameter Optimization Problem Definition
 =========================================
 
-In the OPAL framework, a parameter optimization model (shortly OPAL model) has 
+In the OPAL framework, a parameter optimization model (shortly OPAL model) has
 the following components:
 
-#. A structure, which is a sort of optimization problem template, disconnected 
+#. A structure, which is a sort of optimization problem template, disconnected
    from any specifics such as the particular algorithm being tuned or the particular
    test set used to tune the parameters. An example of problem structure may
    be as simple as "minimize the total CPU time" or "maximize the throughput
@@ -131,14 +131,14 @@ problem. It is then referred to as as ``black box model``.
 
 
 Algorithm experiment
---------------------  
+--------------------
 
 .. automodule:: opal.core.algorithm
 
 .. autoclass:: Algorithm
-   :show-inheritance: 
-   :members: 
-   :inherited-members: 
+   :show-inheritance:
+   :members:
+   :inherited-members:
    :undoc-members:
 
 The most important ingredients of an algorithmic parameter optimization problem
@@ -162,9 +162,9 @@ ModelStructure
 .. automodule:: opal.core.modelstructure
 
 .. autoclass:: ModelStructure
-   :show-inheritance: 
-   :members: 
-   :inherited-members: 
+   :show-inheritance:
+   :members:
+   :inherited-members:
    :undoc-members:
 
 ModelData
@@ -173,9 +173,9 @@ ModelData
 .. automodule:: opal.core.modeldata
 
 .. autoclass:: ModelData
-   :show-inheritance: 
-   :members: 
-   :inherited-members: 
+   :show-inheritance:
+   :members:
+   :inherited-members:
    :undoc-members:
 
 Model

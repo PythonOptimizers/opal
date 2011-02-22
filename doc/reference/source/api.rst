@@ -9,4 +9,4 @@ Data
 ----
 
 .. automodule:: opal.core.data
-   
+
