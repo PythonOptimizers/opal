@@ -72,7 +72,8 @@ complicated and reserved to Python-exeperient users. We choose the former to sho
 
 .. _creating_of_wrapper:
 
-*Creating of wrapper*
+Creating of wrapper
+-------------------
 
 An executable wrapper can be generally written in any programming language but has following
 restrictions:
@@ -148,9 +149,10 @@ Some points should be noted in the above listing:
 #. The algorithm is involved by ``import fd`` statement and the function call ``fd.finite_diff(math.sin, 0.0, h)``.
 
 
-.. _declaration_to_opal
+.. _declaration_to_opal:
 
-**Declare to OPAL**
+Declare to OPAL
+---------------
 
 The declarations can be spread into two files and include wrapper declaration, parameter optimization problem
 declaration and solver declaration.
@@ -197,7 +199,8 @@ An example of declaration file is show in following listing ::
   FD.add_measure(Measure(kind="real", name='ERR', description='Error of the approximation'))
 
 
-**Create an optimization session**
+Create an optimization session
+------------------------------
 
 We create a session in a Python file called `main file`. We call this the main file because
 the command to provoke the optimization process
