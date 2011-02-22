@@ -21,11 +21,10 @@ Contents:
    :maxdepth: 2
 
    Introduction <introduction>
-   Tutorial: Interfacing a New Algorithm <tutorial>
-   Basic Objects <basic>
-   Problem Definition <problem>
-   Surrogates <surrogates>
-
+   Installation <installation>
+   Tutorial <tutorial>
+   OPAL components description <opal>
+   API Document <api>
 
 TODO List
 =========
