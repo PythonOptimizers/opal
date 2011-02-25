@@ -25,6 +25,14 @@ simplest case, the installation is done by only command::
 
   shell$ python setup.py install
 
+In the case that you have no right of writing to the standard ``site-packages`` 
+directory, a local ``site-packages`` has to be provided in installation command. 
+  
+  shell$ python setup.py install --prefix=$LOCAL_PYTHON_DIR
+
+and the package shall be installed in ``$LOCAL_PYTHON_DIR/lib/python-2.6/site-packages`` 
+(assume that the Python working version is 2.6) 
+
 Documentation
 =============
 

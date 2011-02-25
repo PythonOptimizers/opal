@@ -1,0 +1,44 @@
+<p class="logo">
+<!-- <a href="http://pocoo.org/">
+  <img src="{{ pathto("_static/pocoo.png", 1) }}" /></a> -->
+</p>
+
+<h3>Download</h3>
+{% if version.endswith('(hg)') %}
+<p>This documentation is for version <b>{{ version }}</b>, which is
+  not released yet.</p>
+<p>You can use it from the
+  <a href="http://bitbucket.org/birkenfeld/sphinx/">Mercurial repo</a> or look for
+  released versions in the <a href="http://pypi.python.org/pypi/Sphinx">Python
+    Package Index</a>.</p>
+{% else %}
+<p>Current version: <b>{{ version }}</b></p>
+<p>Get OPAL's <a href="http://www.gerad.ca/~kiendc/build/opal-{{ version }}"> stable version 
+</a>, or browse the <a href="http://www.gerad.ca/~kiendc/downloads/"> repository </a> </p> 
+<p>Latest <a href="http://www.gerad.ca/~kiendc/build/html/">development version docs</a>
+are also available.</p>
+{% endif %}
+
+<h3>Questions? Suggestions?</h3>
+<form id="fbform" action="">
+
+<label for="user">Name</label>
+<input type="text" id="user" value="" />
+</p>
+
+<p>
+<label for="emailaddress">Email Address:</label>
+<input type="text" id="emailaddress" value="" />
+</p>
+
+<p>
+<label for="comments">Feedback:</label>
+<textarea id="comments" rows="5" cols="25"></textarea>
+</p>
+
+<div>
+<input type="submit" value="Submit" /> 
+<input  style="margin-right: 0px;" type="reset" value="reset" />
+</div>
+</form>
+<p>or come to the write <a href="mailto:kiendc@gerad.ca">us</a> a mail 

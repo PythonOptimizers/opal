@@ -1,0 +1,26 @@
+{% extends "!layout.html" %}
+
+{% block extrahead %}
+{{ super() }}
+{%- if not embedded %}
+<style type="text/css">
+  table.right { float: right; margin-left: 20px; }
+  table.right td { border: 1px solid #ccc; }
+</style>
+{%- endif %}
+{% endblock %}
+
+{% block rootrellink %}
+        <li><a href="{{ pathto('index') }}">OPAL home</a>&nbsp;|&nbsp;</li>
+        <li><a href="{{ pathto('contents') }}">Documentation</a>
+          &raquo;</li>
+{% endblock %}
+
+{% block header %}
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<!-- <img src="{{ pathto("_static/sphinx.png", 1) }}" alt="Sphinx logo" /> -->
+<h1>OPAL</h1>
+<p> FRAMEWORK FOR OPTIMIZING ALGORITHM </p>
+</div>
+{% endblock %}
+

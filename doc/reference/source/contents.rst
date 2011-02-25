@@ -2,6 +2,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. _contents:
+
 ==========================
 OPAL General Documentation
 ==========================
@@ -20,7 +22,6 @@ Contents:
    :numbered:
    :maxdepth: 2
 
-   Introduction <introduction>
    Installation <installation>
    Tutorial <tutorial>
    OPAL components description <opal>
