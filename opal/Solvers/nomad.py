@@ -1,7 +1,13 @@
 import sys
 import os
 import logging
+import pickle
+
+from ..core.model import Model
 from ..core.solver import Solver
+from ..core.mafrw import Agent
+from ..core.mafrw import Environment
+
 from opal import ModelEvaluator
 #from ..core.blackbox import BlackBox
 
@@ -20,39 +26,26 @@ class NOMADSpecification:
             return self.name + ' ' + str(self.value)
         return ""
 
+class NOMADCommunicator(Agent):
+    '''
 
-class NOMADBlackbox(ModelEvaluator):
-    """
-
-    NOMADBlackbox contains
-    the description and the method of communication between
+    This class encapsulates methods of communication between
     NOMAD solver and an executable blackbox.
+    It handles two messages:
 
-    In other words, NOMAD blackbox is a specific model evaluator that has two:
-    particularities:
-    - Executed as an external executable
-    - Inputet by a file, outputs to standard output with a list of values of 
-      functions (objective and constraints).
-    The executable is created to communicate with NOMAD has 
-    - the I/O stubs obey NOMAD's IO rule: input is a file, output to screen.
-    - Initialize the agents (worker and broker): DataGenerator, 
-      StructureComputer
-   
+    - Input message whose content contains the name of input file. 
+      The point coordinates will be extracted from the file and are
+      used to form an evaluation request
+    - Output message whose content contains the model values. There 
+      values are shown up to the standard output as expectation of 
+      NOMAD solver
+    '''
 
-    The descriptions include the executable file name
-    The communicating methods are read_input and write_output
-    Those are specialized to NOMAD solver
-    """
-
-    def __init__(self, model=None, fileName='blackbox.py',
-                 **kwargs):
-
-        #BlackBox.__init__(self, solver=solver, model=model, **kwargs)
-        self.model=model
-        self.file_name = fileName
-        #self.surrogate = None
-        pass
-
+    def __init__(self, input=None, output=None):
+        self.inputFile = input
+        self.outputStream = output
+        return
+    
     def read_input(self, inputFile=None):
         """
         .. warning::
@@ -60,88 +53,90 @@ class NOMADBlackbox(ModelEvaluator):
             Document this method!!!
         """
         inputValues = []
-        paramValues = []
         #print args
         #print ""
         if inputFile is None:
-            return (inputValues, paramValues)
+            return inputValues
 
         # Extract every words from the file and save to a list
         f = open(inputFile)
         map(lambda l: inputValues.extend(l.strip('\n').strip(' ').split(' ')),
                                          f.readlines())
         f.close()
-        return (inputValues, paramValues)
+        return inputValues
 
-    def write_output(self, objectiveValue, constraintValues):
+    def write_output(self, outStream=sys.stdout):
         """
         .. warning::
 
             Document this method!!!
         """
-        print >> sys.stdout, objectiveValue,
+        (objectiveValue, constraintValues) = self.get_model_values()
+        print >> outStream, objectiveValue,
         if len(constraintValues) > 0:
             for i in range(len(constraintValues)):
-                print >> sys.stdout, constraintValues[i],
+                print >> outStream, constraintValues[i],
             print ""
         return
 
-    def generate_surrogate(self):
-        """
-        .. warning::
-
-            Document this method!!!
-        """
+    def handle_message(self, message):
         return
 
-    def generate_executable_file(self):
-        """
-        Generate Python code to play the role of black box executable.
-        """
-
-        tab = ' '*4
-        endl = '\n'
-        comment = '# '
-        bb = open(self.file_name, 'w')
-        # Import the neccessary modules
-        bb.write('import os' + endl)
-        bb.write('import sys' + endl)
-        bb.write('import string' + endl)
-        bb.write('import shutil' + endl)
-        bb.write('import pickle' + endl)
-        bb.write('import logging' + endl)
-        bb.write('from opal.Solvers.nomad import NOMADBlackbox' + endl)
-        
-        bb.write(comment + 'Create an evaluator (model evaluation environment' + \
-                     endl)
-        bb.write('env = NOMADBlackbox()' + endl)
-        bb.write('env.load(file="env.conf")' + endl)
-        bb.write(comment + 'Activate the environment' + endl)
-        bb.write('env.start()')
-        bb.write(comment + 'Creeate a message that request to model values' + \ 
-                 endl)
-        bb.write(comment + 'The content of message is values read from a ' + \ 
-                 'input file' + endl) 
-        bb.write('msg = Message()' + endl)
-        bb.write(comment + 'Raise an event by created message' + endl)
-        bb.write('env.send_message(message=msg)' + endl)
-        bb.write(comment + 'Wait for environement finish his life time' + endl)
-        bb.write('env.join()' + endl)
-        bb.write('env.dump(file="env.conf"' + endl)
-        bb.close()
+    def  run(self):
+        if self.inputFile is not None:
+            self.read_input(inputFile=self.inputFile)
+        Agent.run(self)
         return
+   
+
+class NOMADBlackbox(Environment):
+    """
+
+    NOMADBlackbox object represent a NOMAD blackbox that is kind of an interface
+    between the NOMAD solver and model (problem). Because of the fact that the 
+    used NOMAD solver require that an blackbox is an executable with three 
+    properties:
+    
+    #. Accept a file containing inputed point as only argument
+    
+    #. Evaluate model with the given point
+
+    #. Show the model values to standard output
+
+    we design in such a way that the executable will initialize an NOMADBlackbox 
+    object too. The advantage that we minimize the generated code of the executable
+    
+    NOMADBlackbox object is an application that contains two agents: an 
+    NOMADCommunicator worker and a ModelEvaluator broker. A session is 
+    activated by sending a message to NOMADCommunicator worker and finished 
+    as this NOMADCommunicator worker shows the model values
+    """
+
+    def __init__(self, 
+                 model=None,
+                 input=None,
+                 output=None):
+        # Initialize agents
+        self.communicator = NOMADCommunicator(input=input, output=output)
+        self.evaluator = ModelEvaluator(modelFile=model)
+        # Register the agnets
+        self.add_agent(self.communicator)
+        self.add_agent(self.evaluator)
+        return
+            
 
     def run(self):
-        inputValues = []
-        paramValues = []
-        #print args
-        (inputValues, paramValues) = self.read_input(*args, **kwargs)
-        if self.model is None:
-            return
-        #print inputValues
-        (objective,constraints) = self.model.evaluate(inputValues)
-        self.write_output(objective,constraints)
-        return
+        # Activate the agents
+        self.evaluator.start()
+        self.communicator.start()
+        # Wait the agents finish their work
+        self.communicator.join()
+        self.evaluator.join()
+        return 
+   
+    
+
+ 
 
 class NOMADSolver(Solver):
     """
@@ -161,68 +156,106 @@ class NOMADSolver(Solver):
         self.parameter_settings = [] # List of line in parameter file
         return
 
-#   def blackbox_read_input(self,argv):
-#        inputValues = [] # blackbox input = algorithm parameter
-#        paramValues = [] # blackbox parameter
-#        if len(argv) < 1:
-#            return (inputValues,paramValues)
-#        f = open(argv[1])
-#        map(lambda l: inputValues.extend(l.strip('\n').strip(' ').split(' ')), f.readlines()) # Extract every words from the file and save to a list
-#        f.close()
-#        return (inputValues,paramValues)
-
-#    def blackbox_write_output(self,objectiveValue,constraintValues):
-#        print >> sys.stdout, objectiveValue,
-#        if len(constraintValues) > 0:
-#            for i in range(len(constraintValues)):
-#                print >> sys.stdout,constraintValues[i],
-#            print ""
-#        return
-
     def solve(self, model=None, surrogate=None):
-        self.blackbox = NOMADBlackbox(model=model)
-        self.blackbox.generate_executable_file()
+        '''
+
+        The solving process consist of three steps:
+
+        #. Generate the executable to evaluate model
+        
+        #. Generate the specification corresponding model
+
+        #. Execute command nomad with the generated specificaton file
+        '''
+        #self.blackbox = NOMADBlackbox(model=model)
+        #self.blackbox.generate_executable_file()
+        self.generate_executable(model=model,
+                                 execFile='blackbox.py',
+                                 dataFile='blackbox.dat')
         if surrogate is not None:
-            self.surrogate = NOMADBlackbox(model=surrogate)
-            self.surrogate.generate_executable_file()
+            self.generate_executable(model=surrogate,
+                                     execFile='surrogate.py',
+                                     dataFile='surrogate.dat')
         #   surrogate.save()
-        self.initialize()
+        self.create_specification_file(model=model,
+                                       modelExecutable='$python  blackbox.py', 
+                                       surrogate=surrogate,
+                                       surrogateExecutable='$python surrogate.py')
+        
         self.run()
         return
 
-    def initialize(self):
+    def generate_executable(self, model, execFile='blackbox.py', dataFile='blackbox.dat'):
+        """
+        
+        Generate Python code to play the role of black box executable.
+        """
+
+        tab = ' '*4
+        endl = '\n'
+        comment = '# '
+        bb = open(execFile, 'w')
+        # Import the neccessary modules
+        bb.write('import os' + endl)
+        bb.write('import sys' + endl)
+        bb.write('import string' + endl)
+        bb.write('import shutil' + endl)
+        bb.write('import pickle' + endl)
+        bb.write('import logging' + endl)
+        bb.write('from opal.Solvers.nomad import NOMADBlackbox' + endl)
+        bb.write('from opal.core.modelevaluator import ModelEvaluator' + endl)
+        bb.write(comment + 'Create model evaluation environment' + endl)
+        bb.write('env = NOMADBlackbox("' + dataFile + '", sys.argv[1], sys.stdout)' + endl)
+        bb.write(comment + 'Activate the environment' + endl)
+        bb.write('env.start()')
+        bb.write(comment + 'Wait for environement finish his life time' + endl)
+        bb.write('env.join()' + endl)
+        bb.close()
+        
+        # Dump model to the file so that the executable blackbox can load it as
+        # blackbox data
+
+        f = open(dataFile, 'w')
+        pickle.dump(model, f)
+        f.close()
+        return
+    
+    def create_specification_file(self, 
+                                  model=None,
+                                  modelExecutable=None,
+                                  surrogate=None,
+                                  surrogateExecutable=None):
         "Write NOMAD config to file based on parameter optimization problem."
 
+        if model is None:
+            return
+        
         descrFile = open(self.paramFileName, "w")
-
-        if self.blackbox.model is not None:
-            model = self.blackbox.model
-            descrFile.write('DIMENSION ' + str(model.n_var) + '\n')
+        
+        descrFile.write('DIMENSION ' + str(model.get_n_variable()) + '\n')
             # descrFile.write('DISPLAY_DEGREE 4\n')
-            descrFile.write('DISPLAY_STATS EVAL BBE [ SOL, ] OBJ TIME \\\\\n')
-            descrFile.write('BB_EXE "$python ' + \
-                    self.blackbox.file_name + '"\n')
-            bbTypeStr = 'BB_OUTPUT_TYPE OBJ'
-            for i in range(model.m_con):
-                bbTypeStr = bbTypeStr + ' PB'
-            descrFile.write(bbTypeStr + '\n')
-            #surrogate = self.surrogate
-            if self.surrogate is not None:
-                descrFile.write('SGTE_EXE "$python ' + \
-                                    self.surrogate.file_name + '"\n')
-            pointStr = str(model.initial_points)
-            descrFile.write('X0 ' +  pointStr.replace(',',' ') + '\n')
-            if model.bounds is not None:
-                lowerBoundStr = str([bound[0] for bound in model.bounds \
-                                         if bound is not None])\
-                                         .replace('None','-').replace(',',' ')
-                upperBoundStr = str([bound[1] for bound in model.bounds \
-                                         if bound is not None])\
-                                         .replace('None','-').replace(',',' ')
-                if len(lowerBoundStr.replace(']','').replace('[','')) > 1:
-                    descrFile.write('LOWER_BOUND ' + lowerBoundStr + '\n')
-                if len(upperBoundStr.replace(']','').replace('[','')) > 1:
-                    descrFile.write('UPPER_BOUND ' + upperBoundStr + '\n')
+        descrFile.write('DISPLAY_STATS EVAL BBE [ SOL, ] OBJ TIME \\\\\n')
+        descrFile.write('BB_EXE "' + modelExecutable + '"\n')
+        bbTypeStr = 'BB_OUTPUT_TYPE OBJ'
+        for i in range(model.get_n_constraints()):
+            bbTypeStr = bbTypeStr + ' PB'
+        descrFile.write(bbTypeStr + '\n')
+        #surrogate = self.surrogate
+        if self.surrogate is not None:
+            descrFile.write('SGTE_EXE "' + surrogateExecutable + '"\n')
+        pointStr = str(model.initial_point)
+        descrFile.write('X0 ' +  pointStr.replace(',',' ') + '\n')
+        if model.bounds is not None:
+            lowerBoundStr = str([bound[0] for bound in model.bounds \
+                                     if bound is not None])\
+                                     .replace('None','-').replace(',',' ')
+            upperBoundStr = str([bound[1] for bound in model.bounds \
+                                     if bound is not None])\
+                                     .replace('None','-').replace(',',' ')
+            if len(lowerBoundStr.replace(']','').replace('[','')) > 1:
+                descrFile.write('LOWER_BOUND ' + lowerBoundStr + '\n')
+            if len(upperBoundStr.replace(']','').replace('[','')) > 1:
+                descrFile.write('UPPER_BOUND ' + upperBoundStr + '\n')
 
         # Write other settings.
         descrFile.write('SOLUTION_FILE ' + self.solutionFileName + '\n')

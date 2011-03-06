@@ -21,6 +21,7 @@ interaction between the agents.
 """
 
 import threading
+import logging
 
 class Message:
     def __init__(self, 
@@ -38,7 +39,8 @@ class Message:
 
     def serialize(self):
         """
-        return a string
+        Return a string representing the message. This string is used 
+        in message transfering or message delivering 
         """
         return 
 
@@ -49,7 +51,7 @@ class Message:
         """
         return
 
-class Agent(thread.Threading):
+class Agent(threading.Thread):
     """
 
     An Agent object represent for an activity, a functionality.
@@ -77,11 +79,14 @@ class Agent(thread.Threading):
         1. Ecrypt 
     """
 
-    def __init__ (self):
+    def __init__ (self, logHandlers=[]):
         # At the moment of creation, the agent has no environment, this 
         # information is completed after its registration. The environment 
         # is the source and destination for the message of each agent.
         self.environment=None
+        self.alive = True
+        self.log_handlers = []
+        self.log_handlers.extend(logHandlers)
         return
 
     def fetch_messages(self):
@@ -105,15 +110,23 @@ class Agent(thread.Threading):
     def encrypt(self):
         return 
     
-    def register(self):
+    def register(self, environment=None):
         
         """
         
         register to
         """
+        self.environment = environment
         return
 
-class Environment(thread.Threading):
+    def run(self):
+        while self.alive:
+            messages = self.fetch_message()
+            for msg in messages:
+                self.handle_message(msg)
+        return
+
+class Environment(threading.Thread):
     """
     
     An Environment object is considered sometime as a special agent. It 
@@ -126,14 +139,24 @@ class Environment(thread.Threading):
     The message transport serivce is simple too. It seems to be a billboard 
     for the agents post their messages. Only the agent who posts the message 
     can delete the message. Each message is distinguished by an ID and ID of 
-    the poster.
+    the sender.
+
+    An enviroment
     """
 
-    def __init__(self):
+    def __init__(self, logHandlers=[]):
         self.messages = []
         self.agents = []
+        self.activate_event = None
+        self.log_handlers = []
+        self.log_handlers.extend(logHandlers)
         return
 
+    def initialize(self):
+        return
+
+    def finalize(self):
+        return
 
     def add_message(self, message):
         return
@@ -141,7 +164,29 @@ class Environment(thread.Threading):
     def remove_message(self, messageId, agentId):
         return
 
+    def seach_message(self, query=None):
+        return
+
+    def run(self):
+        return
+
     def add_agent(self, agent):
+        return
+
+    def remove_agent(self, id):
+        return
+    
+    def search_agent(self, query):
+        return
+
+class Broker(Agent, Environment):
+    def __init__(self, logHandlers=[]):
+        Agent.__init__(self, logHandlers)
+        Environment.__init__(self)
+        return
+
+
+    def run(self):
         return
     
     

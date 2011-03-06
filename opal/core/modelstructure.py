@@ -27,13 +27,13 @@ class MeasureFunction:
     def evaluate(self, *args, **kwargs):
         if self.func is not  None:
             return self.func(*args, **kwargs)
-            
-        f = open(self.file_name)
-        func = new.function(marshal.load(f),globals()) # Keep self.func is None for the next pickling
-        f.close()
-        return func(*args, **kwargs)
+        self.load()
+        value = self.func(*args, **kwargs)
+        del self.func
+        self.func = None # Keep self.func is None for the next pickling
+        return value
                
-    def dump(self, dir='./', fileName=None):
+    def save(self, dir='./', fileName=None):
         if fileName is None:
             self.file_name = os.path.abspath(dir) + '/' + self.func.__code__.co_name + '.code'
         else: 
@@ -46,6 +46,21 @@ class MeasureFunction:
         self.func = None # This is neccessary for pickling a measure function. 
         return
 
+    def load(self, fileName=None):
+        f = open(self.file_name)
+        self.func = new.function(marshal.load(f),globals()) 
+        f.close()
+        return
+    
+    def __getstate__(self):
+        content = {}
+        content['code'] = marshal.dumps(self.func.__code__)
+        return content
+
+    def __setstate__(self, content):
+        self.func = new.function(marshal.loads(content['code']),globals()) 
+        return
+        
     def __call__(self,*args,**kwargs):
         return self.evaluate(*args,**kwargs)
 
@@ -86,30 +101,28 @@ class ModelStructure:
     def __init__(self,
                  name='modelstruct',
                  objective=None, 
-                 constraints=[], 
-                 logHandlers=[],
-                 **kwargs):
+                 constraints=[]):
         self.name = name
         self.working_directory = './' + name
         if not os.path.exists(self.working_directory):
             os.mkdir(self.working_directory)
         self.objective = MeasureFunction(objective)
-        self.objective.dump(dir=self.working_directory)
-        #self.constraints = constraints
         self.constraints = []
         if constraints is not None:
             for cons in constraints:
                 constraint = Constraint(lowerBound=cons[0], 
                                         function=cons[1],
                                         upperBound=cons[2])
-                self.constraint.append(constraint)
-                constraint.function.dump(dir=self.working_directory)
-                
-        self.logger = log.OPALLogger(name='modelStructure',
-                                     handlers=logHandlers)
+                self.constraints.append(constraint)
         return
         
-    def save(self, file=None):
+    def save(self, directory=None):
+        if directory is None:
+            directory = self.working_directory
+        if self.objective is not None:
+            self.objective.save(dir=directory)
+        for constraint in self.constraints:
+            constraint.function.save(dir=directory)
         return
 
     def load(self, file=None):

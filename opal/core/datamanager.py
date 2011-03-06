@@ -5,12 +5,12 @@ import time
 import shutil
 import log
 import copy
-import threading
 #import logging
 
 #import utility
 from measure import MeasureValueTable
 from testproblem import TestProblem
+from mafrw import Agent
 
 from .. import config
 
@@ -34,7 +34,7 @@ class DataManager(Agent):
     """
     def __init__(self, 
                  rows=None,
-                 column=None,
+                 columns=None,
                  storage=None):
         self.file_name = 'data_storage.txt'
         self.requests = []
@@ -66,7 +66,7 @@ class DataManager(Agent):
         # the outputed measure values file is available
         elif message.performative == 'SIG':
             # Decrypt the content of SIG
-            (paramValues, problem, measureFile) = self.decrypt(message):
+            (paramValues, problem, measureFile) = self.decrypt(message)
             id = self.get_id(parameterValues)
             # Collect the measure values from output file 
             measureValues = self.collect_data(measureFile)
@@ -84,19 +84,21 @@ class DataManager(Agent):
 
     def fetch_messages(self):
         return messages
+
+
     def collect_data(self, problem, measureFile):
          measure_values = self.wrapper.get_measure(prob, self.test_id)
-            if measure_values is None: # Some error in running the wrapper, 
+         if measure_values is None: # Some error in running the wrapper, 
                                        # so we could not get the meaure
-                self.finalize()
-                return None
+             self.finalize()
+             return None
             #print measure_values
-            if len(measure_values) == 0: # Some error in getting the measure, 
-                                         # so we could not get the meaure
-                self.finalize()
-                return TestResult(testIsFailed=True) 
-            self.measure_value_table.add_problem_measures(prob.name,measure_values)
-        return
+         if len(measure_values) == 0: # Some error in getting the measure, 
+                                      # so we could not get the meaure
+             self.finalize()
+             return TestResult(testIsFailed=True) 
+         self.measure_value_table.add_problem_measures(prob.name,measure_values)
+         return
 
     def run(self):
         while not self.stop_signal:

@@ -3,35 +3,19 @@ import os
 import time
 
 from ..core.platform import Platform
+from ..core.platform import Task
 
-class LSFPlatform(Platform):
-    def __init__(self,submitLog='submit.log',**kwargs):
-        Platform.__init__(self,'LSF',**kwargs)
-        self.submitLog = submitLog
-        self.configuration = {}
-        self.group_id = None
-        pass
-
-    def set_config(self, parameterName, parameterValue):
-        self.configuration[parameterName] = parameterValue
+class LSFTask(Task):
+    def __init__(self, taskId=None, command=None, logHandlers=[]):
+        Task.__init__(self, taskId=taskId, command=command, logHandler=logHandlers)
         return
 
-    def initialize(self, testId):
-        self.group_id = "/g" + testId
+    def run(self):
+        os.system(self.command)
+        os.wait('ended("' + self.id +')')
         return
 
-    def execute(self, command, output='/dev/null'):
-        jobId = str(hash(command))
-        # str(ltime.tm_year) +  str(ltime.tm_mon) + str(ltime.tm_mday) + \
-            # str(ltime.tm_hour) + str(ltime.tm_min) + str(ltime.tm_sec)
-        optionStr = " "
-        for param in self.configuration.keys():
-            optionStr = optionStr + param + " " + self.configuration[param] + " "
-        os.system("bsub -N -oo " + output + " -g " + self.group_id + "  -J " + jobId + optionStr + command + " >> " + self.submitLog)
-        return jobId
-
-
-    def waitForCondition(self,condition):
+    def wait(self,condition):
         # This function playes in role of synchronyzers
         # 1 - Generate a synchronizing job including a segment code that
         #     notifies to current process by socket (notifyToMaster)
@@ -84,7 +68,7 @@ class LSFPlatform(Platform):
         timeStr = str(ltime.tm_year) + '-' + str(ltime.tm_mon) + '-' + str(ltime.tm_mday) + ' ' + \
                   str(ltime.tm_hour) + ':' + str(ltime.tm_min) + ':' + str(ltime.tm_sec)
         os.system('echo ' + timeStr + ' Begin waiting >> lsf-sync.log')
-        synchronizeCmd = 'bsub -w "' + condition + '" python synchronizer.py >> lsf-sync.log'
+        synchronizeCmd = 'bsub -w "' + condition + '" python synchronizer.py > /dev/null'
         os.system(synchronizeCmd)
         #-----------------------
         # Waiting for the notify from synchonizer
@@ -108,5 +92,36 @@ class LSFPlatform(Platform):
         os.remove('synchronizer.py')
         return
 
+
+
+class LSFPlatform(Platform):
+    def __init__(self, maxTask=3, synchronous=True):
+        Platform.__init__(self, maxTask=3)
+        self.configuration = {}
+        self.group_id = None
+        pass
+
+    def set_config(self, parameterName, parameterValue):
+        self.configuration[parameterName] = parameterValue
+        return
+
+    def initialize(self, testId):
+        self.group_id = "/g" + testId
+        return
+
+    def submit(self, command):
+        jobId = str(hash(command))
+        # str(ltime.tm_year) +  str(ltime.tm_mon) + str(ltime.tm_mday) + \
+            # str(ltime.tm_hour) + str(ltime.tm_min) + str(ltime.tm_sec)
+        optionStr = " "
+        for param in self.configuration.keys():
+            optionStr = optionStr + param + " " + self.configuration[param] + " "
+        cmdString = "bsub -N -oo " + output + " -g " + self.group_id + "  -J " + jobId + optionStr + command 
+        task = LSFTask(id=jobId, command=cmdString)
+        Platform.submit(self, task)
+        return jobId
+
+
+    
 
 LSF = LSFPlatform()
