@@ -5,6 +5,17 @@ import new
 import log
 
 
+from mafrw import Broker
+from mafrw import Agent
+
+class MeasureFunctionEvaluator(Agent):
+    def __init__(self, 
+                 name='measure function evaluator',
+                 measureFunction=None,
+                 logHandlers=[]):
+        Agent.__init__(self, name=name, logHandlers=[])
+        return
+
 class StructureComputer(Broker):
     """
     
@@ -16,75 +27,35 @@ class StructureComputer(Broker):
     """
     def __init__(self,
                  name='structcomp',
+                 structure=None,
                  logHandlers=[],
                  **kwargs):
-        self.name = name
-        self.working_directory = './' + name
-        if not os.path.exists(self.working_directory):
-            os.mkdir(self.working_directory)
-        self.objective = MeasureFunction(objective)
-        self.objective.dump(dir=self.working_directory)
-        #self.constraints = constraints
-        self.constraints = []
-        if constraints is not None:
-            for cons in constraints:
-                constraint = Constraint(lowerBound=cons[0], 
-                                        function=cons[1],
-                                        upperBound=cons[2])
-                self.constraint.append(constraint)
-                constraint.function.dump(dir=self.working_directory)
-                
-        self.logger = log.OPALLogger(name='modelStructure',
-                                     handlers=logHandlers)
+        Broker.__init__(self,
+                       name=name,
+                       logHandlers=logHandlers)
+        if structure is None:
+            return
+
+        objEval = MeasureFunctionEvaluator(name='objective',
+                                           measureFunction=structure.objective,
+                                           logHandlers=logHandlers)
+        self.add_agent(objEval)
+
+        if structure.constraints is not None:
+            consIndex = 0
+            for cons in structure.constraints:
+                consEval = MeasureFunctionEvaluator(name='constraint ' + str(consIndex),
+                                                    measureFunction=cons.function,
+                                                    logHandlers=logHandlers)
+                self.add_agent(consEval)
+                consIndex = consIndex + 1
         return
-        
-    def evaluate(self,testResult):
-        self.logger.log('Begin of a model evaluation')
-        if testResult.test_is_failed:
-            consValues = []
-            for i in range(len(self.constraints)):
-                consValues.append(1.0e20)
-            self.logger.log(' - The model values are infinite')
-            self.logger.log('End of a model evaluation')
-            return (1.0e20,consValues)
-        
-        # Set the data for the used measures
-        # This setting helps to take the value of the elementary measure
-        #for measure in self.measures:
-        #    measure.set_data(testResult.measure_value_table)
-        
-        # Get the value of parameter vector p
-        # paramValues = [param.value for param in testResult.parameters if not param.is_const()]
-        # Get the optimizing parameter
-        parameterSet = {}
-        for param in testResult.parameters:
-            if not param.is_const():
-                parameterSet[param.name] = param
-        measureValues = testResult.measure_value_table
-        # Evaluate the objective function by passing the parameter vector and measure vector
-        # The 
-        objValue = self.objective(parameterSet,measureValues)
-        consValues = []
-        for i in range(len(self.constraints)):
-            consValues.extend([val for val \
-                                   in self.constraints[i].evaluate(parameterSet,
-                                                                   measureValues) \
-                                   if val is not None])
-        self.logger.log(' - OBJ: ' + str(objValue) + \
-                         ', CONS: ' + str(consValues))
-        self.logger.log('End of model evaluation')
-        return (objValue,consValues)
 
-
-class ModelEvaluator(threading.Thread):
-    def __init__(self,model=None,measures=None,logging=None,**kwargs):
-        self.model = model
-        self.logger = log.OPALLogger(name='modelStructure',
-                                      handlers=logHandlers)
-        pass
-
-   
-    def log(self,fileName):
-        if self.logging is not None:
-            self.logging.write(fileName,self.result_string)
+    def handle_message(self, message):
         return
+
+    def run(self):
+        return
+
+    
+

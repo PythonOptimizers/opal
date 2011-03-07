@@ -15,7 +15,6 @@ class Model:
     def __init__(self, modelData=None, 
                  modelStructure=None,
                  evaluatingOptions=None,
-                 
                  dataFile='blackbox.dat',
                  **kwargs):
         """
@@ -39,9 +38,11 @@ class Model:
         self.structure = modelStructure
         #self.runFileName = runFileName
         self.data_file = dataFile
-        self.evaluating_options = {'platform':LINUX, 
-                                   'synchronized': True,
-                                   'interruptible': False}
+        # The evaluating_options attribute accepts only
+        # the options of simple type like boolean, integer
+        # or string. In general, it accepts the options 
+        # of picklable data type.
+        self.evaluating_options = {}
         
         if evaluatingOptions is not None:
             self.evaluating_options.update(evaluatingOptions)

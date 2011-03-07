@@ -20,6 +20,7 @@ the concerned agents. After that, at least one event is raised to provoke the
 interaction between the agents.
 """
 
+import hashlib
 import threading
 import logging
 
@@ -77,16 +78,28 @@ class Agent(threading.Thread):
 
     II - Send a request
         1. Ecrypt 
+
     """
 
-    def __init__ (self, logHandlers=[]):
+    def __init__ (self, name='agent', logHandlers=[]):
         # At the moment of creation, the agent has no environment, this 
         # information is completed after its registration. The environment 
         # is the source and destination for the message of each agent.
-        self.environment=None
+        threading.Thread.__init__(self)
+        self.environments={}  # An agent can belong to one or many envivronment
+                              # A belonging relation between an agent and an
+                              # environment is an element (id:environ) of a dict 
+                              # variable 
+        self.name = name
         self.alive = True
         self.log_handlers = []
         self.log_handlers.extend(logHandlers)
+    
+        return
+
+    def send_message(self, dest=None):
+        # If destination is not provided, the message will be distributed to 
+        # to all environment that  the agnet beloongs to
         return
 
     def fetch_messages(self):
@@ -96,7 +109,7 @@ class Agent(threading.Thread):
         that it can handle. At least it won't catch the messages that it posted.
         
         """
-        return
+        return []
 
     def decrypt_message(self, message):
         """
@@ -116,12 +129,13 @@ class Agent(threading.Thread):
         
         register to
         """
-        self.environment = environment
+        id = environment.add_agent(self)
+        self.environments[id] = environment
         return
 
     def run(self):
         while self.alive:
-            messages = self.fetch_message()
+            messages = self.fetch_messages()
             for msg in messages:
                 self.handle_message(msg)
         return
@@ -130,7 +144,7 @@ class Environment(threading.Thread):
     """
     
     An Environment object is considered sometime as a special agent. It 
-    provides two special services: agent locating and message transporting
+    provides two special services: agent locating and meage transporting
     
     The locating service is realized by just a list of agent. Because all 
     the agents are in a same machine, no more information is needed. Each 
@@ -144,9 +158,11 @@ class Environment(threading.Thread):
     An enviroment
     """
 
-    def __init__(self, logHandlers=[]):
+    def __init__(self, name='environment', logHandlers=[]):
+        threading.Thread.__init__(self)
+        self.name = name
         self.messages = []
-        self.agents = []
+        self.agents = {}
         self.activate_event = None
         self.log_handlers = []
         self.log_handlers.extend(logHandlers)
@@ -171,7 +187,9 @@ class Environment(threading.Thread):
         return
 
     def add_agent(self, agent):
-        return
+        id = hashlib.sha1(agent.name)
+        self.agents[id] = agent 
+        return id
 
     def remove_agent(self, id):
         return
@@ -180,8 +198,8 @@ class Environment(threading.Thread):
         return
 
 class Broker(Agent, Environment):
-    def __init__(self, logHandlers=[]):
-        Agent.__init__(self, logHandlers)
+    def __init__(self, name='broker',logHandlers=[]):
+        Agent.__init__(self, name=name, logHandlers=logHandlers)
         Environment.__init__(self)
         return
 

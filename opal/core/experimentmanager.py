@@ -11,6 +11,7 @@ import threading
 #import utility
 from measure import MeasureValueTable
 from testproblem import TestProblem
+from data import Data
 from mafrw import *
 
 from .. import config
@@ -36,11 +37,12 @@ class ExperimentManager(Broker):
     """
 
     def __init__(self, 
-                 alogrithm, 
+                 algorithm, 
                  parameters=None, measures=None,
                  problems=[],
-                 platform=config.platform, interruptible=False, 
-                 logHandlers=[], **kwargs):
+                 interruptible=False, 
+                 logHandlers=[], 
+                 **kwargs):
         
         # The core variables
         self.algorithm = algorithm
@@ -66,7 +68,7 @@ class ExperimentManager(Broker):
         else:
             self.problems = problems
         
-        self.platform = platform
+        #self.platform = platform
         
         
         # By default, logger is Logger object of Python's logging module
@@ -88,19 +90,6 @@ class ExperimentManager(Broker):
             j = j + 1    
         return str(hash(valuesStr))
 
-        
-    def run(self):
-        self.platform.start()
-        while self.stop_signal is None:
-            self.requests = self.fetch_messages()
-            for req in self.requests:
-                self.request_handle(req)
-               
-        # After exitting from the loop of launching, data generator will 
-        # wait for all tasks finish to finailize a working session
-        self.platform.finalize()
-        self.finalize()
-        return 
     
     def run_experiment(self, parameterValues):
         # Prepare all neccessary things likes working directory

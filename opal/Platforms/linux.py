@@ -5,12 +5,13 @@ from ..core.platform import Platform
 from ..core.platform import Task
 
 class LINUXTask(Task):
-    def __init__(self, output='/dev/null', logHandlers=None):
-        Task.__init__(self, output=output, logHandlers=logHandlers)
+    def __init__(self, command=None, output='/dev/null', logHandlers=[]):
+        Task.__init__(self, command=command, output=output, logHandlers=logHandlers)
         return
 
     def run(self):
         os.system(self.command + ' > ' + self.output)
+
 
 class LINUXPlatform(Platform):
     def __init__(self, logHandlers=[]):
@@ -27,5 +28,8 @@ class LINUXPlatform(Platform):
         task = LINUXTask(command=command)
         Platform.submit(self, task)
         return id
+
+    def test_a(self):
+        print 'Hello'
 
 LINUX = LINUXPlatform()

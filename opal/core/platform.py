@@ -14,7 +14,7 @@ class Task(Agent):
         algorithm on a test problem.
 
         '''
-        self.task_id = taskId
+        self.task_id = taskId # task_id is assigned by platform
         self.command = command
         Agent.__init__(self, logHandlers)
         return
@@ -36,7 +36,7 @@ class Platform(Broker):
         # A task is created by each platform
         self.add_agent(task)
         self.queue.append(task)
-        return task.id
+        return task.task_id
    
     def handle_message(self, message):
         # If the message is a request of task 

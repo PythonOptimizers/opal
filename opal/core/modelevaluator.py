@@ -7,6 +7,8 @@ import log
 from .mafrw import Broker
 from .datamanager import DataManager
 from .experimentmanager import ExperimentManager
+from .structcomp import StructureComputer
+from ..Platforms import supported_platforms
 
 #from opal.core.modelstructure import ModelEvaluator
 
@@ -15,14 +17,18 @@ __docformat__ = 'restructuredtext'
 
 class ModelEvaluator(Broker):
     def __init__(self, 
+                 name='model evaluator',
                  model=None, 
                  modelFile=None,
+                 options={},
                  logHandlers=[]):
+        Broker.__init__(self, name=name, logHandlers=logHandlers)
         if model is None:
             if modelFile is None:
                 self.data_manager = None
-                self.task_manager = None
+                self.experiment_manager = None
                 self.structure_computer = None
+                self.platform = None
                 return
             else:
                 # The model is loaded by pickling
@@ -32,13 +38,24 @@ class ModelEvaluator(Broker):
                 model = pickle.load(f)
                 f.close()
     
-        self.options = model.evaluating_options
+        self.options = {'platform': 'LINUX', 
+                        'synchronized': True,
+                        'interruptible': False}
+        self.options.update(options)
+        self.options.update(model.evaluating_options)
         self.data_manager = DataManager(rows=model.get_problems(),
                                         columns=model.get_measures())
         self.experiment_manager = ExperimentManager(algorithm=model.get_algorithm(),
-                                                    problems=model.get_problems(),
-                                                    platform=model.evaluating_options['platform'])
-        self.structure_computer = StructureComputer(structure=model.model_structure)
+                                                    problems=model.get_problems())
+        # if platform option is provided by a string representing the name of 
+        # a OPAL-supported platform
+        if type(self.options['platform']) == type('a string'):
+            plfName = self.options['platform']
+            self.platform = supported_platforms[plfName]
+        else:  # Platform is specified by a Platform-subclassed object
+            self.platform = self.options['platform']
+
+        self.structure_computer = StructureComputer(structure=model.structure)
         return
 
     def initialize(self):

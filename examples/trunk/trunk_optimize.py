@@ -5,7 +5,6 @@ from opal import ModelStructure
 from opal import ModelData
 from opal import Model
 
-from opal.Solvers import NOMAD
 from opal.TestProblemCollections import CUTEr
 from opal.Platforms import SMP
 
@@ -59,11 +58,14 @@ struct = ModelStructure(objective=sum_heval,
 
 prob = Model(modelData=data, 
              modelStructure=struct,
-             platform=SMP,
+             platform='SMP',
              synchoronized=False,
              interruptible=True,
              dataFile='blackbox.dat')
 
 # Solve parameter optimization problem.
-NOMAD.set_parameter(name='MAX_BB_EVAL', value=10)
-NOMAD.solve(model=prob)
+
+if __name__ == '__main__':
+    from opal.Solvers import NOMAD
+    NOMAD.set_parameter(name='MAX_BB_EVAL', value=10)
+    NOMAD.solve(model=prob)

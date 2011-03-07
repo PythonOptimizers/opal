@@ -41,7 +41,10 @@ class NOMADCommunicator(Agent):
       NOMAD solver
     '''
 
-    def __init__(self, input=None, output=None):
+    def __init__(self, name='nomad blackbox communicator',
+                 logHandlers=[],
+                 input=None, output=None):
+        Agent.__init__(self, name=name, logHandlers=logHandlers)
         self.inputFile = input
         self.outputStream = output
         return
@@ -113,10 +116,13 @@ class NOMADBlackbox(Environment):
     """
 
     def __init__(self, 
+                 name='nomad blackbox',
+                 logHandlers=[],
                  model=None,
                  input=None,
                  output=None):
         # Initialize agents
+        Environment.__init__(self, name=name, logHandlers=logHandlers)
         self.communicator = NOMADCommunicator(input=input, output=output)
         self.evaluator = ModelEvaluator(modelFile=model)
         # Register the agnets
@@ -205,7 +211,7 @@ class NOMADSolver(Solver):
         bb.write('from opal.Solvers.nomad import NOMADBlackbox' + endl)
         bb.write('from opal.core.modelevaluator import ModelEvaluator' + endl)
         bb.write(comment + 'Create model evaluation environment' + endl)
-        bb.write('env = NOMADBlackbox("' + dataFile + '", sys.argv[1], sys.stdout)' + endl)
+        bb.write('env = NOMADBlackbox(model="' + dataFile + '",input=sys.argv[1], output=sys.stdout)' + endl)
         bb.write(comment + 'Activate the environment' + endl)
         bb.write('env.start()')
         bb.write(comment + 'Wait for environement finish his life time' + endl)

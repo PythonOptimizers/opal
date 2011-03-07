@@ -103,9 +103,6 @@ class ModelStructure:
                  objective=None, 
                  constraints=[]):
         self.name = name
-        self.working_directory = './' + name
-        if not os.path.exists(self.working_directory):
-            os.mkdir(self.working_directory)
         self.objective = MeasureFunction(objective)
         self.constraints = []
         if constraints is not None:
@@ -116,13 +113,8 @@ class ModelStructure:
                 self.constraints.append(constraint)
         return
         
-    def save(self, directory=None):
-        if directory is None:
-            directory = self.working_directory
-        if self.objective is not None:
-            self.objective.save(dir=directory)
-        for constraint in self.constraints:
-            constraint.function.save(dir=directory)
+    def save(self):
+        
         return
 
     def load(self, file=None):
