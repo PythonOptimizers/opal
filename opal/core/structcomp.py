@@ -4,8 +4,6 @@ import marshal
 import new
 import log
 
-
-from mafrw import Broker
 from mafrw import Agent
 
 class MeasureFunctionEvaluator(Agent):
@@ -13,10 +11,10 @@ class MeasureFunctionEvaluator(Agent):
                  name='measure function evaluator',
                  measureFunction=None,
                  logHandlers=[]):
-        Agent.__init__(self, name=name, logHandlers=[])
+        Agent.__init__(self, name=name, logHandlers=logHandlers)
         return
 
-class StructureComputer(Broker):
+class StructureComputer(Agent):
     """
     
     An object of this class represent for the model structure that is 
@@ -30,32 +28,34 @@ class StructureComputer(Broker):
                  structure=None,
                  logHandlers=[],
                  **kwargs):
-        Broker.__init__(self,
+        Agent.__init__(self,
                        name=name,
                        logHandlers=logHandlers)
-        if structure is None:
+       
+        self.structure = structure
+        return
+
+    def register(self, environment):
+        
+        Agent.register(self, environment)
+
+        if self.structure is None:
             return
 
         objEval = MeasureFunctionEvaluator(name='objective',
-                                           measureFunction=structure.objective,
-                                           logHandlers=logHandlers)
-        self.add_agent(objEval)
+                                           measureFunction=self.structure.objective)
+        objEval.register(environment)
 
-        if structure.constraints is not None:
-            consIndex = 0
-            for cons in structure.constraints:
-                consEval = MeasureFunctionEvaluator(name='constraint ' + str(consIndex),
-                                                    measureFunction=cons.function,
-                                                    logHandlers=logHandlers)
-                self.add_agent(consEval)
-                consIndex = consIndex + 1
+        if self.structure.constraints is None:
+            return
+        consIndex = 0
+        for cons in self.structure.constraints:
+            consEval = MeasureFunctionEvaluator(name='constraint ' + str(consIndex),
+                                                measureFunction=cons.function)
+            consEval.register(environment)
+            consIndex = consIndex + 1
         return
 
-    def handle_message(self, message):
-        return
-
-    def run(self):
-        return
-
+    
     
 

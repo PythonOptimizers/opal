@@ -4,7 +4,7 @@ import os.path
 import pickle
 import log
 
-from .mafrw import Broker
+from .mafrw import Agent
 from .datamanager import DataManager
 from .experimentmanager import ExperimentManager
 from .structcomp import StructureComputer
@@ -15,86 +15,79 @@ from ..Platforms import supported_platforms
 __docformat__ = 'restructuredtext'
 
 
-class ModelEvaluator(Broker):
+class ModelEvaluator(Agent):
     def __init__(self, 
                  name='model evaluator',
                  model=None, 
                  modelFile=None,
                  options={},
                  logHandlers=[]):
-        Broker.__init__(self, name=name, logHandlers=logHandlers)
+        Agent.__init__(self, name=name, logHandlers=logHandlers)
+        self.options = {'platform': 'LINUX', 
+                        'synchronized': True,
+                        'interruptible': False}
+        self.options.update(options)
         if model is None:
-            if modelFile is None:
-                self.data_manager = None
-                self.experiment_manager = None
-                self.structure_computer = None
-                self.platform = None
-                return
-            else:
+            if modelFile is not None:
                 # The model is loaded by pickling
                 # Be able to be serialized is a requirement for
                 # a model object
                 f = open(modelFile)
                 model = pickle.load(f)
                 f.close()
-    
-        self.options = {'platform': 'LINUX', 
-                        'synchronized': True,
-                        'interruptible': False}
-        self.options.update(options)
-        self.options.update(model.evaluating_options)
-        self.data_manager = DataManager(rows=model.get_problems(),
-                                        columns=model.get_measures())
-        self.experiment_manager = ExperimentManager(algorithm=model.get_algorithm(),
-                                                    problems=model.get_problems())
+           
+        self.model = model
+        self.options.update(self.model.evaluating_options)
+       
         # if platform option is provided by a string representing the name of 
         # a OPAL-supported platform
-        if type(self.options['platform']) == type('a string'):
-            plfName = self.options['platform']
-            self.platform = supported_platforms[plfName]
-        else:  # Platform is specified by a Platform-subclassed object
-            self.platform = self.options['platform']
-
-        self.structure_computer = StructureComputer(structure=model.structure)
+        
         return
 
-    def initialize(self):
-        # Exit immediately if one of the agent is not defined
-        if (self.data_manager is None) or \
-                (self.experiment_manager is None) or \
-                (self.structure_computer is None):
+    def parse_message(self, message):
+        cmd = Agent.parse_message(self, message)
+        if cmd in self.message_handlers.keys():
+            return cmd
+        cmd = message.performative + message.content['action']
+        return cmd
+
+    def register(self, environment):
+        '''
+
+        After adding his name in the environment database, it will look for 
+        the agents that work as data manager, experiment manager and structure computer.
+        If it could not find one of these agents within environment, it will 
+        create them and let them register to environment
+
+        The find process is realized by sending a test message to environment and wait
+        for replying.
+        '''
+        Agent.register(self, environment)
+        
+        if self.model is None:
             return
-        # Register the agents
-        self.add_agent(self.data_manage)
-        self.add_agent(self.experiment_manager)
-        self.add_agent(self.structure_computer)
-        # Activate the agents
-        self.data_manager.start()
-        self.experiment_manager.start()
-        self.structure_computer.start()
-      
-        return
-       
-    def handle_message(self, message):
-        '''
+        
+        if self.find_collaborator('data manager',environment) is None:
+            data_manager = DataManager(rows=self.model.get_problems(),
+                                       columns=self.model.get_measures())
+            data_manager.register(environment)
+        
+        if self.find_collaborator('exeperiment manager', environment) is None:
+            experiment_manager = ExperimentManager(algorithm=self.model.get_algorithm(),
+                                                   problems=self.model.get_problems(),
+                                                   platform=self.options['platform'])
+            experiment_manager.register(environment)
 
-        Handle message contains parameter values to provoke 
-        an evaluation 
-        '''
-        paramValues = self.decrypt(message.content)
-        self.add_message()
+        if self.find_collaborator('structure computer', environment) is None:
+            structure_computer = StructureComputer(structure=self.model.structure)
+            structure_computer.register(environment)
+
         return
     
-    def finalize(self):
-        # Wait until all of agents finish
-        self.data_manager.join()
-        self.experiment_manager.join()
-        self.structure_computer.join()
-        # We expect that, after all of agents finish their works, 
-        # there is at least one message whose content contains 
-        # model values in the messages queue of ModelEvaluator
-        return
+    def find_collaborator(self, name, environment):
+        return None
 
+    
       
   
    

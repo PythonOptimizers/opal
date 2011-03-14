@@ -14,6 +14,8 @@ from testproblem import TestProblem
 from data import Data
 from mafrw import *
 
+from ..Platforms import supported_platforms
+
 from .. import config
 
 class Experiment(Data):
@@ -24,8 +26,9 @@ class Experiment(Data):
     def __init__(self):
         return
         
-class ExperimentManager(Broker):
+class ExperimentManager(Agent):
     """ 
+    
     This class represents a data generator for a parameter optimization
     problem. The data is the values of the elementary measures that are needed
     to formulate the problem. To specify a data generator, we need provide:
@@ -37,14 +40,17 @@ class ExperimentManager(Broker):
     """
 
     def __init__(self, 
-                 algorithm, 
+                 name='experiment manager',
+                 algorithm=None, 
                  parameters=None, measures=None,
                  problems=[],
                  interruptible=False, 
                  logHandlers=[], 
+                 options={},
                  **kwargs):
         
         # The core variables
+        Agent.__init__(self, name=name, logHandlers=logHandlers)
         self.algorithm = algorithm
         if parameters is None: # No parameter subset is specified
             self.parameters = algorithm.parameters # All parameters of algorithm
@@ -68,19 +74,30 @@ class ExperimentManager(Broker):
         else:
             self.problems = problems
         
+        self.options = {'platform': 'LINUX'}
+        if options is not None:
+            self.options.update(options)
+        self.options.update(kwargs)
+
         #self.platform = platform
         
         
         # By default, logger is Logger object of Python's logging module
         # Logger is set name to modeldata, level is info.
-        self.logger = log.OPALLogger(name='modelData', handlers=logHandlers)
+        # self.logger = log.OPALLogger(name='modelData', handlers=logHandlers)
       
         self.experiments = {} # List of all experiements in executions
         return
 
-    def get_parameters(self):
-        return self.parameters
+    def register(self, environment):
+        Agent.register(self, environment)
+        if self.find_platform(self.options['platform'], environment) is None:
+            platform = supported_platforms[self.options['platform']]
+            platform.register(environment)
+        return
 
+  
+    #  Private method
     def create_experiment_id(self, parameterValues):
         valuesStr = '_'
         j = 0
@@ -90,7 +107,10 @@ class ExperimentManager(Broker):
             j = j + 1    
         return str(hash(valuesStr))
 
-    
+  
+    def find_platform(self, platformName, environment):
+        return None
+
     def run_experiment(self, parameterValues):
         # Prepare all neccessary things likes working directory
         # create id, create parameter file ..
@@ -98,40 +118,10 @@ class ExperimentManager(Broker):
         for prob in self.problems:
             msgContent = self.encrypt(self.algorithm.solve(parameterFile, problem))
             message = Message(sender=self.id,
-                              performative='REQ',
+                              performative='request',
                               content=msgContent)
             self.send_message(message)
         
-    def message_handle(self, message):
-        # If request message is a request of executing target algorithm 
-        # with parameter values encrypted in the message
-        parameterValues = self.decrypt(message.content)
-        self.run_exeperiment(parameterValues)
-        return
-
-    def fetch_messages(self, environment=None):
-        """
-        
-        Data generator concentrate only the following message types:
-        - Request to generate a new data corresponding a set of parameter value.
-          This request comme from particularly a data controller that want new 
-          data to add to his database
-        - Signal to inform to stop. 
-        """ 
-        
-        requests = []
-        return requests
-
-    def descrypt(self, message):
-        """
-        
-        Data generator decrypts a request to get the parameter values or 
-        decrypt a signal 
-        """
-        parameterValues = []
-        return parameterValues
-
-   
 
         
         

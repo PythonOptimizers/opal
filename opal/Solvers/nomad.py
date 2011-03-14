@@ -6,6 +6,8 @@ import pickle
 from ..core.model import Model
 from ..core.solver import Solver
 from ..core.mafrw import Agent
+from ..core.mafrw import Message
+
 from ..core.mafrw import Environment
 
 from opal import ModelEvaluator
@@ -68,26 +70,37 @@ class NOMADCommunicator(Agent):
         f.close()
         return inputValues
 
-    def write_output(self, outStream=sys.stdout):
+    def write_output(self, objectiveValue, constraintValues):
         """
         .. warning::
 
             Document this method!!!
         """
         (objectiveValue, constraintValues) = self.get_model_values()
-        print >> outStream, objectiveValue,
-        if len(constraintValues) > 0:
-            for i in range(len(constraintValues)):
-                print >> outStream, constraintValues[i],
-            print ""
+        self.outputStream.write(str(objectiveValue) + '\n')
+        for val in constraintValues:
+                outputStream.write(str(val) + ' ')
+        outputStream.write('\n')
         return
 
-    def handle_message(self, message):
+    def handle_messge(self, message):
+        if (message.performative == 'inform') and \
+                (message.reference == self.sent_request_id) :
+            (objectiveValue, constraintValues) = self.decrypt(message.content)
+            self.write_output(objectiveValue, constraintValues)
+            self.stop()                
+        Agent.handle_message(self, message)
         return
 
     def  run(self):
         if self.inputFile is not None:
-            self.read_input(inputFile=self.inputFile)
+            inputValues = self.read_input(inputFile=self.inputFile)
+        msg = Message(performative='cfp',
+                      sender=self.id,
+                      receiver=None,
+                      content={'action':'evaluate',
+                               'point': inputValues})
+        self.sent_request_id = self.send_message(msg)
         Agent.run(self)
         return
    
@@ -123,21 +136,23 @@ class NOMADBlackbox(Environment):
                  output=None):
         # Initialize agents
         Environment.__init__(self, name=name, logHandlers=logHandlers)
-        self.communicator = NOMADCommunicator(input=input, output=output)
-        self.evaluator = ModelEvaluator(modelFile=model)
+        self.communicator = NOMADCommunicator(name='communicator',
+                                              input=input, 
+                                              output=output)
+        self.evaluator = ModelEvaluator(name='evaluator', modelFile=model)
         # Register the agnets
-        self.add_agent(self.communicator)
-        self.add_agent(self.evaluator)
+        self.communicator.register(self)
+        self.evaluator.register(self)
         return
             
 
     def run(self):
-        # Activate the agents
-        self.evaluator.start()
-        self.communicator.start()
-        # Wait the agents finish their work
-        self.communicator.join()
-        self.evaluator.join()
+        self.initialize()
+        # Wait the comnunicator finishes its work. This happends when 
+        # the communicator get a message containing the model values 
+        # (evaluator replies)
+        #self.communicator.join()
+        self.finalize()
         return 
    
     

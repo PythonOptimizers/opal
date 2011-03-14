@@ -33,81 +33,39 @@ class DataManager(Agent):
     request and get the data.
     """
     def __init__(self, 
+                 name='data manager',
                  rows=None,
                  columns=None,
-                 storage=None):
+                 storage=None,
+                 logHandlers=[]):
         self.file_name = 'data_storage.txt'
-        self.requests = []
-        self.events = []
-        self.stop_signal = False
+        Agent.__init__(self, name=name, logHandlers=logHandlers)
+        self.message_handlers['request-inform'] = self.send_data
+        self.message_handlers['cfp-collect'] = self.collect_data
         return
 
-    def reply_request(self, request):
+    # Message handlers
+    def send_data(self, message):
+        (paramValues, problem) = message.content['proposition']
+        measureValues = self.query_data(parameters=paramValues,
+                                        problem=problem)
+        # If getting data is successful
+        if measureValues is not None:
+            # Create a reply message whose content contains the 
+            # measure values
+            msgCont = self.encrypt(measureValues)
+            msg = Message(sender=self.id,
+                          content=msgCont,
+                          performative='inform',
+                          reference=message.id)
+        return
+        
+    def collect_data(self, message):
+        (paramValues, problem, measureFile) = message.content['proposition']
+        f = open(measureFile)
+        f.close()
         return
 
-    def handle_message(self, message):
-        # If message is a data request
-        if message.performative == 'REQ':
-            # Decrypt message content to get the parameter values
-            # and problem name
-            (paramValues, problem) = self.decrypt(message)
-            # Get data from the measures
-            measureValues = self.get_data()
-            # If getting data is successful
-            if measureValues is not None:
-                # Create a reply message whose content contains the 
-                # measure values
-                msgCont = self.encrypt(measureValues)
-                msg = Message(sender=self.name,
-                              content=msgCont,
-                              performative='REP',
-                              reference=message.id)
-        # If message is a signal indicating a task is completed and 
-        # the outputed measure values file is available
-        elif message.performative == 'SIG':
-            # Decrypt the content of SIG
-            (paramValues, problem, measureFile) = self.decrypt(message)
-            id = self.get_id(parameterValues)
-            # Collect the measure values from output file 
-            measureValues = self.collect_data(measureFile)
-            if measureValues is not None:
-                # Collect sucessfully, add to the storage
-                self.add_data(id, problem, measureValues)
-           
-        return
-
-    def get_data(self, parameterValues, dataId=None):
-        if dataId is None:
-            dataId = self.get_id(parameterValues)
-        return self.storage[dataId]
-    
-
-    def fetch_messages(self):
-        return messages
-
-
-    def collect_data(self, problem, measureFile):
-         measure_values = self.wrapper.get_measure(prob, self.test_id)
-         if measure_values is None: # Some error in running the wrapper, 
-                                       # so we could not get the meaure
-             self.finalize()
-             return None
-            #print measure_values
-         if len(measure_values) == 0: # Some error in getting the measure, 
-                                      # so we could not get the meaure
-             self.finalize()
-             return TestResult(testIsFailed=True) 
-         self.measure_value_table.add_problem_measures(prob.name,measure_values)
-         return
-
-    def run(self):
-        while not self.stop_signal:
-            messages = self.fetch_messages()
-            while len(messages) > 0:
-                msg = messages.pop()
-                self.handle_messages(msg)
-                
-                self.send(requestor, data)
-            pass
-        return
-
+    # Private methods
+    def query_data(self, parameters=None, problem=None):
+        return None

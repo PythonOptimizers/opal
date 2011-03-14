@@ -35,12 +35,12 @@ class SMPTask(Task):
         return
 
 class SMPPlatform(Platform):
-    def __init__(self,logHandlers=[],**kwargs):
-        Platform.__init__(self,'SMP',**kwargs)
+    def __init__(self, maxTask=2, logHandlers=[]):
+        Platform.__init__(self, name='SMP', maxTask=1, logHandlers=logHandlers)
         #self.task_monitor = threading.Thread()
         #self.children = []
         self.configuration = {}
-        self.logger = log.OPALLogger(name='smpPlatform', handlers=logHandlers)
+        #self.logger = log.OPALLogger(name='smpPlatform', handlers=logHandlers)
         pass
    
     def set_config(self, parameterName, parameterValue):
