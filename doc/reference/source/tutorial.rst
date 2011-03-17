@@ -7,31 +7,31 @@ Tutorial: Simple tasks of Parameter Optimization
 Invoke a simple session of algorithmic parameter optimization in some
 sense is done in three steps:
 
-#. Create a wrapper that are actually an executable and declare it to OPAL as 
-   target algorithm object with two important set: the parameter set and the 
+#. Create a wrapper that are actually an executable and declare it to OPAL as
+   target algorithm object with two important set: the parameter set and the
    measure set.
 
-#. Define an algorithmic parameter optimization basing the declared target 
-   algorithm object and at least a measure function. 
-   
-#. Provoke a session of optimization by choosing a solver to solve problem 
+#. Define an algorithmic parameter optimization basing the declared target
+   algorithm object and at least a measure function.
+
+#. Provoke a session of optimization by choosing a solver to solve problem
    defined in previous steps.
    and may be some declarations of formulating a parameter optimization problem.
 
 Pratically, we need create an executable wrapper, and one or more Python files for
-declaring, defining parameter optimization problem and activating solving session. 
+declaring, defining parameter optimization problem and activating solving session.
 The contents of wrapper is easily seperated from the others, and
-can be written in any programming language and satisfies some simple restrictions 
-relating input and output. The target algorithm declartion, parameter optimization 
-problem definition, session provoking are written in Python and follow the OPAL 
-syntax. We can spread the Python code in one or more Python files. 
+can be written in any programming language and satisfies some simple restrictions
+relating input and output. The target algorithm declartion, parameter optimization
+problem definition, session provoking are written in Python and follow the OPAL
+syntax. We can spread the Python code in one or more Python files.
 
-This tutorial walks the reader through those steps by some simple examples. 
+This tutorial walks the reader through those steps by some simple examples.
 
 Getting started by optimizing the `finite-difference` algorithm
 ===============================================================
 
-The first example shows how to identify the optimal small value of *finite difference* formula. 
+The first example shows how to identify the optimal small value of *finite difference* formula.
 
 `Finite-difference` method to approximate derivative according to the formula. It  has one parameter that is
 a small value `h`
@@ -53,11 +53,11 @@ following listing::
       return (f(x + h) - f(x))/h
 
 
-We will explain step by step the example. In this example, the executable wrapper 
-is written in Python. The declaration, definition of OPAL problem are separated from 
+We will explain step by step the example. In this example, the executable wrapper
+is written in Python. The declaration, definition of OPAL problem are separated from
 the provoking session. Hence, each step results in a Python file
-that called generally *wrapper file*, *declaration file* and *main file*. We push the 
-declaration part into a separated file to reuse it as we want to optimize the algorithm 
+that called generally *wrapper file*, *declaration file* and *main file*. We push the
+declaration part into a separated file to reuse it as we want to optimize the algorithm
 in different maners.
 
 .. _creating_of_wrapper:
@@ -130,19 +130,19 @@ returns the approximation error as unique observed elementary measure::
     measures = run(param_file, problem)
     write_measures_to_file(output_file, measures)
 
-  
+
 
 Some points should be noted in the above listing:
 
-#. The wrapper communicates avec the OPAL through the immediated files whose format is fixed by OPAL. As the executable 
-   wrapper are written in Python, we can benefit two predefined methods :func:`opal.core.io.read_parameter` and 
-   :func:`opal.core.io.write_measure` to take care the reading parameters from file and writing measures to file. This is one 
+#. The wrapper communicates avec the OPAL through the immediated files whose format is fixed by OPAL. As the executable
+   wrapper are written in Python, we can benefit two predefined methods :func:`opal.core.io.read_parameter` and
+   :func:`opal.core.io.write_measure` to take care the reading parameters from file and writing measures to file. This is one
    of the advantage as creating executable wrapper by Python.
 
 #. The argument processing follows exactly the order of arguments in a wrapper call.
 
-#. The algorithm is involved by ``import fd`` statement and the function call ``fd(math.sin, 0.0, h)``. 
-   Module ``fd`` provides the ``fd`` routine to compute difference of given function specified by the first argument. 
+#. The algorithm is involved by ``import fd`` statement and the function call ``fd(math.sin, 0.0, h)``.
+   Module ``fd`` provides the ``fd`` routine to compute difference of given function specified by the first argument.
    The wrapper will test this routine with function :math:`sin(x)` at point :math:`x=\pi/4`.
 
 
@@ -189,7 +189,7 @@ An example of declaration file is show in following listing ::
   error = Measure(kind='real', name='ERROR', description='Error in derivative')
   FD.add_measure(error)
 
- 
+
 Create an optimization session
 ------------------------------
 
@@ -245,7 +245,7 @@ A main file that desires to minimize the small value ``h`` is defined as followi
   from math import sqrt
   print 'Expected optimal value is approximately %21.15e' % sqrt(eps)
 
- 
+
 In this listing, all statements from the begin except the last one are declarations.
 They show that, all of algorithm's parameter are involved to the minimization of
 approximation error. The last one figures out that, NOMAD is chosen as the solver and
@@ -257,7 +257,7 @@ Now, to run this example, from the prompt of shell environment, we launch::
 
 The output on screen looklikes ::
 
-  
+
   NOMAD - version 3.4.2 - www.gerad.ca/nomad
 
   Copyright (C) 2001-2010 {
@@ -266,7 +266,7 @@ The output on screen looklikes ::
 	Gilles Couture       - Ecole Polytechnique de Montreal
 	John E. Dennis, Jr.  - Rice University
 	Sebastien Le Digabel - Ecole Polytechnique de Montreal
-  } 
+  }
 
   Funded in part by AFOSR and Exxon Mobil.
 
@@ -318,7 +318,7 @@ This also shows that first example is successful. That verifies the theory resul
   ====================
 
 ..
- 
+
 .. todo::
 
     Expand description.

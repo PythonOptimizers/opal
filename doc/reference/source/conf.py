@@ -145,7 +145,7 @@ html_theme = "sphinxdoc"
 
 # Custom sidebar templates, maps document names to template names.
 html_sidebars = {
-    'index' : ['indexsidebar.html', 
+    'index' : ['indexsidebar.html',
                'searchbox.html']
     }
 

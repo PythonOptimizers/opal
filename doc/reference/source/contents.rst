@@ -25,7 +25,7 @@ Contents:
    Installation <installation>
    Tutorial <tutorial>
    OPAL components description <opal>
-   API Document <api>
+   API <api>
 
 TODO List
 =========
