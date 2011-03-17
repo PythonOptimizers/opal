@@ -4,19 +4,17 @@
 Tutorial: Simple tasks of Parameter Optimization
 ================================================
 
-Invoke a simple session of algorithmic parameter optimization in some
-sense is done in three steps:
+A simple session of algorithmic parameter optimization
+consists in three steps:
 
-#. Create a wrapper that are actually an executable and declare it to OPAL as
-   target algorithm object with two important set: the parameter set and the
-   measure set.
+#. Declare the target algorithm to OPAL along with its parameters and the
+   measures that it outputs. We refer to such measures as ``atomic``.
 
-#. Define an algorithmic parameter optimization basing the declared target
-   algorithm object and at least a measure function.
+#. Define an algorithmic parameter optimization problem based on some or all of
+   the parameters and using the atomic measures to construct an objective
+   function and (possibly) some constraints.
 
-#. Provoke a session of optimization by choosing a solver to solve problem
-   defined in previous steps.
-   and may be some declarations of formulating a parameter optimization problem.
+#. Pass the resulting problem to the black-box solver.
 
 Pratically, we need create an executable wrapper, and one or more Python files for
 declaring, defining parameter optimization problem and activating solving session.
@@ -31,34 +29,31 @@ This tutorial walks the reader through those steps by some simple examples.
 Getting started by optimizing the `finite-difference` algorithm
 ===============================================================
 
-The first example shows how to identify the optimal small value of *finite difference* formula.
-
-`Finite-difference` method to approximate derivative according to the formula. It  has one parameter that is
-a small value `h`
+The first example shows how to identify an optimal step size in a *forward
+finite difference* formula. In forward finite differences, the derivative at
+:math:`x` of a function :math:`f` of a single variable is approximated using
+the formula
 
 .. math::
-   \delta_f(x;h) := \frac{f(x + h) - f(x)}{h} \approx f'(x)
 
-An implementation in a form of a Python module is illustrated in
-following listing::
+   \delta f(x;h) := \frac{f(x + h) - f(x)}{h} \approx f'(x)
 
+In this formula, we could consider the step size :math:`h` as a real parameter.
 
-  '''
+Here is a possible (simple) Python implementation::
 
-  File fd.py
-  '''
-  def finite_diff(f, x, h):
+  # This is file fd.py
+  def fd(f, x, h):
       if h == 0:
-  return float("infinity")
+          return float("infinity")
       return (f(x + h) - f(x))/h
 
-
-We will explain step by step the example. In this example, the executable wrapper
-is written in Python. The declaration, definition of OPAL problem are separated from
-the provoking session. Hence, each step results in a Python file
-that called generally *wrapper file*, *declaration file* and *main file*. We push the
-declaration part into a separated file to reuse it as we want to optimize the algorithm
-in different maners.
+We will explain step by step the example. In this example, the executable
+wrapper is written in Python. The declaration, definition of OPAL problem are
+separated from the provoking session. Hence, each step results in a Python file
+that called generally *wrapper file*, *declaration file* and *main file*. We
+push the declaration part into a separated file to reuse it as we want to
+optimize the algorithm in different maners.
 
 .. _creating_of_wrapper:
 
@@ -99,12 +94,8 @@ Obviously, how to create a wrapper depends on the algorithm and user experience.
 listing is an example of the wrapper for the above ``finite-difference`` algorithm. This wrapper
 returns the approximation error as unique observed elementary measure::
 
-  '''
-
-  File fd_run.py
-  '''
-
-  from opal.core.io import *
+  # This is file fd_run.py
+  from opal.core.io import read_params_from_file, write_measures_to_file
   from fd import fd
   from math import pi, sin, cos
   import sys
@@ -167,6 +158,7 @@ principles of OPAL:
 
 An example of declaration file is show in following listing ::
 
+  # This is file fd_declaration.py
   from opal.core.algorithm import Algorithm
   from opal.core.parameter import Parameter
   from opal.core.measure   import Measure
@@ -176,9 +168,6 @@ An example of declaration file is show in following listing ::
 
   # Register executable for FD.
   FD.set_executable_command('python fd_run.py')
-
-  # Register parameter file used by black-box solver to communicate with FD.
-  #FD.set_parameter_file('fd.param')  # Should be chosen automatically and hidden.
 
   # Define parameter and register it with algorithm.
   h = Parameter(kind='real', default=0.5, bound=(0, None),
@@ -208,6 +197,7 @@ define the objective and constraints (if any) of our problem.
 
 A main file that desires to minimize the small value ``h`` is defined as following listing::
 
+  # This is file fd_optimize.py
   from fd_declaration import FD
 
   from opal import ModelStructure
@@ -217,8 +207,7 @@ A main file that desires to minimize the small value ``h`` is defined as followi
 
   # Return the error measure.
   def get_error(parameters, measures):
-    val = sum(measures["ERROR"])
-    return val
+    return sum(measures["ERROR"])
 
   # Parameters being tuned and problem list.
   params = FD.parameters   # All.
@@ -253,19 +242,19 @@ it is invoked by method :func:`solve`.
 
 Now, to run this example, from the prompt of shell environment, we launch::
 
-  shell$ python diff_optimize.py
+  shell$ python fd_optimize.py
 
-The output on screen looklikes ::
+The output on screen looks like ::
 
 
   NOMAD - version 3.4.2 - www.gerad.ca/nomad
 
   Copyright (C) 2001-2010 {
         Mark A. Abramson     - The Boeing Company
-	Charles Audet        - Ecole Polytechnique de Montreal
-	Gilles Couture       - Ecole Polytechnique de Montreal
-	John E. Dennis, Jr.  - Rice University
-	Sebastien Le Digabel - Ecole Polytechnique de Montreal
+    Charles Audet        - Ecole Polytechnique de Montreal
+    Gilles Couture       - Ecole Polytechnique de Montreal
+    John E. Dennis, Jr.  - Rice University
+    Sebastien Le Digabel - Ecole Polytechnique de Montreal
   }
 
   Funded in part by AFOSR and Exxon Mobil.
@@ -279,29 +268,29 @@ The output on screen looklikes ::
 
   MADS run {
 
-	EVAL	BBE	[	SOL,	]	OBJ	TIME	\\
+    EVAL    BBE [   SOL,    ]   OBJ TIME    \\
 
-	1	1	[	0.5 	]	0.2022210836	   1	\\
-	4	4	[	0.25 	]	0.09527166174	   2	\\
-	12	8	[	0.1875 	]	0.07023320242	   4	\\
-	16	11	[	0.125 	]	0.04597664512	   5	\\
-	20	14	[	0.0625 	]	0.02255016086	   7	\\
-	28	17	[	0.0380859375 	]	0.01363471996	   9	\\
-	32	21	[	0.013671875 	]	0.004855691016	  10	\\
-	40	28	[	0.006286621094 	]	0.002227306539	  13	\\
-	46	33	[	0.002380371094 	]	0.0008422556376	  15	\\
-	52	37	[	0.0005340576172 	]	0.0001888514898	  16	\\
-	60	43	[	5.125999451e-05 	]	1.812345385e-05	  19	\\
-	72	54	[	2.074893564e-05 	]	7.335906448e-06	  24	\\
-	78	59	[	5.490146577e-06 	]	1.941051869e-06	  26	\\
-	86	65	[	1.675449312e-06 	]	5.923241065e-07	  28	\\
-	94	71	[	7.217749953e-07 	]	2.551989452e-07	  31	\\
-	100	75	[	2.450397005e-07 	]	8.67597334e-08	  33	\\
-	106	79	[	6.621121429e-09 	]	3.704942908e-09	  34	\\
-	121	92	[	1.407139655e-08 	]	3.174716379e-09	  40	\\
-	128	98	[	1.779668685e-08 	]	6.411027265e-10	  42	\\
-	162	130	[	1.779657316e-08 	]	1.926234727e-10	  61	\\
-	167	132	[	1.779657316e-08 	]	1.926234727e-10	  62	\\
+    1   1   [   0.5     ]   0.2022210836       1    \\
+    4   4   [   0.25    ]   0.09527166174      2    \\
+    12  8   [   0.1875  ]   0.07023320242      4    \\
+    16  11  [   0.125   ]   0.04597664512      5    \\
+    20  14  [   0.0625  ]   0.02255016086      7    \\
+    28  17  [   0.0380859375    ]   0.01363471996      9    \\
+    32  21  [   0.013671875     ]   0.004855691016    10    \\
+    40  28  [   0.006286621094  ]   0.002227306539    13    \\
+    46  33  [   0.002380371094  ]   0.0008422556376   15    \\
+    52  37  [   0.0005340576172     ]   0.0001888514898   16    \\
+    60  43  [   5.125999451e-05     ]   1.812345385e-05   19    \\
+    72  54  [   2.074893564e-05     ]   7.335906448e-06   24    \\
+    78  59  [   5.490146577e-06     ]   1.941051869e-06   26    \\
+    86  65  [   1.675449312e-06     ]   5.923241065e-07   28    \\
+    94  71  [   7.217749953e-07     ]   2.551989452e-07   31    \\
+    100 75  [   2.450397005e-07     ]   8.67597334e-08    33    \\
+    106 79  [   6.621121429e-09     ]   3.704942908e-09   34    \\
+    121 92  [   1.407139655e-08     ]   3.174716379e-09   40    \\
+    128 98  [   1.779668685e-08     ]   6.411027265e-10   42    \\
+    162 130 [   1.779657316e-08     ]   1.926234727e-10   61    \\
+    167 132 [   1.779657316e-08     ]   1.926234727e-10   62    \\
 
   } end of run (mesh size reached NOMAD precision)
 
@@ -310,8 +299,9 @@ The output on screen looklikes ::
   Expected optimal value is approximately 1.490116119384766e-08
 
 
-This also shows that first example is successful. That verifies the theory result indicating that
-:math:`h^* = O(\sqrt{\epsilon_{machine}}) \approx 10^{-8}`
+The black-box solver identified 1.779657316e-08 as the optimal step size. This
+first example is thus successful because the theory indicates that :math:`h^* =
+O(\sqrt{\epsilon_{machine}}) \approx 10^{-8}`
 
 ..
   Example of surrogate

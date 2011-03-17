@@ -100,8 +100,8 @@ Problem
     :inherited-members:
     :undoc-members:
 
-Algorithm experiment description object
-=======================================
+.. Algorithm experiment description object
+.. =======================================
 
 
 
@@ -127,7 +127,7 @@ to its components as the ``model structure`` and ``model data``.
 
 Once the model structure and model data have been defined, we can put them
 together into a single composite object representing the parameter optimization
-problem. It is then referred to as as ``black box model``.
+problem. It is then referred to as a ``model``.
 
 
 Algorithm experiment
@@ -148,16 +148,10 @@ are:
   #. The parameters to fine tune,
   #. The measures defining the performance criterion.
 
-
 In this section, we examine the basic ingredients in detail.
 
-
-In this section, we examine the particulars of model structure, model data and
-black box model.
-
-
 ModelStructure
----------------------------------
+--------------
 
 .. automodule:: opal.core.modelstructure
 
@@ -168,7 +162,7 @@ ModelStructure
    :undoc-members:
 
 ModelData
-----------------------------
+---------
 
 .. automodule:: opal.core.modeldata
 
@@ -179,7 +173,7 @@ ModelData
    :undoc-members:
 
 Model
---------------------------------
+-----
 
 .. automodule:: opal.core.blackbox
 

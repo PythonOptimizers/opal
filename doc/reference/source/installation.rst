@@ -11,7 +11,7 @@ Requirements
 Python version 2.6 or later is required. Previous versions may result in errors
 relating to the `import` statement. OPAL was not tested with Python 3k.
 
-OPAL use NOMAD as default solver. A working NOMAD installation is not needed to
+OPAL uses NOMAD as default solver. A working NOMAD installation is not needed to
 install OPAL but is needed to run the simplest examples provided in the
 package. NOMAD can be downloaded from `<http://www.gerad.ca/NOMAD>`_.
 
@@ -20,16 +20,12 @@ package. NOMAD can be downloaded from `<http://www.gerad.ca/NOMAD>`_.
 Download and installation
 =========================
 
-After downloading
-``opal-1.0.tar.gz``, uncompress it in the directory
-``opal-1.0``. Follow the instruction in ``installation.txt`` to install the
-package. In the simplest case, the installation requires only::
+After downloading the OPAL source code, simply type::
 
   shell$ python setup.py install
 
-In the case where you do not have writing permissions to the system-wide
-``site-packages`` directory, a local ``site-packages`` should be provided when
-installing, e.g.::
+If you do not have write permissions to the system-wide ``site-packages``
+directory, a local ``site-packages`` should be provided when installing, e.g.::
 
   shell$ python setup.py install --prefix=$LOCAL_PYTHON_DIR
 
