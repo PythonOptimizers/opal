@@ -57,7 +57,7 @@ def solve(problem_name):
             fzero = atof(stats[-1])
 	if stat == 'NCON':
             ncon = atof(stats[-1])
-	
+
     f.close()
     os.chdir('..')
     return {'EXITCODE' : exitcode,
@@ -74,7 +74,7 @@ def compile_driver(problem_name, log_file='compile.log'):
     os.system('sifdecode %s > %s 2>&1' % (problem_name, log_file))
     os.system('runcuter --package dfo --keep > /dev/null')
     os.chdir('..')
- 
+
 
 if __name__ == '__main__':
     param_file  = sys.argv[1]
