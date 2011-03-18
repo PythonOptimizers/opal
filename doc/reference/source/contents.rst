@@ -27,13 +27,14 @@ Contents:
    OPAL components description <opal>
    API <api>
 
-TODO List
-=========
+.. TODO List
+   =========
 
 .. Add todo items in the sections of the documentation and they will appear
 .. here.
 
-.. todolist::
+..
+  .. todolist::
 
 
 Indices and tables

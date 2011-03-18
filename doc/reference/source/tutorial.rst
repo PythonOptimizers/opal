@@ -40,13 +40,9 @@ the formula
 
 In this formula, we could consider the step size :math:`h` as a real parameter.
 
-Here is a possible (simple) Python implementation::
+Here is a possible (simple) Python implementation
 
-  # This is file fd.py
-  def fd(f, x, h):
-      if h == 0:
-          return float("infinity")
-      return (f(x + h) - f(x))/h
+.. literalinclude:: /examples/fd/fd.py 
 
 We will explain step by step the example. In this example, the executable
 wrapper is written in Python. The declaration, definition of OPAL problem are
@@ -92,48 +88,23 @@ restrictions:
 
 Obviously, how to create a wrapper depends on the algorithm and user experience. The follwing
 listing is an example of the wrapper for the above ``finite-difference`` algorithm. This wrapper
-returns the approximation error as unique observed elementary measure::
+returns the approximation error as unique observed elementary measure
 
-  # This is file fd_run.py
-  from opal.core.io import read_params_from_file, write_measures_to_file
-  from fd import fd
-  from math import pi, sin, cos
-  import sys
-
-  f = sin ; df = cos  # Target function and its derivative.
-  x = pi/4     # This is where the derivative will be approximated.
-  dfx = df(x)  # "Exact" derivative at x.
-
-  def run(param_file, problem):
-    "Run FD with given parameters."
-
-    params = read_params_from_file(param_file)
-    h = params['h']
-    return {'ERROR': abs(dfx - fd(f,x,h))}
-
-
-  if __name__ == '__main__':
-    param_file  = sys.argv[1]
-    problem     = sys.argv[2]
-    output_file = sys.argv[3]
-
-    # Solve, gather measures and write to file.
-    measures = run(param_file, problem)
-    write_measures_to_file(output_file, measures)
-
-
+.. literalinclude:: /examples/fd/fd_run.py 
 
 Some points should be noted in the above listing:
 
-#. The wrapper communicates avec the OPAL through the immediated files whose format is fixed by OPAL. As the executable
-   wrapper are written in Python, we can benefit two predefined methods :func:`opal.core.io.read_parameter` and
-   :func:`opal.core.io.write_measure` to take care the reading parameters from file and writing measures to file. This is one
-   of the advantage as creating executable wrapper by Python.
+#. The wrapper communicates avec the OPAL through the immediated files whose format is fixed by OPAL. 
+   As the executable wrapper are written in Python, we can benefit two predefined methods 
+   :func:`opal.core.io.read_parameter` and
+   :func:`opal.core.io.write_measure` to take care the reading parameters from file and writing measures to file.
+   This is one of the advantage as creating executable wrapper by Python.
 
 #. The argument processing follows exactly the order of arguments in a wrapper call.
 
 #. The algorithm is involved by ``import fd`` statement and the function call ``fd(math.sin, 0.0, h)``.
-   Module ``fd`` provides the ``fd`` routine to compute difference of given function specified by the first argument.
+   Module ``fd`` provides the ``fd`` routine to compute difference of given function specified by the first 
+   argument.
    The wrapper will test this routine with function :math:`sin(x)` at point :math:`x=\pi/4`.
 
 
@@ -156,27 +127,9 @@ principles of OPAL:
 #. The feasible region of parameters are defined by the :class:`ParameterConstraint`. The condition is
    provided by a string, for example `h > 0`
 
-An example of declaration file is show in following listing ::
+An example of declaration file is show in following listing 
 
-  # This is file fd_declaration.py
-  from opal.core.algorithm import Algorithm
-  from opal.core.parameter import Parameter
-  from opal.core.measure   import Measure
-
-  # Define Algorithm object.
-  FD = Algorithm(name='FD', purpose='Forward Finite Differences')
-
-  # Register executable for FD.
-  FD.set_executable_command('python fd_run.py')
-
-  # Define parameter and register it with algorithm.
-  h = Parameter(kind='real', default=0.5, bound=(0, None),
-                name='h', description='Step size')
-  FD.add_param(h)
-
-  # Define relevant measure and register with algorithm.
-  error = Measure(kind='real', name='ERROR', description='Error in derivative')
-  FD.add_measure(error)
+.. literalinclude:: /examples/fd/fd_declaration.py 
 
 
 Create an optimization session
@@ -195,45 +148,9 @@ parameters of our new algorithm to formulate the problem based on existing or
 newly-defined ``performance measures``. In particular, we use such measures to
 define the objective and constraints (if any) of our problem.
 
-A main file that desires to minimize the small value ``h`` is defined as following listing::
+A main file that desires to minimize the small value ``h`` is defined as following listing
 
-  # This is file fd_optimize.py
-  from fd_declaration import FD
-
-  from opal import ModelStructure
-  from opal import ModelData
-  from opal import BlackBoxModel
-  from opal.Solvers import NOMAD
-
-  # Return the error measure.
-  def get_error(parameters, measures):
-    return sum(measures["ERROR"])
-
-  # Parameters being tuned and problem list.
-  params = FD.parameters   # All.
-  problems = []            # None.
-
-  # Define parameter optimization problem.
-  data = ModelData(FD, problems, params)
-  struct = ModelStructure(objective=get_error, constraints=[])  # Unconstrained
-  blackbox = BlackBoxModel(modelData=data, modelStructure=struct)
-
-  # Solve parameter optimization problem.
-  NOMAD.solve(model=blackbox)
-
-  # Inform user of expected optimal value for information.
-  try:
-    import numpy as np
-    eps = np.finfo(np.double).eps
-  except:
-    # Approximate machine epsilon.
-    eps = 1.0
-    while 1+eps > 1: eps /= 2
-    eps *= 2
-
-  from math import sqrt
-  print 'Expected optimal value is approximately %21.15e' % sqrt(eps)
-
+.. literalinclude:: /examples/fd/fd_optimize.py 
 
 In this listing, all statements from the begin except the last one are declarations.
 They show that, all of algorithm's parameter are involved to the minimization of
@@ -308,17 +225,14 @@ O(\sqrt{\epsilon_{machine}}) \approx 10^{-8}`
   ====================
 
 ..
-
-.. todo::
-
-    Expand description.
+  .. todo::
+  Expand description.
 
 
 
-
-.. todo::
-
-    Expand description.
+..
+  .. todo::
+  Expand description.
 
 ..
   Step 3: Writing the Black Box
@@ -332,8 +246,8 @@ O(\sqrt{\epsilon_{machine}}) \approx 10^{-8}`
 
 
 
-.. todo::
-
-    Expand description.
+..
+  .. todo::
+  Expand description.
 
 

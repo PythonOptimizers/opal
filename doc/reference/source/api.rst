@@ -5,8 +5,5 @@ API Documentation
 =================
 
 
-Data
-----
-
-.. automodule:: opal.core.data
+.. automodule:: opal
 
