@@ -42,7 +42,7 @@ In this formula, we could consider the step size :math:`h` as a real parameter.
 
 Here is a possible (simple) Python implementation
 
-.. literalinclude:: /examples/fd/fd.py 
+.. literalinclude:: ../../../examples/fd/fd.py
 
 We will explain step by step the example. In this example, the executable
 wrapper is written in Python. The declaration, definition of OPAL problem are
@@ -90,12 +90,12 @@ Obviously, how to create a wrapper depends on the algorithm and user experience.
 listing is an example of the wrapper for the above ``finite-difference`` algorithm. This wrapper
 returns the approximation error as unique observed elementary measure
 
-.. literalinclude:: /examples/fd/fd_run.py 
+.. literalinclude:: ../../../examples/fd/fd_run.py
 
 Some points should be noted in the above listing:
 
-#. The wrapper communicates avec the OPAL through the immediated files whose format is fixed by OPAL. 
-   As the executable wrapper are written in Python, we can benefit two predefined methods 
+#. The wrapper communicates avec the OPAL through the immediated files whose format is fixed by OPAL.
+   As the executable wrapper are written in Python, we can benefit two predefined methods
    :func:`opal.core.io.read_parameter` and
    :func:`opal.core.io.write_measure` to take care the reading parameters from file and writing measures to file.
    This is one of the advantage as creating executable wrapper by Python.
@@ -103,7 +103,7 @@ Some points should be noted in the above listing:
 #. The argument processing follows exactly the order of arguments in a wrapper call.
 
 #. The algorithm is involved by ``import fd`` statement and the function call ``fd(math.sin, 0.0, h)``.
-   Module ``fd`` provides the ``fd`` routine to compute difference of given function specified by the first 
+   Module ``fd`` provides the ``fd`` routine to compute difference of given function specified by the first
    argument.
    The wrapper will test this routine with function :math:`sin(x)` at point :math:`x=\pi/4`.
 
@@ -127,9 +127,9 @@ principles of OPAL:
 #. The feasible region of parameters are defined by the :class:`ParameterConstraint`. The condition is
    provided by a string, for example `h > 0`
 
-An example of declaration file is show in following listing 
+An example of declaration file is show in following listing
 
-.. literalinclude:: /examples/fd/fd_declaration.py 
+.. literalinclude:: ../../../examples/fd/fd_declaration.py
 
 
 Create an optimization session
@@ -150,7 +150,7 @@ define the objective and constraints (if any) of our problem.
 
 A main file that desires to minimize the small value ``h`` is defined as following listing
 
-.. literalinclude:: /examples/fd/fd_optimize.py 
+.. literalinclude:: ../../../examples/fd/fd_optimize.py
 
 In this listing, all statements from the begin except the last one are declarations.
 They show that, all of algorithm's parameter are involved to the minimization of
