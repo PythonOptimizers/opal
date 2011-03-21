@@ -18,8 +18,10 @@ def get_error(parameters, measures):
 
 # Parameters being tuned and problem list.
 par_names = ['eta1', 'eta2', 'gamma1', 'gamma2', 'gamma3']
-params = [param for param in trunk.parameters if param.name in par_names]
+#params = [param for param in trunk.parameters if param.name in par_names]
 
+params = [trunk.parameters['eta1'],
+	  trunk.parameters['eta2']]
 problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
                                                              'BROYDN7D',
                                                              'BRYBND',

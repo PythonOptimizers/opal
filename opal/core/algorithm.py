@@ -3,6 +3,7 @@ import copy
 import os
 
 from opal.core.parameter import Parameter, ParameterConstraint
+from opal.core.data import DataSet
 from opal.core.measure import Measure
 
 __docformat__ = 'restructuredtext'
@@ -45,8 +46,11 @@ class Algorithm:
         # Algorithmic description
         self.name = name
         self.purpose = purpose
-        self.parameters = [] # List of parameters (of type Parameter)
-        self.measures = [] # List of measures (the output of the algorithm)
+        self.parameters = DataSet(name='Parameter set')  # List of parameters 
+                                                         # (of type Parameter)
+        self.measures = DataSet(name='Measure set')  # List of measures 
+                                                     # (the observation of the 
+                                                     # algorithm)
         self.constraints = []
 
         # Computational description
@@ -192,10 +196,10 @@ class Algorithm:
                 continue
             measure_values[fields[0].strip(' ')] = fields[1].strip(' ')
         for i in range(len(self.measures)):
-            kind = converters[self.measures[i].kind]
+            convert = converters[self.measures[i].get_type()]
             try:
                 measure_values[self.measures[i].name] = \
-                    kind(measure_values[self.measures[i].name])
+                    convert(measure_values[self.measures[i].name])
             except ValueError:
                 return None # Return a signal indicating that certain error occurs
                 #raise Exception('Error in tranform ' + \
