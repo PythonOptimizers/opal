@@ -282,6 +282,11 @@ def _test():
     import doctest
     return doctest.testmod()
             
+
+def test_parameter_class():
+    p = Parameter(name='real_param')
+    return
+
 if __name__ == "__main__":
     _test()
 
