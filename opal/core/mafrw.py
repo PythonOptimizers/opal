@@ -118,6 +118,9 @@ class Agent(threading.Thread):
         # To prevent handle twice a message, the id of handled messages
         # is stored
         self.handled_messages = []
+        # Each agent can define some communicative act parsers that 
+        # parse the message content basing on its communicative act
+        self.content_parsers = {}
         self.logger = log.OPALLogger(name=name, handlers=logHandlers)
         return
     
@@ -166,11 +169,18 @@ class Agent(threading.Thread):
         return
 
     def parse_message(self, message):
-        if 'action' in message.content.keys():
+        # Process message from environment in a special way
+        if message.sender is self.environment:
             return message.performative + '-' + str(message.sender) + '-' + message.content['action']
-        else:
-            return message.performative + '-' + str(message.sender)
-
+        
+        if message.perfomative in self.content_parsers.keys():
+            info = self.content_parsers[message.performative](message.content)
+            # The obtained command is distingushed by peformative and information 
+            # got from the content of message
+            return message.performative + '-' + info
+        # In the case, message could not be parsed, a None command is returned
+        return None
+       
     def decrypt_message(self, message):
         """
 
@@ -193,7 +203,7 @@ class Agent(threading.Thread):
         """
         self.id = environment.directory_service.add(self)
         self.environment = environment
-        self.message_handlers['cfp-' + environment.id + '-stop'] = self.stop
+        self.message_handlers['request-' + environment.id + '-stop'] = self.stop
         self.logger.log('I am registered with id = ' + self.id[0:4] + '...')
         return
 
