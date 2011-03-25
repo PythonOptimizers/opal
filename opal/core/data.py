@@ -1,13 +1,16 @@
 """
+
 This module contains two classes that descriibe two  entities Data and DataSet
 Data is one of the two elementary entities in the Data-Operator methodology
 DataSet is set of data to described an object. All of data elements have the
 same storage and in/out method.
 """
 import re
+import itertools
 
 class Data:
     """
+
     Data is one of two elementary entities. It has a name, value type and value.
     The most important methods of this class are `set` and `get`.
     The type of data may be a scalar of type integer, floating number, or 
@@ -62,14 +65,16 @@ class Data:
 
 class DataSet:
     """
+
     DataSet is a group of data that has common storage and in/out method
     DataDescription object is used to verify the input is valid and create the
     output object.
-    Two important static methods are check() and create_data
-    There is an object called Any that represents for any data (no constraints or
-    requirement). The check() method return True always
-    Note that the check() and create_data() is the class methods not static method
-    because we want to profit the inheritance over this class
+
+    There is an object called Any that represents for any data (no constraints
+    or requirement). The check() method return True always
+
+    Note that the check() and create_data() is the class methods not static
+    method because we want to profit the inheritance over this class
     """
     def __init__(self,name="", elements=[], 
                  *argv,**kwargv):
