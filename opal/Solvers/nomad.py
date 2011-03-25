@@ -49,6 +49,8 @@ class NOMADCommunicator(Agent):
         Agent.__init__(self, name=name, logHandlers=logHandlers)
         self.inputFile = input
         self.outputStream = output
+        self.message_handlers['inform-model-values'] = self.write_output
+        self.content_parsers['inform'] = self.extract_model_values
         return
     
     def read_input(self, inputFile=None):
@@ -70,26 +72,24 @@ class NOMADCommunicator(Agent):
         f.close()
         return inputValues
 
-    def write_output(self, objectiveValue, constraintValues):
+    def write_output(self, values):
         """
         .. warning::
 
             Document this method!!!
         """
-        (objectiveValue, constraintValues) = self.get_model_values()
-        self.outputStream.write(str(objectiveValue) + '\n')
-        for val in constraintValues:
-                outputStream.write(str(val) + ' ')
-        outputStream.write('\n')
+        self.outputStream.write(str(values['objective']) + '\n')
+        for val in values[constraints]:
+                self.outputStream.write(str(val) + ' ')
+        self.outputStream.write('\n')
         return
 
-    def handle_messge(self, message):
-        if (message.performative == 'inform') and \
-                (message.reference == self.sent_request_id) :
-            (objectiveValue, constraintValues) = self.decrypt(message.content)
-            self.write_output(objectiveValue, constraintValues)
-            self.stop()                
-        Agent.handle_message(self, message)
+    def extract_model_values(self, msgContent):
+        conEx = {}
+        if type(msgContent) is type('a string'):
+            conEx = pickle.loads(msgContent)
+        else:
+            conEx.update(msgContent)
         return
 
     def  run(self):
@@ -147,12 +147,14 @@ class NOMADBlackbox(Environment):
             
 
     def run(self):
+        self.logger.log('Begin of a session')
         self.initialize()
         # Wait the comnunicator finishes its work. This happends when 
         # the communicator get a message containing the model values 
         # (evaluator replies)
-        #self.communicator.join()
+        self.communicator.join(30)
         self.finalize()
+        self.logger.log('End of a session')
         return 
    
     

@@ -44,23 +44,17 @@ class ModelEvaluator(Agent):
         
         return
 
-    def parse_message(self, message):
-        cmd = Agent.parse_message(self, message)
-        if cmd in self.message_handlers.keys():
-            return cmd
-        cmd = message.performative + message.content['action']
-        return cmd
-
     def register(self, environment):
         '''
 
-        After adding his name in the environment database, it will look for 
-        the agents that work as data manager, experiment manager and structure computer.
+        After adding his name in the environment database, it will look for     
+        the agents that work as data manager, experiment manager and structure
+        computer.
         If it could not find one of these agents within environment, it will 
         create them and let them register to environment
 
-        The find process is realized by sending a test message to environment and wait
-        for replying.
+        The find process is realized by sending a test message to environment
+        and wait for replying.
         '''
         Agent.register(self, environment)
         
@@ -73,13 +67,15 @@ class ModelEvaluator(Agent):
             data_manager.register(environment)
         
         if self.find_collaborator('exeperiment manager', environment) is None:
-            experiment_manager = ExperimentManager(algorithm=self.model.get_algorithm(),
-                                                   problems=self.model.get_problems(),
-                                                   platform=self.options['platform'])
+            experiment_manager =\
+                        ExperimentManager(algorithm=self.model.get_algorithm(),
+                                          problems=self.model.get_problems(),
+                                          platform=self.options['platform'])
             experiment_manager.register(environment)
 
         if self.find_collaborator('structure computer', environment) is None:
-            structure_computer = StructureComputer(structure=self.model.structure)
+            structure_computer =\
+                               StructureComputer(structure=self.model.structure)
             structure_computer.register(environment)
 
         return

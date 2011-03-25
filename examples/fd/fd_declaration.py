@@ -1,10 +1,10 @@
 # Description of the foward finite-difference "algorithm".
-from opal.core.algorithm import AlgorithmWrapper
+from opal.core.algorithm import Algorithm
 from opal.core.parameter import Parameter
 from opal.core.measure   import Measure
 
 # Define Algorithm object.
-FD = AlgorithmWrapper(name='FD', purpose='Forward Finite Differences')
+FD = Algorithm(name='FD', purpose='Forward Finite Differences')
 
 # Register executable for FD.
 FD.set_executable_command('python fd_run.py')

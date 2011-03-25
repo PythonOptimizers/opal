@@ -6,6 +6,7 @@ import shutil
 import log
 import copy
 import threading
+import hashlib
 #import logging
 
 #import utility
@@ -65,8 +66,9 @@ class ExperimentManager(Agent):
             self.measures = measures
 
         if (problems is None) or (len(problems) == 0): # No test problem is 
-                                                       # is specified, algorithm 
-                                                       # can be run without 
+                                                       # is specified,
+                                                       # algorithm can be run 
+                                                       # without 
                                                        # indicating problem
             self.problems = [TestProblem(name='TESTPROB')] # A list of one 
                                                            # one problem is
@@ -87,6 +89,8 @@ class ExperimentManager(Agent):
         # self.logger = log.OPALLogger(name='modelData', handlers=logHandlers)
       
         self.experiments = {} # List of all experiements in executions
+        self.message_handlers['cfp-evaluate'] = self.run_experiment
+        self.message_handlers['inform-task-finish'] = self.get_result
         return
 
     def register(self, environment):
@@ -98,30 +102,104 @@ class ExperimentManager(Agent):
 
   
     #  Private method
-    def create_experiment_id(self, parameterValues):
-        valuesStr = '_'
-        j = 0
-        for i in range(len(self.parameters)):
-            self.parameters[i].set_value(parameterValues[j])
-            valuesStr = valuesStr + str(parameterValues[j]) + '_'
-            j = j + 1    
-        return str(hash(valuesStr))
+    def update_parameter(self, values):
+        for (param, val) in zip(self.parameters, values):
+            param.set_value(val)
+        return 
 
+    def create_tag(self):
+        valuesStr = '_'
+        for param in self.parameters:
+            valuesStr = valuesStr + param.name + ':' + str(param.value) + '_'
+        return hashlib.sha1(valuesStr).hexdigest()
   
     def find_platform(self, platformName, environment):
         return None
 
-    def run_experiment(self, parameterValues):
-        # Prepare all neccessary things likes working directory
-        # create id, create parameter file ..
-        experimentId = self.create_experiment_id(parameterValues)
-        for prob in self.problems:
-            msgContent = self.encrypt(self.algorithm.solve(parameterFile, problem))
-            message = Message(sender=self.id,
-                              performative='request',
-                              content=msgContent)
-            self.send_message(message)
-        
+    # Message handlers
+    def run_experiment(self, info=None):
+        '''
 
+        Handle a cfp message that call for a proposal
+        of scoring algorthim at a parameter point
+        '''
+        if info is None:
+            return
+        
+        parameterValues = info['point']
+        self.update_parameter(parameterValues)
+        if 'tag' in info.keys():
+            parameterTag = info['tag']
+        else:
+            parameterTag = self.create_tag()
+        # If the parameters are invalid, send a message informing the
+        # experiment is failed
+        if not self.algorithm.are_parameters_valid():
+            message = Message(sender=self.id,
+                              performative='inform',
+                              content={'proposition':\
+                                       {'what':'experiment-failed',
+                                        'why':'invalid-parameters'}
+                                       }
+                              )
+            self.send_message(message)
+            return
+        # Otherwise, for each problem, send a cfp message that propose execute
+        # the algorithm. The content of message is the execution command
+        for prob in self.problems:
+            # Get the elements relating execution of an experiment
+            cmd, paramFile, outputFile, sessionTag = \
+                 self.algorithm.solve(problem=prob,
+                                      parameters=self.parameters,
+                                      parameterTag=parameterTag)
+            # Update the experiment database
+            self.experiments[sessionTag] = {'parameter-tag':parameterTag,
+                                            'parameter-file': paramFile,
+                                            'output-file':outputFile,
+                                            'problem-name':prob.name}
+            # Create a message having intention of provoking the command of
+            # solving the test problem by algorithm
+            message = Message(sender=self.id,
+                              performative='cfp',
+                              content={'action':'execute',
+                                       'proposition':{'command':cmd,
+                                                      'tag':sessionTag}}
+                              )
+            self.send_message(message)
+        return
+
+    def get_result(self, info=None):
+        '''
+
+        Handle the message that informs a solving session is terminated.
+        The content message contains information of identifying the
+        terminated session 
+        '''
+        if 'proposition' not in info.keys():
+            return
+        proposition =  info['proposition']
+        sessionTag = proposition['who']
+        exprInfo = self.experiments[sessionTag]
+        outputFile = exprInfo['output-file']
+        problem = exprInfo['problem-name']
+        paramTag = exprInfo['parameter-tag']
+        paramFile = exprInfo['parameter-file']
+        measureValues = self.algorithm.read_measure(outputFile)
+        message = Message(sender=self.id,
+                          performative='inform',
+                          content={'proposition':{'what':'measure-values',
+                                                  'values':measureValues,
+                                                  'parameter-tag':paramTag,
+                                                  'problem':problem}
+                                   }
+                          )
+        self.send_message(message)
+        # Remove the parameter file
+        if os.path.exists(paramFile):
+            os.remove(paramFile)
+        # Remove the measure file
+        if os.path.exists(outputFile):
+            os.remove(outputFile)
+        return
         
         

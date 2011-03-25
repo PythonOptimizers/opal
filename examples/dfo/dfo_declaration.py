@@ -1,9 +1,9 @@
-from opal.core.algorithm import AlgorithmWrapper
+from opal.core.algorithm import Algorithm
 from opal.core.parameter import Parameter
 from opal.core.measure   import Measure
 
 # Define new algorithm.
-DFO = AlgorithmWrapper(name='DFO', purpose='Derivative-free Optimization')
+DFO = Algorithm(name='DFO', purpose='Derivative-free Optimization')
 
 # Register executable for DFO.
 DFO.set_executable_command('python dfo_run.py')

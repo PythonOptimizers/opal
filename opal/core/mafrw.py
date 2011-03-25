@@ -15,7 +15,7 @@ signal, reply to environment and choose suitable request from the environment.
 Language of communication is so simple within some type of messages such as 
 request data, stop signal, wait signal ...
 
-An multiagent-based application is activated by initializing an environment and 
+An multiagent-based application is activated by initializing an environment and
 the concerned agents. After that, at least one event is raised to provoke the 
 interaction between the agents.
 """
@@ -37,7 +37,8 @@ class Message:
                  sender=None, 
                  receiver=None,
                  reference=None, 
-                 content=None):
+                 content=None,
+                 language='python'):
         # Each message has an id assigned by the environment each time 
         # the message is posted (sent) by an agent
         self.id = None
@@ -50,7 +51,7 @@ class Message:
         self.receiver = None
         self.reference = reference
         self.content = content
-
+        self.language = language
         return
 
     def serialize(self):
@@ -77,7 +78,7 @@ class Agent(threading.Thread):
     
     1. Register it to an environment
     2. Fetch the messages that work as a filter. Instead of getting all 
-       messages posted to the environment, it chooses the suitable messages.
+       messages posted to the environment, it chooses the suitable messages.   
     3. Decrypt a message to get information from the message content
     4. Encrypt a message to sent to environment
     5. Send message
@@ -118,8 +119,9 @@ class Agent(threading.Thread):
         # To prevent handle twice a message, the id of handled messages
         # is stored
         self.handled_messages = []
-        # Each agent can define some communicative act parsers that 
-        # parse the message content basing on its communicative act
+        # Each agent can define some parsers that parse the message content
+        # basing on its content language. By default, the language is python
+        # and the info obtained by function `eval`.
         self.content_parsers = {}
         self.logger = log.OPALLogger(name=name, handlers=logHandlers)
         return
@@ -134,15 +136,17 @@ class Agent(threading.Thread):
         return
 
     def withdraw_message(self, messageId):
+        if self.environment is None:
+            return None
+        self.environment.message_service.remove(messageId)
         return
 
     def fetch_messages(self):
         """
         
         A sub-class of Agent class rewrite this method to filter the messages 
-        that it can handle. At least it won't catch the messages that it posted.
-
-        
+        that it can handle. At least it won't catch the messages that it 
+        posted.
         """
 
         if self.environment is None:
@@ -150,50 +154,84 @@ class Agent(threading.Thread):
         # Fetch all message that receiver is agent or whose receiver is not 
         # specified
         pattern = 'None|' + str(self.id)
-        return self.environment.message_service.search(receiver=pattern)
+        queryResult = self.environment.message_service.search(receiver=pattern)
+        result = []
+        for msg in queryResult:
+            if msg.id not in self.handled_messages and\
+                   msg.sender is not self.id:
+                result.append(msg)
+        return result
 
 
     def handle_message(self, message):
         '''
         
         The basic message handle is process stop request. This request say the 
-        agent stop its work. The agent can react or not this request. By default, 
-        is turn working flag to False
+        agent stop its work. The agent can react or not this request. By 
+        default is turn working flag to False
         '''
+        self.handled_messages.append(message.id)
+        cmd, info = self.parse_message(message)
+        if cmd is None: # The message could not be parsed
+            return
 
-        cmd = self.parse_message(message)
         if cmd in self.message_handlers.keys():
             self.logger.log('the message with id = ' + str(message.id) + \
-                                ' is interpreted as command: ' + cmd)
-            self.message_handlers[cmd](message)
+                            ' is interpreted as command: ' + cmd)
+            self.message_handlers[cmd](info)
         return
 
     def parse_message(self, message):
-        # Process message from environment in a special way
-        if message.sender is self.environment:
-            return message.performative + '-' + str(message.sender) + '-' + message.content['action']
-        
-        if message.perfomative in self.content_parsers.keys():
-            info = self.content_parsers[message.performative](message.content)
-            # The obtained command is distingushed by peformative and information 
-            # got from the content of message
-            return message.performative + '-' + info
-        # In the case, message could not be parsed, a None command is returned
-        return None
-       
-    def decrypt_message(self, message):
-        """
+        '''
 
-        Get the information form message content
-
-        A sub-class of Agent class can rewrite this method to get extractly  
-        information from message content. The same message can give the 
-        different information to different agents.
-        """
-        return
+        This method try to get neccessary information from the message
+        by the suitable way. This means that with the same message, two agents
+        can get different information.
     
-    def encrypt(self):
-        return 
+        By default, the parsing procedure consists of two steps that return
+        two things: the agent command and the message
+        content in form of a set of content expression (action, proposition or
+        identifying expression, see FIPA SL Content Language Specification 
+
+        The command is extract first by forming a string from performative
+        and the action.
+
+        The information is get by apply the content parser corresponding to
+        command. If content parser is specified, the whole content is
+        transformed to a dictionary.  
+        '''
+        # Get command
+        cmd = None
+        # Check if this is a super message from environment
+        # Process message from environment in a special way
+        if message.sender is self.environment.id:
+            self.logger.log('Receive a message from enviroment')
+            cmd = str(self.environment.id)  + '-' + message.performative
+        else:
+            cmd = message.performative
+       
+        info = None
+        # If there is a content parser corresponding to the message
+        # performative, apply it
+        if message.language in self.content_parsers.keys():
+            info = (self.content_parsers[message.performative](message.content))
+            # The obtained command is distingushed by peformative and 
+            # information extracted from the content of message
+        else: # Process by the default way
+            try:
+                if type(message.content) is type('a string'):
+                    info = eval(message.content)
+                else:
+                    info = message.content
+            except:
+                info = None
+        if info is not None:
+            if 'action' in info.keys():
+                cmd = cmd + '-' + info['action']
+            elif ('proposition' in info.keys()) and \
+                 ('what' in info['proposition'].keys()):
+                cmd = cmd + '-' + info['proposition']['what']     
+        return cmd, info
     
     def register(self, environment):
         
@@ -203,10 +241,14 @@ class Agent(threading.Thread):
         """
         self.id = environment.directory_service.add(self)
         self.environment = environment
-        self.message_handlers['request-' + environment.id + '-stop'] = self.stop
+        self.message_handlers[environment.id + '-request' + '-stop'] = self.stop
         self.logger.log('I am registered with id = ' + self.id[0:4] + '...')
         return
 
+    def unregister(self):
+        self.environment.directory_service.remove(self.id)
+        return
+    
     def run(self):
         self.logger.log('I start my work')
         while self.working:
@@ -214,22 +256,18 @@ class Agent(threading.Thread):
             messages = self.fetch_messages()
             # Handles the messages
             for msg in messages:
-                if msg.id not in self.handled_messages and\
-                        msg.sender is not self.id:
-                    self.handled_messages.append(msg.id)
-                    self.handle_message(msg)
+                self.handle_message(msg)
             # Delete the handled message
             del messages
         return
 
-    
-    def stop(self, message=None):
+    # Message handlers
+    def stop(self, info=None):
         '''
         
         Message handlers by default.
         '''
-        if message.sender == self.environment.id:
-            self.working = False
+        self.working = False
         self.logger.log('I finish my work')
         return
 
@@ -267,7 +305,10 @@ class ManagementService:
         self.managed_objects[id] = obj
         return id 
 
-    def remvoe(self, id):
+    def remove(self, objId):
+        if objId not in self.managed_object:
+            return
+        del self.managed_object[objId]
         return
 
     def search(self, query=None, **kwargs):
@@ -304,7 +345,8 @@ class MessageQuery:
 
 class MessageService(ManagementService):
     def __init__(self, logHandlers=[]):
-        ManagementService.__init__(self, name='message service', logHandlers=logHandlers)
+        ManagementService.__init__(self, name='message service', 
+                                   logHandlers=logHandlers)
         return
 
     def create_id(self, obj):
@@ -316,12 +358,14 @@ class MessageService(ManagementService):
         id = ManagementService.add(self, msg)
         msg.id = id
         self.logger.log('Receive a ' + msg.performative + ' message from ' + \
-                            str(msg.sender.id)[0:4] + '... that ask to ' + str(msg.content))
+                            str(msg.sender)[0:4] + '... that ask to ' + \
+                            str(msg.content))
         return id
 
 class DirectoryService(ManagementService):
     def __init__(self, logHandlers=[]):
-        ManagementService.__init__(self, name='directory service', logHandlers=logHandlers)
+        ManagementService.__init__(self, name='directory service', 
+                                   logHandlers=logHandlers)
         return
 
     def create_id(self, agent):
@@ -357,8 +401,7 @@ class Environment(threading.Thread):
         self.name = name
         self.message_service = MessageService()
         self.directory_service = DirectoryService() 
-        self.log_handlers = []
-        self.log_handlers.extend(logHandlers)
+        self.logger = log.OPALLogger(name=name, handlers=logHandlers)
         return
 
     def initialize(self):
@@ -369,7 +412,7 @@ class Environment(threading.Thread):
 
     def finalize(self):
         # Deacitavte all agent
-        msg = Message(performative='cfp',
+        msg = Message(performative='request',
                       sender=self.id,
                       receiver=None,
                       reference=None,

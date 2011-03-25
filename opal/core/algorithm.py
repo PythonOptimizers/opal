@@ -1,13 +1,15 @@
 #import pickle
 import copy
 import os
+import tempfile
 
-from opal.core.parameter import Parameter, ParameterConstraint
-from opal.core.measure import Measure
+from data import DataSet
+from parameter import Parameter, ParameterConstraint
+from measure import Measure
 
 __docformat__ = 'restructuredtext'
   
-class AlgorithmWrapper:
+class Algorithm:
     """
     
     An abstract class to define the specifics of a wrapper of an algorithm. 
@@ -58,15 +60,19 @@ class AlgorithmWrapper:
         # Algorithmic description
         self.name = name
         self.purpose = purpose
-        self.parameters = [] # List of parameters (of type Parameter)
-        self.measures = [] # List of measures (the output of the algorithm)
+        #self.parameters = [] # List of parameters (of type Parameter)
+        #self.measures = [] # List of measures (the output of the algorithm)
+        self.parameters = DataSet(name='Parameter set')  # List of parameters 
+                                                         # (of type Parameter)
+        self.measures = DataSet(name='Measure set')  # List of measures 
+                                                     # (the observation of the 
+                                                     # algorithm)
         self.constraints = []
 
         # Computational description
         self.parameter_file = self.name + '.param'
-        self.parameter_writing_method = None
-        self.measure_reading_method = None
-        self.executable = None
+        self.sessions = {} # dictionary map between session id and parameter
+                           # values
 
     def add_param(self, param):
         "Add a parameter to an algorithm"
@@ -84,47 +90,8 @@ class AlgorithmWrapper:
             raise TypeError, 'measure must be a Measure object'
         return
 
-    def set_executable_command(self, executable):
-        self.executable = executable
-        return
-
-    def set_parameter_file(self, parameter_file, writing_method=None):
-        """
-        
-        Parameter values are set via file IO.
-        This method assigns the parameter file name to be use throughout the
-        optimization process. The `writing_method` argument
-        represent the file format. By default, `writing_method` is
-        set to the `set_parameter_value()` method. In this case, the parameters
-        are dumped to a file named `parameter_file`.
-        If parameter_file is None, the parameter values 
-        are transmitted to the executable driver as the arguments
-        `writing_method` must have the form writing_method(algo, parameters)
-        where `algo` is an Algorithm instance.
-        """
-        self.parameter_file = parameter_file
-        self.parameter_writing_method = copy.copy(writing_method)
-        return
-
-    def set_measure_file(self, measure_file=None, reading_method=None):
-        """
-        An executable algorithm has two choices for outputting  
-        the measure values:
-
-         1. to screen (`measure_file` is None). In this case, the output is
-            also redirected to a file named after the algorithm and problem
-            being solved, for example DFO-HS1.out.
-
-         2. to a file named `measure_file`.
-
-        The `reading_method` argument specifies how to extract the measure
-        values from the output of the algorithm.
-        """
-        self.measure_file = measure_file
-        self.measure_reading_method = reading_method
-        return
-
-    def set_parameter(self, parameters, testId=''):
+   
+    def update_parameters(self, parameters):
         """
         
         This method return an unique identity for the 
@@ -143,36 +110,30 @@ class AlgorithmWrapper:
         the parameter set are written by pickle.
        
         """
+        values = dict((param.name,param.value) for param in parameters)
         # Fill the values to parameter set
-        j = 0
-        for i in range(len(parameters)):
-            if self.parameters[i].name == parameters[j].name:
-                self.parameters[i].set_value(parameters[j].value)
-                j = j + 1
-    
+        self.parameters.set_values(values)
         # Write the values to a temporary parameter file 
-        # for communicating with an executable wrapper
-        if self.parameter_writing_method is not None:
-            self.parameter_writing_method(self)
-        else:
-            paramFileName = self.get_parameter_file(testId=testId) 
-            f = open(paramFileName, 'w')
-            for param in self.parameters:
-                f.write(param.name + ':' +  param.kind + ':' + str(param.value) + '\n')
-            f.close()
+        # for communicating with an executable wrapper 
         return 
     
-    def get_output(self):
-        return 'file'
 
-    def get_parameter_file(self, testId=''):
-        return self.name + '_' + testId + '.param'
+    def create_tag(self, problem):
+        return 
 
-    def get_measure_file(self, problem, testId=''):
-        "Return measure file name."
-        return self.name + '_' + problem.name + '_' + testId + '.out' 
+    def set_executable_command(self, command):
+        self.executable = command
+        return
 
-    def get_measure(self, problem, testId):
+    def write_parameter(self, fileName):
+        f = open(fileName, 'w')
+        for param in self.parameters:
+            f.write(param.name + ':' +  param.kind + ':' + \
+                    str(param.value) + '\n')
+        f.close()
+        return
+
+    def read_measure(self, fileName):
         """
 
         Ths virtual method determines how to  measure value from the
@@ -187,13 +148,10 @@ class AlgorithmWrapper:
         By default, the algorithm returns the measure values to the standard
         output. In the `run()` method, the output is redirected to file.
         """
-        if self.measure_reading_method is not None:
-            return self.measure_reading_method(self, problem)
-        measureFile = self.get_measure_file(problem=problem, testId=testId)
-        f = open(measureFile)
+        
+        f = open(fileName)
         lines = f.readlines()
         f.close()
-        os.remove(measureFile)
         converters = {'categorical':str, 'integer':int, 'real':float}
         measure_values = {}
         for line in lines:
@@ -205,20 +163,15 @@ class AlgorithmWrapper:
                 continue
             measure_values[fields[0].strip(' ')] = fields[1].strip(' ')
         for i in range(len(self.measures)):
-            kind = converters[self.measures[i].kind]
+            kind = converters[self.measures[i].type]
             try:
                 measure_values[self.measures[i].name] = \
                     kind(measure_values[self.measures[i].name])
             except ValueError:
-                return None # Return a signal indicating that certain error occurs
-                #raise Exception('Error in tranform ' + \
-                #                    measure_values[self.measures[i].name] + ' to ' + \
-                #                    self.measures[i].name + ' in ' +\
-                #                    measureFile + ': ' + line)
-
+                return None
         return measure_values
 
-    def get_full_executable_command(self, problem, testId=''):
+    def solve(self, problem, parameters=None, parameterTag=None ):
         """
         .. warning::
 
@@ -237,17 +190,33 @@ class AlgorithmWrapper:
 
             `./algorithm paramfile problem`
         """
-        outputFile = self.get_measure_file(problem=problem, testId=testId)
-        paramFile = self.get_parameter_file(testId=testId)
-        #if outputFile == 'STDOUT': # algorithm wrapper will output the measure value to screen
-        cmd = self.executable + ' ' + paramFile + ' ' + problem.name + ' ' + outputFile 
-        return cmd
+        
+        if parameters is not None:
+            self.update_parameters(parameters)
 
-    def clean_running_data(self, testId=''):
-        paramFile = self.get_parameter_file(testId=testId)
-        if os.path.exists(paramFile):
-            os.remove(paramFile)
-        return
+        if parameterTag is not None:
+            sessionTag = problem.name + '_' + parameterTag
+        else:
+            sessionTag = self.create_tag(problem)
+            
+        parameterFile = self.name + '_' +\
+                        str(sessionTag) +\
+                        '.param'
+                                                        
+        outputFile = self.name + '_' +\
+                     str(sessionTag) +\
+                     '.measure'
+
+        if not os.path.exists(parameterFile):
+            self.write_parameter(parameterFile)
+        cmd = self.executable + ' ' +\
+              parameterFile + ' ' +\
+              problem.name + ' ' +\
+              outputFile        
+       
+            
+        return cmd, parameterFile, outputFile, sessionTag
+
     
     def add_parameter_constraint(self, paramConstraint):
         """

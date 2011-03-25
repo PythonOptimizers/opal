@@ -118,6 +118,7 @@ class Parameter(Data):
 
     def set_bound(self, bound):
         """
+
         Set bounds on the parameter. For parameters of ordered kind,
         `set_bound((None, 0))` means that the lower bound is unchanged while
         the upper bound is reset to zero. For parameters of unordered kind,
@@ -135,11 +136,15 @@ class Parameter(Data):
         return
 
     def get_bound(self):
-        "Return bounds on the parameter."
+        """
+
+        Return bounds on the parameter.
+        """
         return self.bound
     
     def is_valid(self, value=None):
         """
+
         Checks whether or not the specified value falls within the allowed
         range for this parameter. If `value` is None, the current value of
         the parameter is used.
@@ -167,6 +172,7 @@ class Parameter(Data):
 
     def export_to_dict(self):
         """
+
         Convert `Parameter` object to a dictionary.
 
         .. warning::
@@ -177,86 +183,6 @@ class Parameter(Data):
                 'name':self.name,
                 'value':self.value,
                 'default':self._default}
-
-
-class ParameterSet(DataSet):
-    """
-    .. warning::
-
-        Document this class!!!
-    """
-
-    def __init__(self, name='', storage='parameters.txt', parameters=[],
-                 *args,**kwargs):
-
-        DataSet.__init__(self,name=name,storage=storage,*args,**kwargs)
-
-        # We store parameters in a list instead of a dictionary
-        # to conserve the natural order defined by each algorithm
-        # if use the dictionary, the order is the alphabet of the name
-        self.parameters = parameters
-
-        # The indices has elements in form (name:index) to accelerate
-        # the searching by name
-        self.indices = {}
-        if len(self.parameters) > 0:
-            for i in range(len(self.parameters)):
-                self.indices[self.parameters[i].name] = i
-        pass
-
-    def __getitem__(self,id):
-        if type(id) == type(0) :
-            return self.parameters[id]
-        index = self.indices[id]
-        return self.parameters[index]
-
-    def __len__(self):
-        return len(self.parameters)
-
-    def __contains__(self,parameterName):
-        return (parameterName in self.indices.keys())
-
-    def set_values(self, parameterValues=None, *args, **kwargs):
-        # Verify if the parameter values are provided
-        # if not, run the process with default values
-        # Create the two value storages: a list and a dictionary
-        # The list contains the values not specified name of parameters
-        # They will be set by the order to the parameters list
-        # The dictionary contains the values for the parameters whose names 
-        # are specified in dictionary's keys.
-        if parameterValues is None:
-            # Set value to the default
-            for param in self.parameters:
-                param.set_value(None)
-
-        valueList = []
-        valueDict = {}
-        if type(parameterValues) == type([]) or type(parameterValues) == type((1,)) :
-            valueList.extend(parameterValues)
-        elif type(parameterValues) == type({}):
-            valueDict.update(parameterValues)
-        else:
-            valueList.append(parameterValues)
-        valueList.extend(args)
-        valueDict.update(kwargs)
-        
-        # Set the values in the list first
-        for param, value in itertools.izip(self.parameters,valueList):
-            param.set_value(value)
-        # The values in the dictionary is added of
-        # correct the ones are set by the list
-        for paramName in valueDict.keys():
-            if paramName in self.indices.keys():
-                self.parameters[self.indices[paramName]].set_value(valueDict[paramName])
-        return
-
-    @staticmethod
-    def check(valueList):
-        return True
-
-    @staticmethod
-    def create_data(**options):
-        return None
 
 
 class ParameterConstraint:

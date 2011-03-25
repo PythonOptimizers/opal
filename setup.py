@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name='OPAL - OPtimization of ALgorithm',
-      version='0.1',
+      version='1.3',
       description='Algorithmic Parameter Optimization',
       author='Charles Audet, Cong-Kien Dang, Dominique Orban',
       author_email='cong-kien.dang@polymtl.ca',

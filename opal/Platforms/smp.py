@@ -3,6 +3,7 @@ import os
 import time
 import subprocess
 import threading
+import shlex
 
 from ..core.platform import Platform
 from ..core.platform import Task
@@ -17,30 +18,30 @@ class SMPTask(Task):
     some stubs to communicate with the platform
     
     """
-    def __init__(self, id=None, command=None):
-        Task.__init__(self, id=id, command=command)
+    def __init__(self, name=None, taskId=None, command=None):
+        Task.__init__(self, name=name, taskId=taskId, command=command)
         self.proc = None
         self.pid = None
         return
 
     def run(self):
-        cmd = self.command.split(' ')
+        cmd = shlex.split(self.command)
         self.proc = subprocess.Popen(args=cmd)
-        self.pid = proc.pid
+        self.pid = self.proc.pid
         if self.proc.poll() is None: # check if child process is still running
             self.proc.wait() # wait until the child process finish
         # Inform the task is finished
-        msg = Message()
-        self.send_message(msg)
+        Task.run(self)
         return
 
 class SMPPlatform(Platform):
     def __init__(self, maxTask=2, logHandlers=[]):
-        Platform.__init__(self, name='SMP', maxTask=1, logHandlers=logHandlers)
-        #self.task_monitor = threading.Thread()
-        #self.children = []
+        Platform.__init__(self, name='SMP',
+                          maxTask=2, synchronous=False,
+                          logHandlers=logHandlers)
         self.configuration = {}
         #self.logger = log.OPALLogger(name='smpPlatform', handlers=logHandlers)
+        self.message_handlers['cfp-execute'] = self.create_task
         pass
    
     def set_config(self, parameterName, parameterValue):
@@ -52,7 +53,25 @@ class SMPPlatform(Platform):
         self.logger.log('Platform is initialized for the test ' + testId)
         return
 
-    def create_task(self, command, output='/dev/null'):
+    # Message handlers
+    
+    def create_task(self, info):
+        '''
+
+        Handle a call for proposal of executing a command
+        '''
+        if 'proposition' not in info.keys():
+            self.logger.log('Proposal of executing a command has not ' + \
+                            'information to prcess')
+            return
+
+        proposition = info['proposition']
+        command = proposition['command']
+        if 'output' in proposition.keys():
+            output = proposition['output']
+        else:
+            output='/dev/null'
+        name = proposition['tag']
         jobId = str(hash(command))
         # str(ltime.tm_year) +  str(ltime.tm_mon) + str(ltime.tm_mday) + \
             # str(ltime.tm_hour) + str(ltime.tm_min) + str(ltime.tm_sec)
@@ -61,13 +80,11 @@ class SMPPlatform(Platform):
             optionStr = optionStr + param + " " + \
                 self.configuration[param] + " "
         cmdStr = optionStr + command
-        task = SMPTask(command=cmdStr)
+        task = SMPTask(name=name,
+                       command=cmdStr)
+        self.submit(task)
         return 
-    
-    def finalize(self, testId=None):
-        while (self.get_running_tasks() > 0):
-            pass
-        return
+  
         
   
 
