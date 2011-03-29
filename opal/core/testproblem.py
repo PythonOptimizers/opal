@@ -1,5 +1,7 @@
 __docformat__ = 'restructuredText'
 
+from set import Set
+
 class TestProblem:
     """
     Abstract class to describe a test problem in general form.
@@ -12,13 +14,16 @@ class TestProblem:
     >>> print chem.name, chem.description
     """
 
-    def __init__(self, name=None, description=None, classifyStr=None,
+    def __init__(self, name='Test Problem', description=None, classifyStr=None,
                  **kwargs):
         self.name = name
         self.description = description
         self.classify_string = classifyStr
 
     def get_name(self):
+        return self.name
+
+    def identify(self):
         return self.name
 
     def get_description(self):
@@ -38,14 +43,23 @@ class OptimizationTestProblem(TestProblem):
     HS26 3 1
     """
 
-    def __init__(self, name=None, description=None, classifyStr=None,
-                 nvar=0, ncon=0, **kwargs):
-        TestProblem.__init__(self, name, description, classifyStr, **kwargs)
+    def __init__(self,
+                 name='Optimization Problem',
+                 description=None,
+                 classifyStr=None,
+                 nvar=0,
+                 ncon=0,
+                 **kwargs):
+        TestProblem.__init__(self,
+                             name=name,
+                             description=description,
+                             classifyStr=classifyStr,
+                             **kwargs)
         self.nvar = nvar
         self.ncon = ncon
 
 
-class ProblemSet:
+class ProblemSet(Set):
     """
     An abstract class to represent a test set from which lists of
     specific problems may be extracted, and which may be passed to a solver.
@@ -62,64 +76,38 @@ class ProblemSet:
     In the above example, note that a `ProblemSet` is iterable.
     """
 
-    def __init__(self, name=None, **kwargs):
-        self.name = name
-        self.problems = []       # List of problems in this collection.
-
-    def __len__(self):
-        return len(self.problems)
-
-    def __getitem__(self,key):
-        return self.problems[key]
-
-    def __contains__(self,prob):
-        return (prob in self.problems)
+    def __init__(self, name='Problem-Set', **kwargs):
+        Set.__init__(self, name=name, **kwargs)
+        return
 
     def add_problem(self, problem):
         "Add problem to collection."
         if isinstance(problem, TestProblem):
-            self.problems.append(problem)
+            self.append(problem)
         else:
             raise TypeError, 'Problem must be a TestProblem'
 
     def remove_problem(self, problem):
-        "Remove problem from collection."
-        if isinstance(problem, TestProblem):
-            try:
-                self.problems.remove(problem)
-            except ValueError:
-                pass  # Silently ignore
-        else:
-            raise TypeError, 'Problem must be a TestProblem'
+        self.remove(problem)
 
-    def pop_problem(self, i=-1):
-        "Return i-th problem (default: last) and remove it from collection."
-        if isinstance(problem, TestProblem):
-            try:
-                self.problems.pop(i)
-            except IndexError:
-                pass  # Silently ignore
-        
-    def all_problems(self):
-        "Return a list of all problems in this collection."
-        return self.problems.copy()
-    
+
     def select(self, query):
         """
+
         Return the list of problems matching the given query.
         The `query` object is any object that possesses a `match()` method.
         The result of `match(name, string)` must be True if `name` matches
         `string`. During the query, `name` is the problem name and `string`
         is its classification string.
         """
-        queryResult = []
-        for prob in self.problems:
-            if query.match(prob.name, prob.get_classify_string()):
+        queryResult = ProblemSet(name='query result')
+        for prob in self.db:
+            if query.match(prob):
                 queryResult.append(prob)
         return queryResult
 
 
-class ProblemCollection:
+class ProblemCollection(ProblemSet):
     """
     An abstract class to represet a collection of test problems. A collection
     is made up of subcollections, each of which is a `ProblemSet`.
@@ -146,40 +134,62 @@ class ProblemCollection:
     def __init__(self, name=None, description=None, **kwargs):
         self.name = name
         self.description = description
-        self.all = ProblemSet('Physic set of the collection. It contains all problem of collection')
-        self.subcollections = [] # List of subcollections of this collection
+        ProblemSet.__init__(self, name=name, **kwargs)
+        self.subcollections = Set(name='sub-collections') # List of
+                                                          # subcollections of
+                                                          # this collection
 
     def __len__(self):
-        return len(self.all_problems())
+        size = ProblemSet.__len__(self)
+        for collection in self.subcollections:
+            size = size + collection.__len__()
+        return size
 
-    def __getitem__(self,key):
-        return self.all_problems()[key]
+    def __getitem__(self, key):
+        try:
+            return ProblemSet.__getitem__(self, key)
+        except IndexError:
+            for collection in self.subcollections:
+                try:
+                    return collection.__getitem__(key)
+                except IndexError:
+                    pass # Try to get from other collections
+            # If all collections are searched wihtout result
+            # an exception of index error is raised
+            raise IndexError, 'Element can not be found in the set'
 
     def __contains__(self,prob):
-        return (prob in self.all_problems())
-    
+        if ProblemSet.__contains__(self, prob):
+            return True
+        for collection in self.subcollections:
+            # Search recursively in the subcollections
+            if collection.__contains__(prob):
+                return True
+        return False
+
+    def identify(self):
+        return self.name
+
+    def find_sub_collection(self, collectionId):
+        for collection in self.subcollections:
+            if collection.identify() is collectionId:
+                return collection
+            result = collection.find_sub_collection(collectionId)
+            if result is not None:
+                return result
+        return None # No subcollection can be found
+
     def add_subcollection(self, collection):
         "Add a subcollection to this collection."
-        if isinstance(collection, ProblemSet):
+        if isinstance(collection, ProblemCollection):
             self.subcollections.append(collection)
         else:
-            raise TypeError, 'Collection must be a ProblemSet'
+            raise TypeError, 'Collection must be a ProblemCollection object'
 
-    def all_problems(self):
-        """
-        Return a list of all problems in all subcollections of this collection.
-        """
-        allprobs = self.all
-        for collection in self.subcollections:
-            allprobs.extend(collection.problems)
-        return allprobs
 
-    def select(self,query):
-        return self.all.select(query)
-        
 def _test():
     import doctest
     return doctest.testmod()
-            
+
 if __name__ == "__main__":
     _test()
