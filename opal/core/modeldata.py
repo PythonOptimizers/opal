@@ -14,24 +14,6 @@ from testproblem import TestProblem
 from .. import config
 
 
-class TestResult:
-
-
-    def __init__(self,
-                 testIsFailed=None,
-                 testNumber=None,
-                 problems=None,
-                 parameters=None,
-                 measureValueTable=None,
-                 **kwargs):
-        self.test_is_failed = testIsFailed
-        self.test_number = testNumber
-        self.problems = problems
-        self.parameters = parameters
-        self.measure_value_table = measureValueTable
-        pass
-    
-
 
 # =============================
 class ModelData:

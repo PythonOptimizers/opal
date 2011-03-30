@@ -8,8 +8,11 @@ same storage and in/out method.
 import re
 import itertools
 
+from set import Set
+
 class Data:
     """
+
     Data is one of two elementary entities. It has a name, value type and value.
     The most important methods of this class are `set` and `get`.
     The type of data may be a scalar of type integer, floating number, or 
@@ -45,8 +48,7 @@ class Data:
         '''
         return self.name
 
-
-    def set(self,value):
+    def set(self, value):
         self.value = value
         return
 
@@ -62,16 +64,12 @@ class Data:
     def get_dimension(self):
         return self.dimension
 
-class DataSet:
+class DataSet(Set):
     """
-    DataSet is a group of data that has common storage and in/out method
-    DataDescription object is used to verify the input is valid and create the
-    output object.
-    Two important static methods are check() and create_data
-    There is an object called Any that represents for any data (no constraints or
-    requirement). The check() method return True always
-    Note that the check() and create_data() is the class methods not static method
-    because we want to profit the inheritance over this class
+
+    DataSet set of data elements. It provides one more method in comparing with
+    a Set object, the set_values() method. This method to update value of the
+    elements belong to set
     """
     def __init__(self,name="", elements=[], 
                  *argv,**kwargv):
@@ -86,63 +84,16 @@ class DataSet:
                 index = index + 1
         return
     
-    def __getitem__(self, id):
-        '''
-
-        A data set object provide two ways to access an element: by order or by
-        identity that provided by methode {\sf identify()}
-        '''
-        if (type(id) == type(0)):
-            return self.db[id]
-        else:
-            return self.db[self.indices[id]]
-      
-    def __len__(self):
-        return len(self.db)
-
-    def __contains__(self, elem):
-        '''
-
-        There are two way to verify the existence of an element in a DataSet 
-        object.
-        Either element or its identity can be provided for the verification.
-        '''
-        # if this is an empty DataSet object the False signal is returned 
-        # immediately
-        if len(self.indices) <= 0:
-            return False
-        indexType = type(self.indices.keys()[0])
-        # Identity is provided to the verifcation
-        if type(elem) == indexType:
-            return (elem in self.indices.keys())
-        # Element is provided
-        else:
-            return (elem.identify() in self.indices.keys())
-
-    def append(self, elem):
-        '''
-
-        Add an element to the set
-        '''
-        # An element with the same name is in the set. Nothing to add
-        if elem.identify() in self.indices:
-            return 
-        self.indices[elem.identify()] = len(self.db)
-        self.db.append(elem)
-        return
-
-    def remove(self, elem):
-        return 
-
+    
     def set_values(self, values=None, *args, **kwargs):
         """
         
         Use the arguments {\sf values}, {\sf args} and {\sf kwargs} to build
-        up a mapping  from the name to value. After that, the {\sf set_value}
-        method of each element is provoked to set value for them.
+        up a mapping 
+        from the name to value. After that, the {\sf set_value} method of each 
+        element is provoked to set value for them.
         
         This method pemits to set values for a set by the following statements: 
-
         >>> dataSet.set_values(1, 2, 3)           
         >>> dataSet.set_values([1, 2, 3])
         >>> dataSet.set_values([1, 2], 3)
@@ -153,8 +104,7 @@ class DataSet:
         >>> dataSet.set_values(elem5=5)
             Assign 5 to the {\sf elem5} element.
 
-        The following assign is syntaxly correct but raises a logical issue:
-
+        The following assign is syntaxly correct but raises a logical issue
         >>> dataSet.set_values(1, [2, 3])
         """
         valueList = []
@@ -183,9 +133,135 @@ class DataSet:
             # The values in the dictionary is added of
             # correct the ones are set by the list
             for id in valueDict.keys():
-                if id in self.indices.keys():
+                if name in self.indices.keys():
                     self.db[self.indices[id]].set(valueDict[id])
         return
+
+    def select(self, query):
+        '''
+
+        The select is rewritten to return a DataSet object instead of
+        Set object
+        '''
+        queryResult = DataSet(name='query-result')
+        for elem in self.db:
+            if query.match(elem):
+                queryResult.append(prob)
+        return queryResult
+
+
+class DataTable:
+    def __init__(self, name, rowIdentities=[], columnIdentities=[]):
+        '''
+
+        We suppose that a table is set of D
+        '''
+
+        self.row_identities = rowIdentities
+        self.column_identities = columnIdentities
+        # We store only the valid values like a dense matrix
+        # The table is a dictionary of dictionary-column.
+        # This means that the coordination of a cell is formed
+        # by a tuple whose first element indicates the row(s)
+        # and whose second one indicates the column(s). However,
+        # the access through the column or row is equivalent
+        self.table = {}
+
+        
+        return
+
+    def __len__(self):
+        return len(self.row_identities)*len(self.column_identities)
+    
+    def __getitem__(self, key):
+        if (type(key) == type(('a','tuple'))) or \
+           (type(key) == type(['a list'])):
+            if len(key) < 0:
+                raise Exception("Invalid cell's coordination ")
+            row = key[0]
+            col = key[1]
+        return self.table[row][key]
+
+    def get_column(self, colId):
+        '''
+
+        Return a dictionary that map row identities and values of
+        corresponded cell
+        '''
+        valueDict = {}
+        if colId not in self.column_identities:
+            raise Exception('Column identity is not valid')
+
+        for row in self.row_identities:
+            if (row in self.table.keys()) and \
+                   (colId in self.table[row].keys()):
+                valueDict[row] = self.table[row][col]
+        return valueDict
+
+    def get_row(self, rowId):
+        valueDict = {}
+        if rowId not in self.row_identities:
+            raise Exception('Row identity is not valid')
+
+        if rowId not in self.table.keys():
+            '''
+
+            Return an empty dictionary
+            '''
+            return valueDict
+        
+        for col in self.column_identities:
+            if col in self.table[rowId].keys():
+                valueDict[col] = self.table[rowId][col]
+        return valueDict
+    
+    def add_row(self, rowId):
+        if rowId in self.row_identities:
+            '''
+
+            Do nothing if a row having the same identities exists
+            '''
+            return
+        self.row_identities.append(rowId)
+        return
+    
+    def update_row(self, rowId, values=None, **kwargs):
+        if rowId not in self.row_identities:
+            # Add a row if rowId has not been in row identities set.
+            self.row_identities.append(rowId)
+            self.talble[rowId] = {}
+        valueDict = {}
+        for col, val in itertools.izip(self.column_identities, values):
+            valueDict[col] = val
+
+        valueDict.update(kwargs)
+        for col, val in valueDict.iteritems():
+            self.table[rowId][col] = val
+        return
+
+    def add_column(self, colId):
+        if colId in self.column_identities:
+            return
+        self.column_identities.append(colId)
+
+    def update_column(self, coldId, values=None, **kwargs):
+        if coldId not in self.column_identities:
+            self.column_identities.append(col)
+
+        valueDict = {}
+        
+        for row, val in itertools.izip(self.row_identities, values):
+            valueDict[row] = val
+        valueDict.update(kwargs)
+
+        for row, val in valueDict.iteritems():
+            if row not in self.table.keys():
+                self.table[row] = {}
+            self.table[row][col] = val
+        return
+        
+        
+
 
  
    

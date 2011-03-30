@@ -12,6 +12,23 @@ class MeasureFunctionEvaluator(Agent):
                  measureFunction=None,
                  logHandlers=[]):
         Agent.__init__(self, name=name, logHandlers=logHandlers)
+        self.message_handlers['inform-data-availability'] = self.evaluate
+        return
+
+
+    # Message handlers
+    def evaluate(self, info):
+        '''
+
+        Handle the message that inform that data (partial or complete) is
+        available. The measure function is computed basing on the obtained data
+        that extracted from the message.
+        '''
+        data = info['proposition']['data']
+        if info['proposition']['how'] is 'partial':
+            isPartial = True
+        else:
+            isPartial = False
         return
 
 class StructureComputer(Agent):
@@ -31,7 +48,6 @@ class StructureComputer(Agent):
         Agent.__init__(self,
                        name=name,
                        logHandlers=logHandlers)
-       
         self.structure = structure
         return
 
@@ -43,14 +59,16 @@ class StructureComputer(Agent):
             return
 
         objEval = MeasureFunctionEvaluator(name='objective',
-                                           measureFunction=self.structure.objective)
+                                           measureFunction=\
+                                           self.structure.objective)
         objEval.register(environment)
 
         if self.structure.constraints is None:
             return
         consIndex = 0
         for cons in self.structure.constraints:
-            consEval = MeasureFunctionEvaluator(name='constraint ' + str(consIndex),
+            consEval = MeasureFunctionEvaluator(name='constraint ' +\
+                                                str(consIndex),
                                                 measureFunction=cons.function)
             consEval.register(environment)
             consIndex = consIndex + 1

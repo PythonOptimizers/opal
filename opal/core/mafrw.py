@@ -306,9 +306,9 @@ class ManagementService:
         return id 
 
     def remove(self, objId):
-        if objId not in self.managed_object:
+        if objId not in self.managed_objects:
             return
-        del self.managed_object[objId]
+        del self.managed_objects[objId]
         return
 
     def search(self, query=None, **kwargs):
