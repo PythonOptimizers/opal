@@ -50,7 +50,7 @@ LSF.set_config(parameterName="-q",
                parameterValue="fedora")
 data = ModelData(algorithm=trunk,
                  problems=problems,
-                 activeParameters=params,
+                 parameters=params,
                  platform=LSF)
 struct = ModelStructure(objective=get_error,
                         constraints=[])  # Unconstrained

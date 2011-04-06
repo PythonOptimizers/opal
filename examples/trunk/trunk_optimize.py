@@ -45,11 +45,11 @@ problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
 # Define parameter optimization problem.
 data = ModelData(algorithm=trunk,
                  problems=problems,
-                 activeParameters=params)
+                 parameters=params)
 struct = ModelStructure(objective=sum_heval,
                         constraints=[(None, get_error, 0)])
-blackbox = Model(modelData=data, modelStructure=struct)
+model = Model(modelData=data, modelStructure=struct)
 
 # Solve parameter optimization problem.
 NOMAD.set_parameter(name='MAX_BB_EVAL', value=10)
-NOMAD.solve(model=blackbox)
+NOMAD.solve(blackbox=model)

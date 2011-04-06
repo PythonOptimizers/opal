@@ -46,7 +46,7 @@ problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
 
 data = ModelData(algorithm=trunk,
                  problems=problems,
-                 activeParameters=params,
+                 parameters=params,
                  platform=OPALMPI)
 struct = ModelStructure(objective=get_error,
                         constraints=[])  # Unconstrained

@@ -44,7 +44,7 @@ problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
 # Define parameter optimization problem.
 data = ModelData(algorithm=trunk,
                  problems=problems,
-                 activeParameters=params)
+                 parameters=params)
 struct = ModelStructure(objective=sum_heval,
                         constraints=[(None,get_error, 0)])
 model = Model(modelData=data, modelStructure=struct)
@@ -56,7 +56,7 @@ surr_data = ModelData(algorithm=trunk,
                                      if problem.name in ['BDQRTIC',
                                                          'BROYDN7D',
                                                          'BRYBND']],
-                      activeParameters=params)
+                      parameters=params)
 surr_struct = ModelStructure(objective=sum_heval,
                              constraints=[])
 surr_model = Model(modelData=surr_data, modelStructure=surr_struct,

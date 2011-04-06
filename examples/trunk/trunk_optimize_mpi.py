@@ -44,7 +44,7 @@ problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
 # Define parameter optimization problem.
 data = ModelData(algorithm=trunk,
                  problems=problems,
-                 activeParameters=params)
+                 parameters=params)
 struct = ModelStructure(objective=get_error,
                         constraints=[])  # Unconstrained
 blackbox = Model(modelData=data, modelStructure=struct)

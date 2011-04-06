@@ -72,7 +72,8 @@ def compile_driver(problem_name, log_file='compile.log'):
         os.system('mkdir %s' % problem)
     os.chdir(problem_name)
     os.system('sifdecode %s > %s 2>&1' % (problem_name, log_file))
-    os.system('runcuter --package dfo --keep > /dev/null')
+    os.system('runcuter --package dfo --keep --blas None --lapack None ' +\
+              '> /dev/null')
     os.chdir('..')
 
 
