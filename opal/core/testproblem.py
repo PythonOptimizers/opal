@@ -40,7 +40,7 @@ class OptimizationTestProblem(TestProblem):
 
     def __init__(self, name=None, description=None, classifyStr=None,
                  nvar=0, ncon=0, **kwargs):
-        TestProblem.__init__(self, name, descriptiona, classifyStr, **kwargs)
+        TestProblem.__init__(self, name, description, classifyStr, **kwargs)
         self.nvar = nvar
         self.ncon = ncon
 
