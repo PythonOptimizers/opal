@@ -152,11 +152,18 @@ class NOMADSolver(Solver):
         self.parameter_settings = [] # List of line in parameter file
         return
 
-    def solve(self, model=None, surrogate=None):
-        self.blackbox = NOMADBlackbox(model=model)
+    def solve(self, blackbox=None, surrogate=None):
+        if isinstance(blackbox, NOMADBlackbox):
+            self.blackbox = blackbox
+        else:
+            self.blackbox = NOMADBlackbox(model=blackbox)
         self.blackbox.generate_executable_file()
         if surrogate is not None:
-            self.surrogate = NOMADBlackbox(model=surrogate, fileName='surrogate.py')
+            if isinstance(surrogate, NOMADBlackbox):
+                self.surrogate = surrogate
+            else:
+                self.surrogate = NOMADBlackbox(model=surrogate,
+                                               fileName='surrogate.py')
             self.surrogate.generate_executable_file()
         #   surrogate.save()
         self.initialize()
@@ -177,7 +184,9 @@ class NOMADSolver(Solver):
                     self.blackbox.file_name + '"\n')
             bbTypeStr = 'BB_OUTPUT_TYPE OBJ'
             #for cons in model.m_:
-            bbTypeStr = bbTypeStr + ' PB'*model.m_con # All constraints are traited as progressive constraints
+            bbTypeStr = bbTypeStr + ' PB'*model.m_con # All constraints are
+                                                      # traited as progressive
+                                                      # constraints
             descrFile.write(bbTypeStr + '\n')
             #surrogate = self.surrogate
             if self.surrogate is not None:

@@ -8,40 +8,7 @@ import log
 
 __docformat__ = 'restructuredtext'
 
-class BlackBox:
-    """
-    This class manages the communication with the direct solver.
-    The specific implementation depends on the solver used. For example, when
-    the solver is NOMAD, an object of this class represents
-    an executable file whose I/O methods depend on the specific solver.
-    """
-    def __init__(self, solver=None, model=None, **kwargs):
-        self.solver = solver
-        self.model = model
-        pass
-    
-    def run(self, *args, **kwargs):
-        inputValues = []
-        paramValues = []
-        #print args
-        (inputValues, paramValues) = self.read_input(*args, **kwargs)
-        if self.model is None:
-            return
-        #print inputValues
-        (objective,constraints) = self.model.evaluate(inputValues)
-        self.write_output(objective,constraints)
-        return
-
-    def read_input(self,*args,**kwargs):
-        return (None,None)
-
-    def write_output(self,objectiveValue, constraintValues):
-        return
-
-    def set_parameter(self,*args,**kwargs):
-        return
-
-class BlackBoxModel:
+class Model:
     def __init__(self, modelData=None, modelStructure=None,
                  dataFile='blackbox.dat',
                  logHandlers=[], **kwargs):

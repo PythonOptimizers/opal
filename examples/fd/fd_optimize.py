@@ -3,7 +3,7 @@ from fd_declaration import FD
 
 from opal import ModelStructure
 from opal import ModelData
-from opal import BlackBoxModel
+from opal import Model
 from opal.Solvers import NOMAD
 
 # Return the error measure.
@@ -13,10 +13,10 @@ def get_error(parameters, measures):
 # Define parameter optimization problem.
 data = ModelData(FD)
 struct = ModelStructure(objective=get_error)  # Unconstrained
-blackbox = BlackBoxModel(modelData=data, modelStructure=struct)
+model = Model(modelData=data, modelStructure=struct)
 
 # Solve parameter optimization problem.
-NOMAD.solve(model=blackbox)
+NOMAD.solve(blackbox=model)
 
 # Inform user of expected optimal value for information.
 try:

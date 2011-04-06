@@ -4,7 +4,7 @@ from dfo_declaration import DFO
 
 from opal import ModelStructure
 from opal import ModelData
-from opal import BlackBoxModel
+from opal import Model
 
 from opal.Solvers import NOMAD
 
@@ -24,7 +24,7 @@ data = ModelData(DFO, problems, params)
 structure = ModelStructure(objective=avg_time, constraints=[])  # Unconstrained
 
 # Instantiate black-box solver.
-blackbox = BlackBoxModel(modelData=data, modelStructure=structure)
+model = Model(modelData=data, modelStructure=structure)
 
 # Solve parameter optimization problem.
-NOMAD.solve(model=blackbox)
+NOMAD.solve(blackbox=model)

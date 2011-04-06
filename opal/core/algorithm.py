@@ -41,11 +41,11 @@ class Algorithm:
       ['DELMIN']
     """
 
-    def __init__(self, name=None, purpose=None, **kwargs):
+    def __init__(self, name=None, description=None, **kwargs):
        
         # Algorithmic description
         self.name = name
-        self.purpose = purpose
+        self.description = description
         self.parameters = DataSet(name='Parameter set')  # List of parameters 
                                                          # (of type Parameter)
         self.measures = DataSet(name='Measure set')  # List of measures 

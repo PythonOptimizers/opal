@@ -3,7 +3,7 @@ from opal.core.parameter import Parameter
 from opal.core.measure   import Measure
 
 # Define new algorithm.
-DFO = Algorithm(name='DFO', purpose='Derivative-free Optimization')
+DFO = Algorithm(name='DFO', description='Derivative-free Optimization')
 
 # Register executable for DFO.
 DFO.set_executable_command('python dfo_run.py')

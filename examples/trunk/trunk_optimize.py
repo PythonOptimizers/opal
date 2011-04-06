@@ -4,7 +4,7 @@ from trunk_declaration import trunk
 
 from opal import ModelStructure
 from opal import ModelData
-from opal import BlackBoxModel
+from opal import Model
 from opal.Solvers import NOMAD
 
 from opal.TestProblemCollections import CUTEr
@@ -52,7 +52,7 @@ data = ModelData(algorithm=trunk,
                  activeParameters=params)
 struct = ModelStructure(objective=sum_heval,
                         constraints=[(None, get_error, 0)])
-blackbox = BlackBoxModel(modelData=data, modelStructure=struct)
+blackbox = Model(modelData=data, modelStructure=struct)
 
 # Solve parameter optimization problem.
 NOMAD.set_parameter(name='MAX_BB_EVAL', value=10)
