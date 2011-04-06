@@ -46,16 +46,24 @@ class ModelData:
     4. the test problems set.
     """
 
-    def __init__(self, algorithm, problems, activeParameters,
-                platform=config.platform, logHandlers=[], **kwargs):
+    def __init__(self,
+                 algorithm,
+                 problems=None,
+                 parameters=None,
+                 measures=None,
+                 platform=config.platform,
+                 logHandlers=[], **kwargs):
         # The core variables
         self.algorithm = algorithm
         if (problems is None) or (len(problems) == 0):
             self.problems = [TestProblem(name='TESTPROB')]
         else:
             self.problems = problems
-        
-        self.parameters = activeParameters
+
+        if parameters is None:
+            self.parameters = algorithm.parameters
+        else:
+            self.parameters = parameters
 
         # active_parameters_names are the name of parameters that are
         # variables in the parameter optimization problem.
@@ -66,7 +74,10 @@ class ModelData:
         #        param.set_as_const()
         
         #self.parameters = copy.deepcopy(algorithm.parameters)
-        self.measures = copy.deepcopy(algorithm.measures)
+        if measures is None:
+            self.measures = algorithm.measures
+        else:
+            self.measures = measures
         
         # TODO
         # This is unrelated to the model data. It should be moved elsewhere.
