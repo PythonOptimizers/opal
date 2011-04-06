@@ -49,8 +49,7 @@ class NOMADCommunicator(Agent):
         Agent.__init__(self, name=name, logHandlers=logHandlers)
         self.inputFile = input
         self.outputStream = output
-        self.message_handlers['inform-model-values'] = self.write_output
-        self.content_parsers['inform'] = self.extract_model_values
+        self.message_handlers['inform-model-value'] = self.write_output
         return
     
     def read_input(self, inputFile=None):
@@ -72,24 +71,32 @@ class NOMADCommunicator(Agent):
         f.close()
         return inputValues
 
-    def write_output(self, values):
+    def write_output(self, info):
         """
-        .. warning::
 
-            Document this method!!!
+        Message handlers that write the values obtained by the model-value
+        informing message in the understandable order specified by NOMAD
+        blackbox
         """
-        self.outputStream.write(str(values['objective']) + '\n')
-        for val in values[constraints]:
-                self.outputStream.write(str(val) + ' ')
+        objValue, consValues = info['proposition']['values']
+        self.outputStream.write(str(objValue) + '\n')
+        
+        # Constraint values are list of tuple
+        # (left_size_value, right_size_value) values that computed from a 
+        # constraint of form
+        #   left_bound <= f(x) <= right_bound
+        # by following rule:
+        #   left_size_value = left_bound - f(x)
+        #   right_size_value = f(x) - right_bound
+        # So in the desired form of NOMAD (g(x) <= 0), each tuple of constraint
+        # value is written as two constraints:
+        #   left_bound - f(x) <= 0, and  f(x) - right_bound <=0
+        for cons in consValues:
+            if cons[0] is not None:
+                self.outputStream.write(str(cons[0]) + ' ')
+            if cons[1] is not None:
+                self.outputStream.write(str(cons[1]))
         self.outputStream.write('\n')
-        return
-
-    def extract_model_values(self, msgContent):
-        conEx = {}
-        if type(msgContent) is type('a string'):
-            conEx = pickle.loads(msgContent)
-        else:
-            conEx.update(msgContent)
         return
 
     def  run(self):
@@ -98,8 +105,9 @@ class NOMADCommunicator(Agent):
         msg = Message(performative='cfp',
                       sender=self.id,
                       receiver=None,
-                      content={'action':'evaluate',
-                               'point': inputValues})
+                      content={'action':'evaluate-point',
+                               'proposition':{'point': inputValues}
+                               })
         self.sent_request_id = self.send_message(msg)
         Agent.run(self)
         return
@@ -120,7 +128,8 @@ class NOMADBlackbox(Environment):
     #. Show the model values to standard output
 
     we design in such a way that the executable will initialize an NOMADBlackbox 
-    object too. The advantage that we minimize the generated code of the executable
+    object too. The advantage that we minimize the generated code of the
+    executable
     
     NOMADBlackbox object is an application that contains two agents: an 
     NOMADCommunicator worker and a ModelEvaluator broker. A session is 

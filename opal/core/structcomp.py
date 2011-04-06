@@ -5,31 +5,88 @@ import new
 import log
 
 from mafrw import Agent
+from mafrw import Message
 
-class MeasureFunctionEvaluator(Agent):
+from set import Set
+from data import DataTable
+
+
+class MeasureFunctionEvaluator:
     def __init__(self, 
                  name='measure function evaluator',
                  measureFunction=None,
                  logHandlers=[]):
-        Agent.__init__(self, name=name, logHandlers=logHandlers)
-        self.message_handlers['inform-data-availability'] = self.evaluate
         return
 
 
     # Message handlers
-    def evaluate(self, info):
+    def evaluate(self, parameters, measures):
         '''
 
         Handle the message that inform that data (partial or complete) is
         available. The measure function is computed basing on the obtained data
         that extracted from the message.
         '''
-        data = info['proposition']['data']
-        if info['proposition']['how'] is 'partial':
-            isPartial = True
-        else:
-            isPartial = False
+        
         return
+
+class DataCacheEntry(DataTable):
+    def __init__(self, name, parameters, problems, measures):
+        self.parameters = parameters
+        DataTable.__init__(self,
+                           name=name,
+                           rowIdentities=problems,
+                           columnIdentities=measures)
+        return
+
+    def identify(self):
+        return self.name
+
+    def get_measure_vector(self, measure):
+        '''
+
+        Return Data Set object
+        '''
+        valDict = self.get_column(measure)
+        valVect = []
+        for prob in self.get_row_keys():
+            if prob in valDict.keys():
+                valVect.append(valDict[prob])
+        return valVect
+
+class DataCache(Set):
+    def __init__(self, name, problems, measures):
+        self.problems = problems
+        self.measures = measures
+        Set.__init__(self, name)
+        return
+
+    def create_entry(self, paramTag, parameterValues):
+        entry = DataCacheEntry(name=paramTag,
+                               parameters=parameterValues,
+                               problems=[prob.identify() \
+                                         for prob in self.problems],
+                               measures=[measure.identify() \
+                                         for measure in self.measures])
+        self.append(entry)
+        
+    def get_parameters(self, paramTag):
+        entry = self.__getitem__(paramTag)
+        return entry.parameters
+
+    def get_measure_vectors(self, paramTag):
+        '''
+
+        Return a dictionary of measure vectors. The keys are measure names
+        '''
+        measures = {}
+        entry = self.__getitem__(paramTag)
+        measureIds = [m.identify() for m in self.measures]
+        for measureId in measureIds:
+            measures[measureId] = entry.get_measure_vector(measureId)
+        return entry.get_storage_ratio(), measures
+       
+    
 
 class StructureComputer(Agent):
     """
@@ -43,37 +100,111 @@ class StructureComputer(Agent):
     def __init__(self,
                  name='structcomp',
                  structure=None,
+                 problems=None,
+                 measures=None,
                  logHandlers=[],
                  **kwargs):
         Agent.__init__(self,
                        name=name,
                        logHandlers=logHandlers)
         self.structure = structure
+        
+        # Data cache is a map from a parameter tag with an ExperimentResult
+        # object
+        self.data_cache = DataCache(name='data-cache',
+                                    problems=problems,
+                                    measures=measures)
+        
+
+        self.message_handlers['inform-measure-values'] = self.evaluate
+        self.message_handlers['cfp-evaluate-parameter'] = \
+                                                        self.create_cache_entry
         return
 
-    def register(self, environment):
-        
-        Agent.register(self, environment)
-
-        if self.structure is None:
-            return
-
-        objEval = MeasureFunctionEvaluator(name='objective',
-                                           measureFunction=\
-                                           self.structure.objective)
-        objEval.register(environment)
-
-        if self.structure.constraints is None:
-            return
-        consIndex = 0
-        for cons in self.structure.constraints:
-            consEval = MeasureFunctionEvaluator(name='constraint ' +\
-                                                str(consIndex),
-                                                measureFunction=cons.function)
-            consEval.register(environment)
-            consIndex = consIndex + 1
+    def update_data_cache(self, paramTag, problem, measureValues):
+        entry = self.data_cache.__getitem__(paramTag)
+        entry.update_row(problem, measureValues)
+        #log.debugger.log(str(entry.table))
+        return
+      
+    
+    
+    # Message handlers
+    def create_cache_entry(self, info):
+        paramTag = info['proposition']['tag']
+        parameterValues =  info['proposition']['parameter']
+        self.data_cache.create_entry(paramTag, parameterValues)
         return
 
     
+    def evaluate(self, info):
+        # Update the cache
+        
+        paramTag = info['proposition']['parameter-tag']
+        problem = info['proposition']['problem']
+        measureValues = info['proposition']['values']
+        #log.debugger.log('Update data cache by values: ' + str(measureValues))
+        self.update_data_cache(paramTag, problem, measureValues)
+        # Compute the model values
+        parameters = self.data_cache.get_parameters(paramTag)
+        storageRatio, measures = self.data_cache.get_measure_vectors(paramTag)
+        #log.debugger.log('Obtained measure vectors: ' + str(measures) +\
+        #                 '\n\t with storage ratio:' + str(storageRatio))
+        objVal = self.structure.objective.evaluate(parameters, measures)
+        if storageRatio < 1.0: # A partial data is obtained
+            # Check if there is violation of objective function before
+            # computing the constraint
+            if self.structure.objective.is_partially_exceed(objVal):
+                msg = Message(performative='cfp',
+                              sender=self.id,
+                              content={'action':'terminate-experiment',
+                                       'proposition':{'why':'objective exceeds',
+                                                      'parameter-tag':paramTag
+                                                      }})
+                self.send_message(msg)
+                return
+            else: # Evaluate the constraints
+                consVals = []
+                for cons in self.structure.constraints:
+                    val = cons.evaluate(parameters, measures)
+                    if cons.is_partially_violated(val):
+                        msg = Message(performative='cfp',
+                                      sender=self.id,
+                                      content={'action':'terminate-experiment',
+                                               'proposition':\
+                                               {'why':'a constraint is violated',
+                                                'parameter-tag':paramTag,
+                                                'what':cons.name
+                                                }}
+                                      )
+                        self.send_message(msg)
+                        return
+                    consVals.append(val)
+                # The message to inform partial model value is issued
+                msg = Message(performative='inform',
+                          sender=self.id,
+                          content={'proposition':{'what':'partial-model-value',
+                                                  'values':(objVal, consVals),
+                                                  'parameter-tag':paramTag
+                                                  }
+                                   })
+                self.send_message
+                return
+        # The full data is obtained, all of constraints are evaluated
+        # without checking violation and update the bounds of objective function
+        self.structure.objective.update_bounds(objVal)
+        consVals = []
+        for cons in self.structure.constraints:
+            consVals.append(cons.evaluate(parameters, measures))
+    
+        msg = Message(performative='inform',
+                          sender=self.id,
+                          content={'proposition':{'what':'model-value',
+                                                  'values':(objVal, consVals),
+                                                  'parameter-tag':paramTag
+                                                  }
+                                   })
+        self.send_message(msg)    
+        return
     
 

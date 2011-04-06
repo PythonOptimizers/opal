@@ -8,6 +8,7 @@ same storage and in/out method.
 import re
 import itertools
 
+import log
 from set import Set
 
 class Data:
@@ -132,9 +133,9 @@ class DataSet(Set):
                 elem.set(value)
             # The values in the dictionary is added of
             # correct the ones are set by the list
-            for id in valueDict.keys():
-                if name in self.indices.keys():
-                    self.db[self.indices[id]].set(valueDict[id])
+            for elemId in valueDict.keys():
+                if elemId in self.indices.keys():
+                    self.db[self.indices[elemId]].set(valueDict[elemId])
         return
 
     def select(self, query):
@@ -157,6 +158,7 @@ class DataTable:
         We suppose that a table is set of D
         '''
 
+        self.name = name
         self.row_identities = rowIdentities
         self.column_identities = columnIdentities
         # We store only the valid values like a dense matrix
@@ -171,6 +173,12 @@ class DataTable:
         return
 
     def __len__(self):
+        length = 0
+        for row in self.table.keys():
+            length = length + len(self.table[row])
+        return length
+
+    def get_formal_length(self):
         return len(self.row_identities)*len(self.column_identities)
     
     def __getitem__(self, key):
@@ -182,6 +190,21 @@ class DataTable:
             col = key[1]
         return self.table[row][key]
 
+    def get_storage_ratio(self):
+        '''
+
+        Return the ratio between physical length and formal one.
+        Base on this ration, we determine the status of a table that
+        take one of following four values:
+
+         - Empty: ratio = 0
+         - Sparse: ratio <= 0.5
+         - Dense: ration > 0.5
+         - Complete: ratio = 1
+        '''
+        ratio =  (self.__len__() + 0.0)/(self.get_formal_length() + 0.0)
+        return ratio
+       
     def get_column(self, colId):
         '''
 
@@ -195,7 +218,7 @@ class DataTable:
         for row in self.row_identities:
             if (row in self.table.keys()) and \
                    (colId in self.table[row].keys()):
-                valueDict[row] = self.table[row][col]
+                valueDict[row] = self.table[row][colId]
         return valueDict
 
     def get_row(self, rowId):
@@ -214,6 +237,10 @@ class DataTable:
             if col in self.table[rowId].keys():
                 valueDict[col] = self.table[rowId][col]
         return valueDict
+
+
+    def get_row_keys(self):
+        return self.row_identities
     
     def add_row(self, rowId):
         if rowId in self.row_identities:
@@ -227,37 +254,47 @@ class DataTable:
     
     def update_row(self, rowId, values=None, **kwargs):
         if rowId not in self.row_identities:
-            # Add a row if rowId has not been in row identities set.
-            self.row_identities.append(rowId)
-            self.talble[rowId] = {}
+            raise KeyError, 'Could identify a row of ID ' + str(rowId)
+        if rowId not in self.table.keys():
+            self.table[rowId] = {}
         valueDict = {}
-        for col, val in itertools.izip(self.column_identities, values):
-            valueDict[col] = val
-
+        if type(values) is type(['list']):
+            for col, val in itertools.izip(self.column_identities, values):
+                valueDict[col] = val
+        if type(values) is type({'key':'value'}):
+            valueDict.update(values)
         valueDict.update(kwargs)
+        log.debugger.log('Values to update: ' + str(valueDict))
         for col, val in valueDict.iteritems():
             self.table[rowId][col] = val
         return
 
+    def get_column_keys(self):
+        return self.column_identities
+    
     def add_column(self, colId):
         if colId in self.column_identities:
             return
         self.column_identities.append(colId)
 
-    def update_column(self, coldId, values=None, **kwargs):
+    def update_column(self, colId, values=None, **kwargs):
         if coldId not in self.column_identities:
-            self.column_identities.append(col)
+            raise KeyError, 'Could not identify a column of ID ' + str(colId)
 
         valueDict = {}
-        
-        for row, val in itertools.izip(self.row_identities, values):
-            valueDict[row] = val
+
+        if type(values) is type(['list']):
+            for row, val in itertools.izip(self.row_identities, values):
+                valueDict[row] = val
+        if type(values) is type({'key':'value'}):
+            valueDict.update(values)
+            
         valueDict.update(kwargs)
 
         for row, val in valueDict.iteritems():
             if row not in self.table.keys():
                 self.table[row] = {}
-            self.table[row][col] = val
+            self.table[row][colId] = val
         return
         
         

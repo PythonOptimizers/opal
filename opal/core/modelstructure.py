@@ -6,17 +6,31 @@ import log
 
 class MeasureFunction:
     """
-    *** This class contains the information of a measure function that
-    *** built up from the parameter and elementary measure \varphi(p,\mu)
+    This class contains the information of a measure function that
+    built up from the parameter and elementary measure \varphi(p,\mu)
     """
-    def __init__(self,function=None):
+    def __init__(self, function=None, **kwargs):
         if function is None:
-            return
-        '''
-        It's important to define a function with two arguments: 
-        the parameter and the measure
-        We check if the given function sastifies this constraint:
-        '''
+            raise Exception('Measure function definition is invalid')
+        # The information of a function include all possible description
+        # such as convexity, ... Any information is accepted
+        # We concentrate on a property called possitively-additive.
+        # A function objective is called possitively-additive if function value
+        # of partial data is always less than or equal to the data-full one
+        
+        self.information = {'additive-behavior':0, # Undetermined
+                                                   # additive-behavior = 1 means
+                                                   # function is possitively-
+                                                   # additive. And = -1 if this
+                                                   # is a negatively-additive
+
+                            'convexity':0 # Undetermined
+                            }
+        self.information.update(kwargs)
+        # It's important to define a function with two arguments: 
+        #the parameter and the measure
+        # We check if the given function sastifies this constraint:
+
         if function.__code__.co_argcount < 2:
             return
         self.func = function
@@ -35,9 +49,11 @@ class MeasureFunction:
                
     def save(self, dir='./', fileName=None):
         if fileName is None:
-            self.file_name = os.path.abspath(dir) + '/' + self.func.__code__.co_name + '.code'
+            self.file_name = os.path.abspath(dir) + '/' +\
+                             self.func.__code__.co_name + '.code'
         else: 
             self.file_name = os.path.abspath(dir) + '/' + fileName 
+
         if self.func is None:
             return
         f = open(self.file_name,'w')
@@ -55,31 +71,105 @@ class MeasureFunction:
     def __getstate__(self):
         content = {}
         content['code'] = marshal.dumps(self.func.__code__)
+        content['information'] = self.information
         return content
 
     def __setstate__(self, content):
-        self.func = new.function(marshal.loads(content['code']),globals()) 
+        self.func = new.function(marshal.loads(content['code']),globals())
+        self.information = content['information']
         return
         
     def __call__(self,*args,**kwargs):
         return self.evaluate(*args,**kwargs)
 
-class Constraint:
+    # Because measure function is kind of special for our
+    # problem. Some properties is exploited here, for example
+    # positively-additvie
+    def add_information(self, **kwargs):
+        self.information.update(kwargs)
+        
+    def is_positively_additive(self):
+        return self.information['additive-behavior'] > 0
+
+    def is_negatively_additive(self):
+        return self.information['additive-behavior'] < 0
+
+class Objective:
     """
-    *** This class is a description constraint. A constraint is defined in form
-    *** lower_bound <= measure_function <= upper_bound
-    *** if lower_bound is None, the constraint is consider as 
-    *** measure_function <= upper_bound
-    *** The same principle is applied to upper_bound
-    *** To define a constraint, there is at least a bound is not Non
+
+    A funciton objective with internal dynamically updated bound
     """
-    def __init__(self, function=None,lowerBound=None,upperBound=None,**kwargs):
-        self.function = MeasureFunction(function)
+    def __init__(self,
+                 function=None,
+                 lowerBound=None,
+                 upperBound=None,
+                 **kwargs):
+        if isinstance(function, MeasureFunction):
+            self.function = function
+            self.function.add_information(**kwargs)
+        else:
+            self.function = MeasureFunction(function, **kwargs)
         self.lower_bound = lowerBound
         self.upper_bound = upperBound
         return
     
-    def evaluate(self,*args,**kwargs):
+    def evaluate(self, *args, **kwargs):
+        funcVal = self.function(*args, **kwargs)
+        return funcVal
+
+    def update_bounds(self, funcVal):
+        if self.lower_bound is None:
+            self.lower_bound = funcVal
+        elif funcVal < self.lower_bound:
+            self.lower_bound = funcVal
+
+        if self.upper_bound is None:
+            self.upper_bound = funcVal
+        elif funcVal > self.upper_bound:
+            self.upper_bound = funcVal
+        return
+
+    def is_partially_exceed(self, val):
+        # Suppose that we work always with a minimization problem
+        if not self.function.is_positively_additive():
+            # If the function is not positively-additive, we could not
+            # determine if it is partially exceed
+            return False
+        if self.lower_bound is not None: # A bound exists
+            return (val > self.lower_bound)
+        return False 
+      
+
+        
+class Constraint:
+    """
+
+    This class is a description constraint. A constraint is defined in form
+       lower_bound <= measure_function <= upper_boun
+    if lower_bound is None, the constraint is consider as 
+       measure_function <= upper_bound  
+    The same principle is applied to upper_bound
+
+    To define a constraint, there is at least a bound is not None. 
+    """
+    def __init__(self,
+                function=None,
+                lowerBound=None,
+                upperBound=None,
+                **kwargs):
+        if (lowerBound is None) and (upperBound is None):
+            raise Exception('Constraint definition is invalid')
+        
+        if isinstance(function, MeasureFunction):
+            self.function = function
+            self.function.add_information(**kwargs)
+        else:
+            self.function = MeasureFunction(function, **kwargs)      
+        self.lower_bound = lowerBound
+        self.upper_bound = upperBound
+        return
+    
+    def evaluate(self, *args, **kwargs):
         funcVal = self.function(*args,**kwargs)
         values = [None,None]
         if self.lower_bound is not None:
@@ -88,6 +178,20 @@ class Constraint:
             values[1] = funcVal - self.upper_bound
         return values
 
+    def is_partially_violated(self, val, ):
+        # The partially-violated checking is feasible if the constraint
+        # function is either positively-additive or negatively-additive
+        if self.function.is_positively_additive():
+            if self.upper_bound is not None:
+                return (val > self.upper_bound)
+            return False
+        if self.function.is_negatively_additive():
+            if self.lower_bound is not None:
+                return (val < self.lower_bound)
+            return False
+        # In the case of funtion's additive-behavior is undetermined,
+        # the checking is not feasible
+        return False
 
 class ModelStructure:
     """
@@ -103,7 +207,7 @@ class ModelStructure:
                  objective=None, 
                  constraints=[]):
         self.name = name
-        self.objective = MeasureFunction(objective)
+        self.objective = Objective(objective)
         self.constraints = []
         if constraints is not None:
             for cons in constraints:

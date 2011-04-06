@@ -2,6 +2,8 @@ import re
 import logging
 
 
+
+
 class HandlerDescription:
     def __init__(self, handler):
         self.file_name = handler.baseFilename
@@ -72,5 +74,23 @@ class OPALLogger:
     def log(self, message, level=logging.INFO):
         self.logger.log(level, message)
         return
-    
+
+
+class Debugger:
+    def __init__(self, fileName='opal-debug.log'):
+        self.logger = logging.getLogger('DEBUG')
+        self.logger.setLevel(logging.DEBUG)
+        handler = logging.FileHandler(filename=fileName)
+        handler.setLevel(logging.DEBUG)
+        handler.setFormatter(logging.Formatter(\
+            '%(asctime)s - %(name)s:  %(message)s'))
+        self.logger.addHandler(handler)
+        return
+
+    def log(self, message, level=logging.DEBUG):
+        self.logger.log(level, message)
+        return
+
+debugger = Debugger()
+
     

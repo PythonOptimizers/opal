@@ -176,8 +176,8 @@ class Agent(threading.Thread):
             return
 
         if cmd in self.message_handlers.keys():
-            self.logger.log('the message with id = ' + str(message.id) + \
-                            ' is interpreted as command: ' + cmd)
+            self.logger.log('The message with id = ' + str(message.id) + \
+                            '\n\t interpreted as command: ' + cmd)
             self.message_handlers[cmd](info)
         return
 
@@ -357,9 +357,10 @@ class MessageService(ManagementService):
     def add(self, msg):
         id = ManagementService.add(self, msg)
         msg.id = id
-        self.logger.log('Receive a ' + msg.performative + ' message from ' + \
-                            str(msg.sender)[0:4] + '... that ask to ' + \
-                            str(msg.content))
+        self.logger.log('Receive a ' + msg.performative + ' message' +\
+                        '\n\t from ' + str(msg.sender)[0:4] + '...' +\
+                        '\n\t assigned id as ' + str(msg.id) +\
+                        '\n\t with content ' + str(msg.content))
         return id
 
 class DirectoryService(ManagementService):

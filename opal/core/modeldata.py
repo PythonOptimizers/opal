@@ -8,7 +8,6 @@ import copy
 #import logging
 
 #import utility
-from measure import MeasureValueTable
 from testproblem import TestProblem
 
 from .. import config

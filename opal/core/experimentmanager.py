@@ -89,7 +89,7 @@ class ExperimentManager(Agent):
         # self.logger = log.OPALLogger(name='modelData', handlers=logHandlers)
       
         self.experiments = {} # List of all experiements in executions
-        self.message_handlers['cfp-evaluate'] = self.run_experiment
+        self.message_handlers['cfp-evaluate-parameter'] = self.run_experiment
         self.message_handlers['inform-task-finish'] = self.get_result
         return
 
@@ -126,10 +126,10 @@ class ExperimentManager(Agent):
         if info is None:
             return
         
-        parameterValues = info['point']
+        parameterValues = info['proposition']['parameter']
         self.update_parameter(parameterValues)
-        if 'tag' in info.keys():
-            parameterTag = info['tag']
+        if 'tag' in info['proposition'].keys():
+            parameterTag = info['proposition']['tag']
         else:
             parameterTag = self.create_tag()
         # If the parameters are invalid, send a message informing the

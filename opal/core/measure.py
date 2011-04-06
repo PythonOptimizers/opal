@@ -1,6 +1,7 @@
 import copy
 
 from data import Data
+from data import DataTable
 from tools import TableFormatter
 
 
@@ -15,38 +16,34 @@ class Measure(Data):
     '''
 
     def __init__(self, name=None, description='', kind=None, **kwargs):
-        Data.__init__(self,name=name, description=description, type=kind)
+        Data.__init__(self, name=name, description=description, type=kind)
         return
 
-class MeasureValueTable:
-
-    def __init__(self,problem_names,measure_names):
-        sortedProblemNames = sorted(problem_names)
-        self.measure_names = measure_names
-        self.problem_names = sorted(problem_names)
-        self.table = {} # this mapping with key is the name of problems
-                        # and value is another mapping whorse key is measure name
-                        # and value is a list of value
-                        # We don't use the table because, the different measure
-                        # have different type
-        #for problem in self.problem_names:
-        #    self.table[problem] = {}
-        pass
+class MeasureValueTable(DataTable):
+    def __init__(self, name='measure-table', problems=None, measures=None):
+        self.problems = problems
+        self.measures = measures
+        DataTable.__init__(self,
+                           name=name,
+                           rowIdentities=[prob.identify() for prob in problems],
+                           columnIdentities=[measure.identify() \
+                                             for measure in measures])
+        return 
 
     def __len__(self):
-        return (len(self.problem_indices),len(self.measure_names))
+        return DataTable.__len__(self)
 
-    def __getitem__(self,key):
+    def __getitem__(self, key):
         if type(key) == type(('Problem','Measure')):
-            return self.get_cell(key[0],key[1])
+            return self.get_problem_measure(key[0],key[1])
         return self.get_column(key)
 
 
-    def get_cell(self,prob,measure):
+    def get_problem_measure(self, problem, measure):
         #print prob,measure,self.table[measure],self.problem_indices[prob]
         return self.table[problem][measure]
 
-    def get_column(self,measure):
+    def get_measure_vector(self, measure):
         col = []
         for prob in sorted(self.problem_names):
             col.append(self.table[prob][measure])
@@ -57,7 +54,7 @@ class MeasureValueTable:
             import array
             return array.array('d', col)
 
-    def get_row(self,prob):
+    def get_problem_measures(self, problem):
         row = []
         for measure in sorted(self.measure_names):
             row.append(self.table[prob][measure])
