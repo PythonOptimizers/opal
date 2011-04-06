@@ -8,16 +8,11 @@ from opal.Solvers import NOMAD
 
 # Return the error measure.
 def get_error(parameters, measures):
-    val = sum(measures["ERROR"])
-    return val
-
-# Parameters being tuned and problem list.
-params = FD.parameters   # All.
-problems = []            # None.
+    return sum(measures["ERROR"])
 
 # Define parameter optimization problem.
-data = ModelData(FD, problems, params)
-struct = ModelStructure(objective=get_error, constraints=[])  # Unconstrained
+data = ModelData(FD)
+struct = ModelStructure(objective=get_error)  # Unconstrained
 blackbox = BlackBoxModel(modelData=data, modelStructure=struct)
 
 # Solve parameter optimization problem.
