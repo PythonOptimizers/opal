@@ -1,12 +1,8 @@
 # Define a parameter optimization problem in relation to the TRUNK solver.
 # This is the sequential version.
 from trunk_declaration import trunk
-
-from opal import ModelStructure
-from opal import ModelData
-from opal import Model
+from opal import ModelStructure, ModelData, Model
 from opal.Solvers import NOMAD
-
 from opal.TestProblemCollections import CUTEr
 
 def sum_heval(parameters, measures):
@@ -50,7 +46,7 @@ data = ModelData(algorithm=trunk,
                  problems=problems,
                  activeParameters=params)
 struct = ModelStructure(objective=sum_heval,
-                        constraints=[(None,get_error, 0)]) 
+                        constraints=[(None,get_error, 0)])
 model = Model(modelData=data, modelStructure=struct)
 
 # Define a surrogate

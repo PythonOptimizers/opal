@@ -3,10 +3,7 @@
 # worth of neighbors in parallel. The black box evaluation itself is
 # sequential.
 from trunk_declaration import trunk
-
-from opal import ModelStructure
-from opal import ModelData
-from opal import Model
+from opal import ModelStructure, ModelData, Model
 from opal.Solvers import NOMADMPI
 
 from opal.TestProblemCollections import CUTEr

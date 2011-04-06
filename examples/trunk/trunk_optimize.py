@@ -1,10 +1,7 @@
 # Define a parameter optimization problem in relation to the TRUNK solver.
 # This is the sequential version.
 from trunk_declaration import trunk
-
-from opal import ModelStructure
-from opal import ModelData
-from opal import Model
+from opal import ModelStructure, ModelData, Model
 from opal.Solvers import NOMAD
 
 from opal.TestProblemCollections import CUTEr
@@ -20,8 +17,7 @@ def get_error(parameters, measures):
 par_names = ['eta1', 'eta2', 'gamma1', 'gamma2', 'gamma3']
 #params = [param for param in trunk.parameters if param.name in par_names]
 
-params = [trunk.parameters['eta1'],
-	  trunk.parameters['eta2']]
+params = [trunk.parameters['eta1'], trunk.parameters['eta2']]
 problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
                                                              'BROYDN7D',
                                                              'BRYBND',

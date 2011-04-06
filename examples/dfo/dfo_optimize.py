@@ -1,10 +1,8 @@
 # Simple demo: tune DFO parameters for CPU time on simple HS problems.
+from opal import ModelStructure, ModelData, Model
 from opal.TestProblemCollections import CUTEr
 from dfo_declaration import DFO
 
-from opal import ModelStructure
-from opal import ModelData
-from opal import Model
 
 from opal.Solvers import NOMAD
 

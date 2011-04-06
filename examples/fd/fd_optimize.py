@@ -1,9 +1,6 @@
 # Define a parameter optimization problem in relation to the FD algorithm.
 from fd_declaration import FD
-
-from opal import ModelStructure
-from opal import ModelData
-from opal import Model
+from opal import ModelStructure, ModelData, Model
 from opal.Solvers import NOMAD
 
 # Return the error measure.

@@ -4,12 +4,8 @@
 # parallelizes the black box. This is an alternative to the parallelization
 # implemented in trunk_optimize_opalmpi.py.
 from trunk_declaration import trunk
-
-from opal import ModelStructure
-from opal import ModelData
-from opal import Model
+from opal import ModelStructure, ModelData, Model
 from opal.Solvers import NOMADMPI
-
 from opal.TestProblemCollections import CUTEr
 from opal.Platforms import SMP
 
