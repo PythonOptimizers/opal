@@ -179,7 +179,7 @@ class NOMADSolver(Solver):
             model = self.blackbox.model
             descrFile.write('DIMENSION ' + str(model.n_var) + '\n')
             # descrFile.write('DISPLAY_DEGREE 4\n')
-            descrFile.write('DISPLAY_STATS EVAL BBE [ SOL, ] OBJ TIME \\\\\n')
+            # descrFile.write('DISPLAY_STATS EVAL BBE [ SOL, ] OBJ TIME \\\\\n')
             descrFile.write('BB_EXE "$python ' + \
                     self.blackbox.file_name + '"\n')
             bbTypeStr = 'BB_OUTPUT_TYPE OBJ'
@@ -244,8 +244,8 @@ class NOMADMPISolver(NOMADSolver):
                  **kwargs):
         NOMADSolver.__init__(self, name=name, parameterFile=parameterFile)
         self.mpi_config = {}  # Contains the settings for MPI environment
-        self.mpi_config['np'] = None  # If set this to None, the number process is 
-                                      # determined idealy by the dimension of 
+        self.mpi_config['np'] = None  # If set this to None, the number process is
+                                      # determined idealy by the dimension of
                                       # solving problem.
         return
 
