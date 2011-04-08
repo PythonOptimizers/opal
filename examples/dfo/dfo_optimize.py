@@ -1,9 +1,7 @@
 # Simple demo: tune DFO parameters for CPU time on simple HS problems.
+from dfo_declaration import DFO
 from opal import ModelStructure, ModelData, Model
 from opal.TestProblemCollections import CUTEr
-from dfo_declaration import DFO
-
-
 from opal.Solvers import NOMAD
 
 def avg_time(parameters,measures):
@@ -19,10 +17,12 @@ print 'Working with parameters ', [par.name for par in params]
 print 'Testing on problems ', [prb.name for prb in problems]
 
 data = ModelData(DFO, problems, params)
-structure = ModelStructure(objective=avg_time, constraints=[])  # Unconstrained
+structure = ModelStructure(objective=avg_time)  # Unconstrained
 
 # Instantiate black-box solver.
 model = Model(modelData=data, modelStructure=structure)
 
 # Solve parameter optimization problem.
+NOMAD.set_parameter(name='DISPLAY_STATS',
+                    value='%3dBBE [ %7.1eSOL, ]  %8.3eOBJ  %6.2fTIME')
 NOMAD.solve(blackbox=model)
