@@ -42,7 +42,6 @@ class OptimizationTestProblem(TestProblem):
     >>> print hs26.name, hs26.nvar, hs26.ncon
     HS26 3 1
     """
-
     def __init__(self,
                  name='Optimization Problem',
                  description=None,

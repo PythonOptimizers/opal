@@ -4,12 +4,8 @@
 # parallelizes the black box. This is an alternative to the parallelization
 # implemented in trunk_optimize_opalmpi.py.
 from trunk_declaration import trunk
-
-from opal import ModelStructure
-from opal import ModelData
-from opal import BlackBoxModel
+from opal import ModelStructure, ModelData, Model
 from opal.Solvers import NOMADMPI
-
 from opal.TestProblemCollections import CUTEr
 from opal.Platforms import SMP
 
@@ -50,14 +46,14 @@ problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
 
 data = ModelData(algorithm=trunk,
                  problems=problems,
-                 activeParameters=params,
+                 parameters=params,
                  platform=SMP)
 struct = ModelStructure(objective=get_error,
                         constraints=[])  # Unconstrained
-blackbox = BlackBoxModel(modelData=data, modelStructure=struct)
+model = Model(modelData=data, modelStructure=struct)
 
 # Solve parameter optimization problem.
 NOMADMPI.set_mpi_config(name='np', value=5)
 NOMADMPI.set_parameter(name='MAX_BB_EVAL', value=5)
 NOMADMPI.set_parameter(name='DISPLAY_DEGREE', value=2)
-NOMADMPI.solve(model=blackbox)
+NOMADMPI.solve(blackbox=model)

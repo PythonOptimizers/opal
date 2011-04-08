@@ -7,6 +7,7 @@ from data import DataSet
 from parameter import Parameter, ParameterConstraint
 from measure import Measure
 
+
 __docformat__ = 'restructuredtext'
   
 class Algorithm:
@@ -55,13 +56,11 @@ class Algorithm:
       ['DELMIN']
     """
 
-    def __init__(self, name=None, purpose=None, **kwargs):
+    def __init__(self, name=None, description=None, **kwargs):
        
         # Algorithmic description
         self.name = name
-        self.purpose = purpose
-        #self.parameters = [] # List of parameters (of type Parameter)
-        #self.measures = [] # List of measures (the output of the algorithm)
+        self.description = description
         self.parameters = DataSet(name='Parameter set')  # List of parameters 
                                                          # (of type Parameter)
         self.measures = DataSet(name='Measure set')  # List of measures 
@@ -163,10 +162,10 @@ class Algorithm:
                 continue
             measure_values[fields[0].strip(' ')] = fields[1].strip(' ')
         for i in range(len(self.measures)):
-            kind = converters[self.measures[i].type]
+            convert = converters[self.measures[i].get_type()]
             try:
                 measure_values[self.measures[i].name] = \
-                    kind(measure_values[self.measures[i].name])
+                    convert(measure_values[self.measures[i].name])
             except ValueError:
                 return None
         return measure_values

@@ -1,23 +1,22 @@
 # Define a parameter optimization problem in relation to the TRUNK solver.
+# This is the sequential version.
 from trunk_declaration import trunk
-
 from opal import ModelStructure, ModelData, Model
 from opal.Solvers import NOMAD
-
 from opal.TestProblemCollections import CUTEr
+
 def sum_heval(parameters, measures):
-    val = sum(measures['HEVAL'])
+    val = sum(measures["HEVAL"])
     return val
 
-def get_error(parameters, measures):
-    val = sum(measures["ECODE"])
+def get_error(parameters,measures):
+    val = sum(measures['ECODE'])
     return val
 
 # Parameters being tuned and problem list.
 par_names = ['eta1', 'eta2', 'gamma1', 'gamma2', 'gamma3']
-#params = [param for param in trunk.parameters if param.name in par_names]
+params = [param for param in trunk.parameters if param.name in par_names]
 
-params = [trunk.parameters['eta1'], trunk.parameters['eta2']]
 problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
                                                              'BROYDN7D',
                                                              'BRYBND',
@@ -34,37 +33,35 @@ problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
 #                                                             'MANCINO',
 #                                                             'NCB20',
 #                                                             'NCB20B',
-#                                                             'NONDQUAR',
-#                                                             'POWER',
-#                                                             'SENSORS',
-#                                                             'SINQUAD',
+#                                                            'NONDQUAR',
+                                                             'POWER',
+                                                             'SENSORS',
+                                                             'SINQUAD',
                                                              'TESTQUAD',
                                                              'TRIDIA',
                                                              'WOODS']]
 
-#SMP.set_parameter(name='MAX_PROC', value=5);
-
 # Define parameter optimization problem.
 data = ModelData(algorithm=trunk,
                  problems=problems,
-                 parameters=params,
-                 measures=trunk.measures)
-
+                 parameters=params)
 struct = ModelStructure(objective=sum_heval,
-                        constraints=[(None, get_error, 0)])  # Unconstrained
+                        constraints=[(None,get_error, 0)])
+model = Model(modelData=data, modelStructure=struct)
 
+# Define a surrogate
 
-prob = Model(modelData=data, 
-             modelStructure=struct,
-             platform='SMP',
-             synchoronized=False,
-             interruptible=True,
-             dataFile='blackbox.dat')
+surr_data = ModelData(algorithm=trunk,
+                      problems= [problem for problem in CUTEr \
+                                     if problem.name in ['BDQRTIC',
+                                                         'BROYDN7D',
+                                                         'BRYBND']],
+                      parameters=params)
+surr_struct = ModelStructure(objective=sum_heval,
+                             constraints=[])
+surr_model = Model(modelData=surr_data, modelStructure=surr_struct,
+                           dataFile='surrogate.dat')
 
 # Solve parameter optimization problem.
-
-if __name__ == '__main__':
-    from opal.Solvers import NOMAD
-    NOMAD.set_parameter(name='MAX_BB_EVAL', value=10)
-    NOMAD.solve(model=prob)
-
+NOMAD.set_parameter(name='MAX_BB_EVAL', value=10)
+NOMAD.solve(blackbox=model, surrogate=surr_model)

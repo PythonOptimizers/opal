@@ -7,7 +7,6 @@ same storage and in/out method.
 """
 import re
 import itertools
-
 import log
 from set import Set
 
@@ -84,8 +83,7 @@ class DataSet(Set):
                 self.db.append(elem)
                 index = index + 1
         return
-    
-    
+
     def set_values(self, values=None, *args, **kwargs):
         """
         
@@ -205,22 +203,7 @@ class DataTable:
         ratio =  (self.__len__() + 0.0)/(self.get_formal_length() + 0.0)
         return ratio
        
-    def get_column(self, colId):
-        '''
-
-        Return a dictionary that map row identities and values of
-        corresponded cell
-        '''
-        valueDict = {}
-        if colId not in self.column_identities:
-            raise Exception('Column identity is not valid')
-
-        for row in self.row_identities:
-            if (row in self.table.keys()) and \
-                   (colId in self.table[row].keys()):
-                valueDict[row] = self.table[row][colId]
-        return valueDict
-
+    # Row-related operations
     def get_row(self, rowId):
         valueDict = {}
         if rowId not in self.row_identities:
@@ -237,7 +220,6 @@ class DataTable:
             if col in self.table[rowId].keys():
                 valueDict[col] = self.table[rowId][col]
         return valueDict
-
 
     def get_row_keys(self):
         return self.row_identities
@@ -269,6 +251,24 @@ class DataTable:
             self.table[rowId][col] = val
         return
 
+    # Column-related operations
+    
+    def get_column(self, colId):
+        '''
+
+        Return a dictionary that map row identities and values of
+        corresponded cell
+        '''
+        valueDict = {}
+        if colId not in self.column_identities:
+            raise Exception('Column identity is not valid')
+
+        for row in self.row_identities:
+            if (row in self.table.keys()) and \
+                   (colId in self.table[row].keys()):
+                valueDict[row] = self.table[row][colId]
+        return valueDict
+    
     def get_column_keys(self):
         return self.column_identities
     

@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% set title = 'Overview' %}
+{% block body %}
+
+<h1>Welcome</h1>
+
+<div class="quotebar">
+  <p><em>What authors say:</em></p>
+  <p>&ldquo;Enjoy trying a tool that optimizes an algorithm in a snap!&rdquo;</p>
+</div>
+
+<p>
+  OPAL stands for <b>Optimization of Algorithm</b>. OPAL provides a framework in
+  which algorithmic parameter optimization problems can be defined and solved
+  in a programmatic way.
+</p>
+<!--
+<p>
+  Our approach is to formulate a parameter optimization problem as a <em>black box
+  optimization problem</em>. This is different from heuristic approaches that
+  uses heuristic to minimize the running time as unique goal. The formulated
+  blackbox has the objective function and constraints built from parameter values
+  and elementary measures obtained from empirical tests. Hence, the users can
+  optimize his algorithm in any aspect and exploit any algorithmic parameter.
+  The blackbox problem is solved by a direct-search solver.
+  </p>
+-->
+<!--
+<p>
+    A parameter optimization procedure with OPAL has three steps:</p>
+  <ul>
+    <li>Describe the target algorithm</li>
+    <li>Define the optimization problem</li>
+    <li>Choose a suitable solver to solve the problem</li>
+  </ul>
+</p>
+-->
+<p>
+  OPAL is written in Python and uses Python as the language in which the parameter
+  optimization problem is described. The procedure consists in three main steps:
+  declare the target algorithm, define an optimization problem and choose a
+  suitable solver.
+ </p>
+
+<h2>Documentation</h2>
+
+<table class="contentstable" align="center" style="margin-left: 30px"><tr>
+    <td width="50%">
+      <p class="biglink"><a class="biglink" href="tutorial.html">Very simple tutorial</a><br/>
+        <span class="linkdescr">overview of basic tasks</span></p>
+      <p class="biglink"><a class="biglink" href="contents.html">Contents</a><br/>
+        <span class="linkdescr">for a complete overview</span></p>
+    </td><td width="50%">
+      <p class="biglink"><a class="biglink" href="search.html">Search page</a><br/>
+        <span class="linkdescr">search the documentation</span></p>
+      <p class="biglink"><a class="biglink" href="genindex.html">General Index</a><br/>
+        <span class="linkdescr">all functions, classes, terms</span></p>
+  </td></tr>
+</table>
+
+
+<h2>Examples</h2>
+<p>Links to some examples can be found in the
+  <a href="tutorial.html">Tutorial section</a>.
+</p>
+
+<h2>Get OPAL</h2>
+<p>
+  OPAL is available from
+  <a href="http://www.gerad.ca/~kiendc/packages">www.gerad.ca/~kiendc/packages</a>.
+</p>
+
+{% endblock %}
+

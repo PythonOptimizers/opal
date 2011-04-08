@@ -2,35 +2,23 @@
 # FD algorithm.
 from fd_declaration import FD
 
-from opal import OPALModelStructure
-from opal import DataGenerator
-from opal import OPALModel
+from opal import ModelStructure, ModelData, Model
+
 from opal.Solvers import NOMAD
 
 # Return the error measure.
 def get_error(parameters, measures):
-    val = sum(measures["ERROR"])
-    return val
-
-# Parameters being tuned and problem list.
-params = FD.parameters   # All.
-problems = []            # None.
+    return sum(measures["ERROR"])
 
 # Define parameter optimization problem.
-dataGen = DataGenerator(algorithmWrapper=FD, 
-                        problems=problems, 
-                        parameters=FD.parameters,
-                        measures=FD.measures,
-                        platform=SMP,
-                        synchronization=True,
-                        interruption=False)
-struct = ModelStructure(objective=(get_error, False),  
-                        constraints=[])  # Unconstrained
-prob = OPALModel(dataSource=dataGen, 
-                 modelStructure=struct)
+data = ModelData(FD)
+struct = ModelStructure(objective=get_error)  # Unconstrained
+model = Model(modelData=data, modelStructure=struct)
 
 # Solve parameter optimization problem.
-NOMAD.solve(problem=prob)
+NOMAD.set_parameter(name='DISPLAY_STATS',
+                    value='%3dBBE  %7.1eSOL  %8.3eOBJ  %5.2fTIME')
+NOMAD.solve(blackbox=model)
 
 # Inform user of expected optimal value for information.
 try:

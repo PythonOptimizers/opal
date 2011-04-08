@@ -1,7 +1,0 @@
-#!/bin/sh
-to="dominique.orban@gerad.ca"
-subj="NLPy repo updated"
-tmpname=/tmp/gitlog.$$
-git log -1 > $tmpname
-mailx -s $subj $to < $tmpname
-rm $tmpname

@@ -4,7 +4,7 @@ from opal.core.parameter import Parameter
 from opal.core.measure   import Measure
 
 # Define Algorithm object.
-FD = Algorithm(name='FD', purpose='Forward Finite Differences')
+FD = Algorithm(name='FD', description='Forward Finite Differences')
 
 # Register executable for FD.
 FD.set_executable_command('python fd_run.py')

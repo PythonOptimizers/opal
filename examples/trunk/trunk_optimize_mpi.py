@@ -3,10 +3,7 @@
 # worth of neighbors in parallel. The black box evaluation itself is
 # sequential.
 from trunk_declaration import trunk
-
-from opal import ModelStructure
-from opal import ModelData
-from opal import BlackBoxModel
+from opal import ModelStructure, ModelData, Model
 from opal.Solvers import NOMADMPI
 
 from opal.TestProblemCollections import CUTEr
@@ -47,10 +44,10 @@ problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
 # Define parameter optimization problem.
 data = ModelData(algorithm=trunk,
                  problems=problems,
-                 activeParameters=params)
+                 parameters=params)
 struct = ModelStructure(objective=get_error,
                         constraints=[])  # Unconstrained
-blackbox = BlackBoxModel(modelData=data, modelStructure=struct)
+blackbox = Model(modelData=data, modelStructure=struct)
 
 # Solve parameter optimization problem.
 NOMADMPI.set_mpi_config(name='np', value=8)

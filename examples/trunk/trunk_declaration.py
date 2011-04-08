@@ -6,7 +6,7 @@ from opal.core.measure   import Measure
 
 # Define Algorithm object.
 trunk = Algorithm(name='TRUNK',
-                  purpose='Trust Region for UNConstrained problems')
+                  description='Trust Region for UNConstrained problems')
 
 # Register executable command.
 trunk.set_executable_command('python trunk_run.py')

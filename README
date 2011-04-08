@@ -6,13 +6,13 @@ The bare minimum (for now):
 -------------------
 
 1 - REQUIREMENTS
-    + Python version 2.3 (maybe earlier?)
+    + Python version 2.6 or 2.7 (not tested with 3.x)
     + NOMAD (download from http://www.gerad.ca/NOMAD)
 
 2 - INSTALL
     + Unzip the package
     + Go to the unzipped directory
-    + Launch the command: 
+    + Launch the command:
       #shell:> python setup.py install
 
 3 - TESTING

@@ -38,12 +38,12 @@ class ModelData:
             self.problems = [TestProblem(name='TESTPROB')]
         else:
             self.problems = problems
-        
+
         if parameters is None:
             self.parameters = algorithm.parameters
         else:
             self.parameters = parameters
-
+            
         if measures is None:
             self.measures = algorithm.measures
         else:

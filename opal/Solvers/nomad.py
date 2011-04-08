@@ -201,23 +201,27 @@ class NOMADSolver(Solver):
         '''
         #self.blackbox = NOMADBlackbox(model=model)
         #self.blackbox.generate_executable_file()
-        self.generate_executable(model=model,
-                                 execFile='blackbox.py',
-                                 dataFile='blackbox.dat')
+        self.generate_blackbox_executable(model=model,
+                                          execFile='blackbox.py',
+                                          dataFile='blackbox.dat')
         if surrogate is not None:
-            self.generate_executable(model=surrogate,
-                                     execFile='surrogate.py',
-                                     dataFile='surrogate.dat')
+            self.generate_blackbox_executable(model=surrogate,
+                                              execFile='surrogate.py',
+                                              dataFile='surrogate.dat')
         #   surrogate.save()
         self.create_specification_file(model=model,
                                        modelExecutable='$python  blackbox.py', 
                                        surrogate=surrogate,
-                                       surrogateExecutable='$python surrogate.py')
+                                       surrogateExecutable=\
+                                       '$python surrogate.py')
         
         self.run()
         return
 
-    def generate_executable(self, model, execFile='blackbox.py', dataFile='blackbox.dat'):
+    def generate_blackbox_executable(self,
+                                     model,
+                                     execFile='blackbox.py',
+                                     dataFile='blackbox.dat'):
         """
         
         Generate Python code to play the role of black box executable.
@@ -237,7 +241,8 @@ class NOMADSolver(Solver):
         bb.write('from opal.Solvers.nomad import NOMADBlackbox' + endl)
         bb.write('from opal.core.modelevaluator import ModelEvaluator' + endl)
         bb.write(comment + 'Create model evaluation environment' + endl)
-        bb.write('env = NOMADBlackbox(model="' + dataFile + '",input=sys.argv[1], output=sys.stdout)' + endl)
+        bb.write('env = NOMADBlackbox(model="' + dataFile + \
+                 '",input=sys.argv[1], output=sys.stdout)' + endl)
         bb.write(comment + 'Activate the environment' + endl)
         bb.write('env.start()')
         bb.write(comment + 'Wait for environement finish his life time' + endl)
@@ -288,11 +293,10 @@ class NOMADSolver(Solver):
                 descrFile.write('LOWER_BOUND ' + lowerBoundStr + '\n')
             if len(upperBoundStr.replace(']','').replace('[','')) > 1:
                 descrFile.write('UPPER_BOUND ' + upperBoundStr + '\n')
-
         # Write other settings.
         descrFile.write('SOLUTION_FILE ' + self.solutionFileName + '\n')
         descrFile.write('STATS_FILE ' + self.resultFileName + \
-                '$EVAL$ & $BBE$ & $BBO$ & [ $SOL$ ] & $OBJ$ & $TIME$ \\\\\n')
+                ' $EVAL$ & $BBE$ &  [ $SOL$ ] & $OBJ$ & $TIME$ \\\\\n')
         for param_setting in self.parameter_settings:
             descrFile.write(param_setting + '\n')
         descrFile.close()
@@ -315,9 +319,10 @@ class NOMADMPISolver(NOMADSolver):
                  **kwargs):
         NOMADSolver.__init__(self, name=name, parameterFile=parameterFile)
         self.mpi_config = {}  # Contains the settings for MPI environment
-        self.mpi_config['np'] = None # If set this to None, the number process is
-                                 # determined idealy by the dimension of
-                                 # solving problem.
+        self.mpi_config['np'] = None  # If set this to None, the number
+                                      # process is
+                                      # determined idealy by the dimension of
+                                      # solving problem.
         return
 
     def set_mpi_config(self, name, value):
@@ -328,7 +333,6 @@ class NOMADMPISolver(NOMADSolver):
         optionStr = ''
         for opt in self.mpi_config.keys():
             optionStr = ' -' + opt + ' ' + str(self.mpi_config[opt])
-
         os.system('mpirun' + optionStr + ' ' + \
                       'nomad.MPI ' + self.paramFileName)
         return

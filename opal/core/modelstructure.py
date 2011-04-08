@@ -152,6 +152,7 @@ class Constraint:
 
     To define a constraint, there is at least a bound is not None. 
     """
+
     def __init__(self,
                 function=None,
                 lowerBound=None,
@@ -165,17 +166,22 @@ class Constraint:
             self.function.add_information(**kwargs)
         else:
             self.function = MeasureFunction(function, **kwargs)      
+        self.n_size = 2
         self.lower_bound = lowerBound
+        if self.lower_bound is None:
+            self.n_size = self.n_size - 1
         self.upper_bound = upperBound
+        if self.upper_bound is None:
+            self.n_size = self.n_size - 1
         return
     
     def evaluate(self, *args, **kwargs):
         funcVal = self.function(*args,**kwargs)
-        values = [None,None]
+        values = []
         if self.lower_bound is not None:
-            values[0] = self.lower_bound - funcVal
+            values.append(self.lower_bound - funcVal)
         if self.upper_bound is not None:
-            values[1] = funcVal - self.upper_bound
+            values.append(funcVal - self.upper_bound)
         return values
 
     def is_partially_violated(self, val, ):
@@ -217,10 +223,3 @@ class ModelStructure:
                 self.constraints.append(constraint)
         return
         
-    def save(self):
-        
-        return
-
-    def load(self, file=None):
-        return
-   
