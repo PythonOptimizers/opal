@@ -10,7 +10,6 @@ import hashlib
 #import logging
 
 #import utility
-from measure import MeasureValueTable
 from testproblem import TestProblem
 from data import Data
 from mafrw import *

@@ -246,7 +246,7 @@ class DataTable:
         if type(values) is type({'key':'value'}):
             valueDict.update(values)
         valueDict.update(kwargs)
-        log.debugger.log('Values to update: ' + str(valueDict))
+        #log.debugger.log('Values to update: ' + str(valueDict))
         for col, val in valueDict.iteritems():
             self.table[rowId][col] = val
         return

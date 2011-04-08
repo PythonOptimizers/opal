@@ -92,7 +92,6 @@ class ProblemSet(Set):
     
     def select(self, query):
         """
-
         Return the list of problems matching the given query.
         The `query` object is any object that possesses a `match()` method.
         The result of `match(name, string)` must be True if `name` matches
@@ -133,7 +132,7 @@ class ProblemCollection(ProblemSet):
     def __init__(self, name=None, description=None, **kwargs):
         self.name = name
         self.description = description
-        ProblemSet.__init__(self, name=name, **kwargs)
+        ProblemSet.__init__(self, name='set of problems', **kwargs)
         self.subcollections = Set(name='sub-collections') # List of
                                                           # subcollections of
                                                           # this collection

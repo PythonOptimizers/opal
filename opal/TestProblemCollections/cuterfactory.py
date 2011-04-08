@@ -5,16 +5,27 @@ from ..core.testproblem import *
 
 class CUTErTestProblem(OptimizationTestProblem):
 
-    def __init__(self, name=None, description=None, classifyStr=None,nvar=0, ncon=0,
-                 paramString=None, **kwargs):
-        OptimizationTestProblem.__init__(self, name, description, classifyStr, nvar, ncon,
+    def __init__(self,
+                 name=None,
+                 description=None,
+                 classifyStr=None,
+                 nvar=0,
+                 ncon=0,
+                 paramString=None,
+                 **kwargs):
+        OptimizationTestProblem.__init__(self,
+                                         name=name,
+                                         description=description,
+                                         classifyStr=classifyStr,
+                                         nvar=nvar,
+                                         ncon=ncon,
                                          **kwargs)
-        self.paramString = None
+        self.parameter_string = paramString
 
 class CUTErQuery:
 
     def __init__(self,qName=None,
-                 name='',
+                 namePattern='',
                  nMin=0,nMax=1000000,
                  mMin=0,mMax=1000000,
                  objectiveType='NCLQSO',
@@ -26,9 +37,13 @@ class CUTErQuery:
                  **kwargs):
         """
         An example of a query
-        query = Query(name='HS',nMin=0,nMax=10,objectiveType="N",constraintType="U")
+        query = Query(namePattern='HS',
+                      nMin=0,
+                      nMax=10,
+                      objectiveType="N",
+                      constraintType="U")
         """
-        self.name = name
+        self.name_pattern = namePattern
         self.nMin = nMin
         self.nMax = nMax
         self.mMin = mMin
@@ -40,13 +55,13 @@ class CUTErQuery:
         self.problemType = problemType
         self.internalVar = internalVar
 
-    def match(self,problem_name,probDescStr):
+    def match(self, problem):
         #print self.nMax, self.mMax,  probDescStr,
-        descFields = probDescStr.split("-")
+        descFields = problem.get_classify_string().split("-")
         for i in range(len(descFields)):
             descFields[i] = descFields[i].strip()
         #descFields[0:] = descFields[0:].strip()
-        if re.compile(self.name).match(problem_name) is None:
+        if re.compile(self.name_pattern).match(problem.get_name()) is None:
             return False
         if self.objectiveType.count(descFields[0][0]) <= 0:
             #print self.objectiveType, 'is not sastified'
@@ -91,7 +106,7 @@ class CUTErFactory:
         self.dbDir = os.environ['MASTSIF']
         pass
 
-    def extract(self,**kwargs):
+    def extract(self, **kwargs):
         queryResult = []
         queryPharse = Query(**kwargs)
         if self.classifyFile == None:
@@ -111,7 +126,7 @@ class CUTErFactory:
         return queryResult
 
     def generate_collection(self):
-        f = open(self.classifyFile,'r')
+        f = open(self.classifyFile, 'r')
         lines = f.readlines()
         f.close()
         CUTEr =  ProblemCollection(name='CUTEr collection')
@@ -124,10 +139,10 @@ class CUTErFactory:
             fields = line.split(' ',1)
             prob = self.generate_problem(fields[0].strip(),fields[1].strip())
             if prob is not None:
-                CUTEr.all.add_problem(prob)
+                CUTEr.add_problem(prob)
         return CUTEr
     
-    def generate_problem(self,problem_name,classify_string=None,param=None):      
+    def generate_problem(self,problem_name,classify_string=None,param=None):  
         decode_cmd = self.decoder
         if param is None:
             decode_cmd = decode_cmd + ' ' + problem_name
@@ -153,5 +168,8 @@ class CUTErFactory:
         if (nvar + ncon <= 0):
             return None
             # There is no problem nvar + ncon = 0
-        problem = CUTErTestProblem(name=problem_name,classifyStr=classify_string,nvar=nvar,ncon=ncon)
+        problem = CUTErTestProblem(name=problem_name,
+                                   classifyStr=classify_string,
+                                   nvar=nvar,
+                                   ncon=ncon)
         return problem          

@@ -11,25 +11,6 @@ from set import Set
 from data import DataTable
 
 
-class MeasureFunctionEvaluator:
-    def __init__(self, 
-                 name='measure function evaluator',
-                 measureFunction=None,
-                 logHandlers=[]):
-        return
-
-
-    # Message handlers
-    def evaluate(self, parameters, measures):
-        '''
-
-        Handle the message that inform that data (partial or complete) is
-        available. The measure function is computed basing on the obtained data
-        that extracted from the message.
-        '''
-        
-        return
-
 class DataCacheEntry(DataTable):
     def __init__(self, name, parameters, problems, measures):
         self.parameters = parameters
@@ -148,8 +129,8 @@ class StructureComputer(Agent):
         # Compute the model values
         parameters = self.data_cache.get_parameters(paramTag)
         storageRatio, measures = self.data_cache.get_measure_vectors(paramTag)
-        #log.debugger.log('Obtained measure vectors: ' + str(measures) +\
-        #                 '\n\t with storage ratio:' + str(storageRatio))
+        log.debugger.log('Obtained measure vectors: ' + str(measures) +\
+                         '\n\t with storage ratio:' + str(storageRatio))
         objVal = self.structure.objective.evaluate(parameters, measures)
         if storageRatio < 1.0: # A partial data is obtained
             # Check if there is violation of objective function before
@@ -188,7 +169,7 @@ class StructureComputer(Agent):
                                                   'parameter-tag':paramTag
                                                   }
                                    })
-                self.send_message
+                self.send_message(msg)
                 return
         # The full data is obtained, all of constraints are evaluated
         # without checking violation and update the bounds of objective function

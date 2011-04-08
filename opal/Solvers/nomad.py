@@ -10,7 +10,7 @@ from ..core.mafrw import Message
 
 from ..core.mafrw import Environment
 
-from opal import ModelEvaluator
+from opal.core.modelevaluator import ModelEvaluator
 #from ..core.blackbox import BlackBox
 
 __docformat__ = 'restructuredtext'
@@ -97,6 +97,7 @@ class NOMADCommunicator(Agent):
             if cons[1] is not None:
                 self.outputStream.write(str(cons[1]))
         self.outputStream.write('\n')
+        self.stop()
         return
 
     def  run(self):
@@ -161,7 +162,7 @@ class NOMADBlackbox(Environment):
         # Wait the comnunicator finishes its work. This happends when 
         # the communicator get a message containing the model values 
         # (evaluator replies)
-        self.communicator.join(30)
+        self.communicator.join(360)
         self.finalize()
         self.logger.log('End of a session')
         return 
@@ -188,7 +189,7 @@ class NOMADSolver(Solver):
         self.parameter_settings = [] # List of line in parameter file
         return
 
-    def solve(self, model=None, surrogate=None):
+    def solve(self, blackbox=None, surrogate=None):
         '''
 
         The solving process consist of three steps:
@@ -201,7 +202,7 @@ class NOMADSolver(Solver):
         '''
         #self.blackbox = NOMADBlackbox(model=model)
         #self.blackbox.generate_executable_file()
-        self.generate_blackbox_executable(model=model,
+        self.generate_blackbox_executable(model=blackbox,
                                           execFile='blackbox.py',
                                           dataFile='blackbox.dat')
         if surrogate is not None:
@@ -209,7 +210,7 @@ class NOMADSolver(Solver):
                                               execFile='surrogate.py',
                                               dataFile='surrogate.dat')
         #   surrogate.save()
-        self.create_specification_file(model=model,
+        self.create_specification_file(model=blackbox,
                                        modelExecutable='$python  blackbox.py', 
                                        surrogate=surrogate,
                                        surrogateExecutable=\

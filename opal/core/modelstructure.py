@@ -180,8 +180,13 @@ class Constraint:
         values = []
         if self.lower_bound is not None:
             values.append(self.lower_bound - funcVal)
+        else:
+            values.append(None)
+
         if self.upper_bound is not None:
             values.append(funcVal - self.upper_bound)
+        else:
+            values.append(None)
         return values
 
     def is_partially_violated(self, val, ):

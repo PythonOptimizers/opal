@@ -10,7 +10,7 @@ from cuterfactory import CUTErFactory
 from cuterfactory import CUTErQuery
 
 #data_file = os.path.join(os.path.dirname(os.path.abspath(sys.modules[__name__].__file__)),'CUTEr.data')
-data_file = os.path.join(os.path.expanduser('~'),'.opal/CUTEr.data')
+data_file = os.path.join(os.path.expanduser('~'),'.opal/CUTEr-1.data')
 #print data_file
 # Object definition
 try:
@@ -23,7 +23,7 @@ except IOError:
     classfFile = os.path.join(classfDir, classfName)
     CUTEr_factory = CUTErFactory(classifyFile=classfFile)
     CUTEr = CUTEr_factory.generate_collection()
-    CUTEr.HS = CUTEr.all.select(CUTErQuery(name='HS\d+'))
+    CUTEr.HS = CUTEr.select(CUTErQuery(name='HS\d+'))
     f = open(data_file,'w')
     pickle.dump(CUTEr,f)
     f.close()
