@@ -18,36 +18,56 @@ arithmetic, this value is around 1.0e-8.
 
 Below is the output of a run on a i386 Intel Core2 Duo running OSX 10.5.8::
 
-    MADS run{
+    NOMAD - version 3.5.0 - www.gerad.ca/nomad
     
-     EVAL BBE [ SOL, ] OBJ TIME \\
+    Copyright (C) 2001-2011 {
+        Mark A. Abramson     - The Boeing Company
+        Charles Audet        - Ecole Polytechnique de Montreal
+        Gilles Couture       - Ecole Polytechnique de Montreal
+        John E. Dennis, Jr.  - Rice University
+        Sebastien Le Digabel - Ecole Polytechnique de Montreal
+    } 
     
-     1 1 [ 0.5  ] 0.2022210836    0 \\
-     2 2 [ 0.4  ] 0.1582516709    0 \\
-     3 3 [ 0.1  ] 0.03650380828    1 \\
-     11 6 [ 0.075  ] 0.0271668032    2 \\
-     15 8 [ 0.05  ] 0.01796857799    3 \\
-     19 10 [ 0.025  ] 0.008912029073    3 \\
-     27 12 [ 0.01875  ] 0.006670363173    4 \\
-     31 14 [ 0.0125  ] 0.004437773933    5 \\
-     35 16 [ 0.00625  ] 0.002214305049    6 \\
-     43 18 [ 0.00380859375  ] 0.001348249081    7 \\
-     47 20 [ 0.0013671875  ] 0.0004835939884    8 \\
-     55 23 [ 0.0006286621094  ] 0.0002223121897    9 \\
-     61 25 [ 0.0002380371094  ] 8.416550444e-05    9 \\
-     67 27 [ 5.340576172e-05  ] 1.88821243e-05   10 \\
-     75 30 [ 5.125999451e-06  ] 1.812326825e-06   11 \\
-     87 35 [ 2.074893564e-06  ] 7.335931301e-07   13 \\
-     93 37 [ 5.490146577e-07  ] 1.940868919e-07   14 \\
-     101 40 [ 1.675449312e-07  ] 5.898094313e-08   15 \\
-     109 43 [ 7.217749951e-08  ] 2.629330675e-08   16 \\
-     115 45 [ 2.450397003e-08  ] 9.569121828e-09   17 \\
-     123 49 [ 1.258558766e-08  ] 2.656297737e-09   19 \\
-     134 57 [ 1.407570378e-08  ] 8.138155705e-10   22 \\
-     157 78 [ 1.407861414e-08  ] 3.433888729e-10   30 \\
-     170 87 [ 1.407861414e-08  ] 3.433888729e-10   33 \\
+    Funded in part by AFOSR and Exxon Mobil.
     
-    }end of run (mesh size reached NOMAD precision)
+    License   : '$NOMAD_HOME/src/lgpl.txt'
+    User guide: '$NOMAD_HOME/doc/user_guide.pdf'
+    Examples  : '$NOMAD_HOME/examples'
+    Tools     : '$NOMAD_HOME/tools'
+    
+    Please report bugs to nomad@gerad.ca
+    
+    MADS run {
+    
+        BBE SOL OBJ TIME
+    
+          1 5.0e-01 2.022e-01    0.00
+          5 2.5e-01 9.527e-02    1.00
+         12 1.9e-01 7.023e-02    3.00
+         15 1.2e-01 4.598e-02    4.00
+         17 6.2e-02 2.255e-02    4.00
+         20 3.8e-02 1.363e-02    5.00
+         26 1.4e-02 4.856e-03    7.00
+         37 6.3e-03 2.227e-03    9.00
+         45 2.4e-03 8.423e-04   11.00
+         52 5.3e-04 1.889e-04   13.00
+         62 5.1e-05 1.812e-05   16.00
+         79 2.1e-05 7.336e-06   21.00
+         87 5.5e-06 1.941e-06   23.00
+         97 1.7e-06 5.923e-07   25.00
+        107 7.2e-07 2.552e-07   28.00
+        114 2.5e-07 8.676e-08   30.00
+        121 6.6e-09 3.705e-09   31.00
+        139 1.4e-08 2.054e-09   36.00
+        149 1.8e-08 1.527e-09   39.00
+        150 1.2e-08 3.251e-13   40.00
+        198 1.2e-08 3.251e-13   54.00
+    
+    } end of run (mesh size reached NOMAD precision)
+    
+    blackbox evaluations    : 198
+    best feasible solution  : ( 1.220878909e-08 ) h=0 f=3.250733016e-13
+    Expected optimal value is approximately 1.490116119384766e-08
 
 The outcome of the run is that the final value of the stepsize found is
 h=1.407861414e-08 and the error value is 3.433888729e-10. The error is computed
