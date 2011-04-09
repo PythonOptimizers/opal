@@ -121,7 +121,7 @@ def run(param_file, problem):
     os.chdir(workDir)
     write_specfile(param_file)
     os.system('sifdecode ' + problem + ' > /dev/null')
-    os.system('make trunkd > /dev/null')
+    os.system('make trunkd > /dev/null 2>&1')
     os.system('./trunkd > ' + problem + '.sol')
     measures = get_measures(problem + '.sol')
     os.chdir(curDir)
