@@ -221,7 +221,7 @@ class NOMADSolver(Solver):
         # Write other settings.
         descrFile.write('SOLUTION_FILE ' + self.solutionFileName + '\n')
         descrFile.write('STATS_FILE ' + self.resultFileName + \
-                '$EVAL$ & $BBE$ &  [ $SOL$ ] & $OBJ$ & $TIME$ \\\\\n')
+                ' $EVAL$ & $BBE$ &  [ $SOL$ ] & $OBJ$ & $TIME$ \\\\\n')
         for param_setting in self.parameter_settings:
             descrFile.write(param_setting + '\n')
         descrFile.close()
