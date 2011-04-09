@@ -26,8 +26,8 @@ class ModelEvaluator(Agent):
                  logHandlers=[]):
         Agent.__init__(self, name=name, logHandlers=logHandlers)
         self.options = {'platform': 'LINUX', 
-                        'synchronized': True,
-                        'interruptible': False}
+                        'synchronized': False,
+                        'interruptible': True}
         self.options.update(options)
         if model is None:
             if modelFile is not None:

@@ -17,6 +17,7 @@ class Task(Agent):
         '''
         self.task_id = taskId # task_id is assigned by platform
         self.command = command
+        self.output=output
         if name is None:
             Agent.__init__(self, name=command, logHandlers=logHandlers)
         else:
@@ -45,7 +46,7 @@ class Platform(Agent):
     def __init__(self,
                  name='platform',
                  maxTask=1,
-                 synchronous=True,
+                 synchronous=False,
                  logHandlers=[]):
         self.queue = []
         self.running = {}

@@ -3,6 +3,7 @@ import os
 import logging
 import pickle
 
+from ..core.set import Set
 from ..core.model import Model
 from ..core.solver import Solver
 from ..core.mafrw import Agent
@@ -18,11 +19,14 @@ __docformat__ = 'restructuredtext'
 class NOMADSpecification:
     "Used to specify black-box solver options."
 
-    def __init__(self,name=None,value=None,**kwargs):
+    def __init__(self,name=None, value=None,**kwargs):
         self.name = name
         self.value = value
         pass
 
+    def identify(self):
+        return self.name
+    
     def str(self):
         if (self.name is not None) and (self.value is not None):
             return self.name + ' ' + str(self.value)
@@ -169,7 +173,7 @@ class NOMADBlackbox(Environment):
         # Wait the comnunicator finishes its work. This happends when 
         # the communicator get a message containing the model values 
         # (evaluator replies)
-        self.communicator.join(360)
+        self.communicator.join()
         self.finalize()
         self.logger.log('End of a session')
         return 
@@ -189,11 +193,11 @@ class NOMADSolver(Solver):
     def __init__(self, name='NOMAD', parameterFile='nomad-param.txt', **kwargs):
         Solver.__init__(self, name='NOMAD', **kwargs)
         self.paramFileName = parameterFile
-        self.resultFileName = 'nomad-result.txt'
-        self.solutionFileName = 'nomad-solution.txt'
+        self.result_file = None
+        self.solution_file = 'nomad-solution.txt'
         self.blackbox = None
         self.surrogate = None
-        self.parameter_settings = [] # List of line in parameter file
+        self.parameter_settings = Set(name='specifcation') # List of line in parameter file
         return
 
     def solve(self, blackbox=None, surrogate=None):
@@ -290,21 +294,34 @@ class NOMADSolver(Solver):
         if model is None:
             return
         
-        descrFile = open(self.paramFileName, "w")
         
-        descrFile.write('DIMENSION ' + str(model.get_n_variable()) + '\n')
-            # descrFile.write('DISPLAY_DEGREE 4\n')
-        descrFile.write('DISPLAY_STATS EVAL BBE [ SOL, ] OBJ TIME \\\\\n')
-        descrFile.write('BB_EXE "' + modelExecutable + '"\n')
-        bbTypeStr = 'BB_OUTPUT_TYPE OBJ'
+        
+       
+        self.set_parameter(name='DIMENSION',
+                           value=str(model.get_n_variable()))
+           
+        self.set_parameter(name='DISPLAY_DEGREE',
+                           value=1)
+        self.set_parameter(name='DISPLAY_STATS',
+                           value='EVAL BBE [ SOL, ] OBJ TIME')
+        self.set_parameter(name='BB_EXE',
+                           value='"' +  modelExecutable + '"')
+        bbTypeStr = 'OBJ'
         for i in range(model.get_n_constraints()):
             bbTypeStr = bbTypeStr + ' PB'
-        descrFile.write(bbTypeStr + '\n')
-        #surrogate = self.surrogate
+       
+        self.set_parameter(name='BB_OUTPUT_TYPE',
+                           value=bbTypeStr)
+      
         if self.surrogate is not None:
-            descrFile.write('SGTE_EXE "' + surrogateExecutable + '"\n')
+           
+            self.set_parameter(name='SGTE_EXE',
+                               value='"' + surrogateExecutable + '"')
         pointStr = str(model.initial_point)
-        descrFile.write('X0 ' +  pointStr.replace(',',' ') + '\n')
+       
+        self.set_parameter(name='X0',
+                           value= pointStr.replace(',',' '))
+
         if model.bounds is not None:
             lowerBoundStr = str([bound[0] for bound in model.bounds \
                                      if bound is not None])\
@@ -313,21 +330,30 @@ class NOMADSolver(Solver):
                                      if bound is not None])\
                                      .replace('None','-').replace(',',' ')
             if len(lowerBoundStr.replace(']','').replace('[','')) > 1:
-                descrFile.write('LOWER_BOUND ' + lowerBoundStr + '\n')
+                self.set_parameter(name='LOWER_BOUND',
+                                   value=lowerBoundStr)
             if len(upperBoundStr.replace(']','').replace('[','')) > 1:
-                descrFile.write('UPPER_BOUND ' + upperBoundStr + '\n')
+                self.set_parameter(name='UPPER_BOUND',
+                                   value=upperBoundStr)
         # Write other settings.
-        descrFile.write('SOLUTION_FILE ' + self.solutionFileName + '\n')
-        descrFile.write('STATS_FILE ' + self.resultFileName + \
-                ' $EVAL$ & $BBE$ &  [ $SOL$ ] & $OBJ$ & $TIME$ \\\\\n')
+    
+        if self.solution_file is not None:
+            self.set_parameter(name='SOLUTION_FILE',
+                               value=self.solution_file)
+        if self.result_file is not None:
+            self.set_parameter(name='STATS_FILE',
+                               value=self.resultFileName + \
+                               ' EVAL & BBE & [ SOL ] & OBJ & TIME \\\\')
+        
+        descrFile = open(self.paramFileName, "w")
         for param_setting in self.parameter_settings:
-            descrFile.write(param_setting + '\n')
+            descrFile.write(param_setting.str() + '\n')
         descrFile.close()
         return
 
     def set_parameter(self, name=None, value=None):
         param = NOMADSpecification(name=name,value=value)
-        self.parameter_settings.append(param.str())
+        self.parameter_settings.append(param)
         return
 
     def run(self):

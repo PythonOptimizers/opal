@@ -16,8 +16,8 @@ struct = ModelStructure(objective=get_error)  # Unconstrained
 model = Model(modelData=data, modelStructure=struct)
 
 # Solve parameter optimization problem.
-NOMAD.set_parameter(name='DISPLAY_STATS',
-                    value='%3dBBE  %7.1eSOL  %8.3eOBJ  %5.2fTIME')
+#NOMAD.set_parameter(name='DISPLAY_STATS',
+#                    value='%3dBBE  %7.1eSOL  %8.3eOBJ  %5.2fTIME')
 NOMAD.solve(blackbox=model)
 
 # Inform user of expected optimal value for information.
