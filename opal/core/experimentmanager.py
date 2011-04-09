@@ -138,7 +138,8 @@ class ExperimentManager(Agent):
                               performative='inform',
                               content={'proposition':\
                                        {'what':'experiment-failed',
-                                        'why':'invalid-parameters'}
+                                        'why':'invalid-parameters',
+                                        'parameter-tag':parameterTag}
                                        }
                               )
             self.send_message(message)

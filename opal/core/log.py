@@ -1,9 +1,6 @@
 import re
 import logging
 
-
-
-
 class HandlerDescription:
     def __init__(self, handler):
         self.file_name = handler.baseFilename
@@ -41,7 +38,7 @@ class OPALLogger:
                                              # that actual level depends on the 
                                              # handler level
         # A default handler is created for logging to file with INFO level
-        handler = logging.FileHandler(filename='opal.log')
+        handler = logging.FileHandler(filename='/var/tmp/opal.log')
         handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s:  %(message)s'))
         handler.setLevel(logging.INFO)
         self.logger.addHandler(handler)
@@ -77,7 +74,7 @@ class OPALLogger:
 
 
 class Debugger:
-    def __init__(self, fileName='opal-debug.log'):
+    def __init__(self, fileName='/var/tmp/opal-debug.log'):
         self.logger = logging.getLogger('DEBUG')
         self.logger.setLevel(logging.DEBUG)
         handler = logging.FileHandler(filename=fileName)

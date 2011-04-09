@@ -18,11 +18,11 @@ class MeasureFunction:
         # A function objective is called possitively-additive if function value
         # of partial data is always less than or equal to the data-full one
         
-        self.information = {'additive-behavior':0, # Undetermined
-                                                   # additive-behavior = 1 means
-                                                   # function is possitively-
-                                                   # additive. And = -1 if this
-                                                   # is a negatively-additive
+        self.information = {'additivity':0, # Undetermined
+                                            # additivity = 1 means
+                                            # function is possitively-
+                                            # additivity. And = -1 if this
+                                            # is a negatively-additive
 
                             'convexity':0 # Undetermined
                             }
@@ -36,37 +36,43 @@ class MeasureFunction:
         self.func = function
         self.name = function.__code__.co_name    
         #self.name = function.__code__.co_name
+        #self.code_string = None
         pass
 
     def evaluate(self, *args, **kwargs):
-        if self.func is not  None:
-            return self.func(*args, **kwargs)
-        self.load()
-        value = self.func(*args, **kwargs)
-        del self.func
-        self.func = None # Keep self.func is None for the next pickling
-        return value
+        if self.func is  None:
+            raise Exception('The measure function is not defined')
+        return self.func(*args, **kwargs)
+        #self.load()
+        #value = self.func(*args, **kwargs)
+        #del self.func
+        #self.func = None # Keep self.func is None for the next pickling
+        #return value
                
-    def save(self, dir='./', fileName=None):
-        if fileName is None:
-            self.file_name = os.path.abspath(dir) + '/' +\
-                             self.func.__code__.co_name + '.code'
-        else: 
-            self.file_name = os.path.abspath(dir) + '/' + fileName 
+    ## def save(self, dir='./', fileName=None):
+        
+    ##     if self.func is None:
+    ##         return
+    ##     if fileName is None: # Dump to string
+    ##         self.file_name = None
+    ##         self.code_string = marshal.dumps(self.func.__code___)
+    ##     else: 
+    ##         self.file_name = os.path.abspath(dir) + '/' + fileName 
+    ##         f = open(self.file_name,'w')
+    ##         marshal.dump(self.func.__code__,f)
+    ##         f.close()
+    ##     self.func = None # This is neccessary for pickling a measure function. 
+    ##     return
 
-        if self.func is None:
-            return
-        f = open(self.file_name,'w')
-        marshal.dump(self.func.__code__,f)
-        f.close()
-        self.func = None # This is neccessary for pickling a measure function. 
-        return
-
-    def load(self, fileName=None):
-        f = open(self.file_name)
-        self.func = new.function(marshal.load(f),globals()) 
-        f.close()
-        return
+    ## def load(self, fileName=None):
+    ##     if self.file_name is not None:
+    ##         f = open(self.file_name)
+    ##         self.func = new.function(marshal.load(f),globals()) 
+    ##         f.close()
+    ##     else: # Load from code string
+    ##         self.func = new.function(marshal.loads(self.code_string),
+    ##                                  globals())
+    ##     return
     
     def __getstate__(self):
         content = {}
@@ -89,10 +95,10 @@ class MeasureFunction:
         self.information.update(kwargs)
         
     def is_positively_additive(self):
-        return self.information['additive-behavior'] > 0
+        return self.information['additivity'] > 0
 
     def is_negatively_additive(self):
-        return self.information['additive-behavior'] < 0
+        return self.information['additivity'] < 0
 
 class Objective:
     """
@@ -218,13 +224,19 @@ class ModelStructure:
                  objective=None, 
                  constraints=[]):
         self.name = name
-        self.objective = Objective(objective)
+        if isinstance(objective, Objective):
+            self.objective = objective
+        else:
+            self.objective = Objective(objective)
         self.constraints = []
         if constraints is not None:
             for cons in constraints:
-                constraint = Constraint(lowerBound=cons[0], 
-                                        function=cons[1],
-                                        upperBound=cons[2])
-                self.constraints.append(constraint)
+                if isinstance(cons, Constraint):
+                    self.constraints.append(cons)
+                else:
+                    constraint = Constraint(lowerBound=cons[0], 
+                                            function=cons[1],
+                                            upperBound=cons[2])
+                    self.constraints.append(constraint)
         return
         

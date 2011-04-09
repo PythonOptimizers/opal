@@ -78,6 +78,13 @@ class NOMADCommunicator(Agent):
         informing message in the understandable order specified by NOMAD
         blackbox
         """
+        if info['proposition']['values'] is None:
+            # Model evaluation is failed, write 1e20 as value of objective
+            # function
+            self.outputStream.write('1e+20\n')
+            self.stop()
+            return
+        
         objValue, consValues = info['proposition']['values']
         self.outputStream.write(str(objValue) + '\n')
         
@@ -217,6 +224,21 @@ class NOMADSolver(Solver):
                                        '$python surrogate.py')
         
         self.run()
+        # Clean up the temporary file
+        if os.path.exists('blackbox.py'):
+            os.remove('blackbox.py')
+
+        if os.path.exists('blackbox.dat'):
+            os.remove('blackbox.dat')
+
+        if os.path.exists('surrogate.py'):
+            os.remove('surrogate.py')
+
+        if os.path.exists('surrogate.dat'):
+            os.remove('surrogate.dat')
+
+        if os.path.exists(self.paramFileName):
+            os.remove(self.paramFileName)
         return
 
     def generate_blackbox_executable(self,

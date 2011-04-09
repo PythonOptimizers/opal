@@ -129,8 +129,8 @@ class StructureComputer(Agent):
         # Compute the model values
         parameters = self.data_cache.get_parameters(paramTag)
         storageRatio, measures = self.data_cache.get_measure_vectors(paramTag)
-        log.debugger.log('Obtained measure vectors: ' + str(measures) +\
-                         '\n\t with storage ratio:' + str(storageRatio))
+        #log.debugger.log('Obtained measure vectors: ' + str(measures) +\
+        #                 '\n\t with storage ratio:' + str(storageRatio))
         objVal = self.structure.objective.evaluate(parameters, measures)
         if storageRatio < 1.0: # A partial data is obtained
             # Check if there is violation of objective function before
@@ -151,12 +151,13 @@ class StructureComputer(Agent):
                     if cons.is_partially_violated(val):
                         msg = Message(performative='cfp',
                                       sender=self.id,
-                                      content={'action':'terminate-experiment',
-                                               'proposition':\
-                                               {'why':'a constraint is violated',
-                                                'parameter-tag':paramTag,
-                                                'what':cons.name
-                                                }}
+                                      content={\
+                                          'action':'terminate-experiment',
+                                          'proposition':\
+                                          {'why':'a constraint is violated',
+                                           'parameter-tag':paramTag,
+                                           'what':cons.name
+                                           }}
                                       )
                         self.send_message(msg)
                         return

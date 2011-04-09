@@ -1,4 +1,4 @@
-from core.modelstructure import ModelStructure
+from core.modelstructure import ModelStructure, MeasureFunction
 from core.modeldata import ModelData
 from core.model import Model
 from core.parameter import Parameter
