@@ -6,13 +6,11 @@
 from trunk_declaration import trunk
 from opal import ModelStructure, ModelData, Model
 from opal.Solvers import NOMAD
-
 from opal.TestProblemCollections import CUTEr
 from opal.Platforms import LSF
 
 def get_error(parameters, measures):
-    val = sum(measures["FEVAL"])
-    return val
+    return sum(measures["FEVAL"])
 
 # Parameters being tuned and problem list.
 par_names = ['eta1', 'eta2', 'gamma1', 'gamma2', 'gamma3']
@@ -58,4 +56,6 @@ blackbox = Model(modelData=data, modelStructure=struct)
 
 # Solve parameter optimization problem.
 NOMAD.set_parameter(name='MAX_BB_EVAL', value=10)
+NOMAD.set_parameter(name='DISPLAY_STATS',
+                    value='%3dBBE [ %7.1eSOL, ]  %8.3eOBJ  %6.2fTIME')
 NOMAD.solve(model=blackbox)

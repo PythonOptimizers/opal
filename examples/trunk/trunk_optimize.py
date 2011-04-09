@@ -3,44 +3,44 @@
 from trunk_declaration import trunk
 from opal import ModelStructure, ModelData, Model
 from opal.Solvers import NOMAD
-
 from opal.TestProblemCollections import CUTEr
+
 def sum_heval(parameters, measures):
-    val = sum(measures['HEVAL'])
-    return val
+    return sum(measures['HEVAL'])
 
 def get_error(parameters, measures):
-    val = sum(measures["ECODE"])
-    return val
+    return sum(measures["ECODE"])
 
 # Parameters being tuned and problem list.
 par_names = ['eta1', 'eta2', 'gamma1', 'gamma2', 'gamma3']
 #params = [param for param in trunk.parameters if param.name in par_names]
 
 params = [trunk.parameters['eta1'], trunk.parameters['eta2']]
-problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
-                                                             'BROYDN7D',
-                                                             'BRYBND',
-#                                                             'CURLY10',
-#                                                             'CURLY20',
-#                                                             'CURLY30',
-#                                                             'CRAGGLVY',
-#                                                             'DIXON3DQ',
-#                                                             'EIGENALS',
-#                                                             'FMINSRF2',
-#                                                             'FMINSURF',
-#                                                             'GENROSE',
-                                                             'HIELOW',
-#                                                             'MANCINO',
-#                                                             'NCB20',
-#                                                             'NCB20B',
-#                                                             'NONDQUAR',
-#                                                             'POWER',
-#                                                             'SENSORS',
-#                                                             'SINQUAD',
-                                                             'TESTQUAD',
-                                                             'TRIDIA',
-                                                             'WOODS']]
+problem_list = ['BDQRTIC',
+                'BROYDN7D',
+                'BRYBND',
+#               'CURLY10',
+#               'CURLY20',
+#               'CURLY30',
+#               'CRAGGLVY',
+#               'DIXON3DQ',
+#               'EIGENALS',
+#               'FMINSRF2',
+#               'FMINSURF',
+#               'GENROSE',
+                'HIELOW',
+#               'MANCINO',
+#               'NCB20',
+#               'NCB20B',
+#               'NONDQUAR',
+#               'POWER',
+#               'SENSORS',
+#               'SINQUAD',
+                'TESTQUAD',
+                'TRIDIA',
+                'WOODS']
+
+problems = [problem for problem in CUTEr if problem.name in problem_list]
 
 # Define parameter optimization problem.
 data = ModelData(algorithm=trunk,
@@ -52,4 +52,6 @@ model = Model(modelData=data, modelStructure=struct)
 
 # Solve parameter optimization problem.
 NOMAD.set_parameter(name='MAX_BB_EVAL', value=10)
+NOMAD.set_parameter(name='DISPLAY_STATS',
+                    value='%3dBBE [ %7.1eSOL, ]  %8.3eOBJ  %6.2fTIME')
 NOMAD.solve(blackbox=model)
