@@ -99,6 +99,9 @@ class Model:
     def get_algorithm(self):
         return self.data.get_algorithm()
 
+    def get_parameters(self):
+        return self.data.get_parameters()
+    
     def get_problems(self):
         return self.data.get_problems()
 

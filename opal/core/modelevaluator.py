@@ -74,18 +74,17 @@ class ModelEvaluator(Agent):
         
         if self.find_collaborator('exeperiment manager', environment) is None:
             experiment_manager =\
-                        ExperimentManager(algorithm=self.model.get_algorithm(),
-                                          problems=self.model.get_problems(),
-                                          platform=self.options['platform'])
+                       ExperimentManager(algorithm=self.model.get_algorithm(),
+                                         parameters=self.model.get_parameters(),
+                                         problems=self.model.get_problems(),
+                                         platform=self.options['platform'])
             experiment_manager.register(environment)
 
         if self.find_collaborator('structure computer', environment) is None:
             structure_computer = \
-                               StructureComputer(structure=self.model.structure,
-                                                 problems=\
-                                                 self.model.get_problems(),
-                                                 measures=\
-                                                 self.model.get_measures())
+                          StructureComputer(structure=self.model.structure,
+                                            problems=self.model.get_problems(),
+                                            measures=self.model.get_measures())
             structure_computer.register(environment)
 
         return

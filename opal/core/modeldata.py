@@ -43,7 +43,7 @@ class ModelData:
             self.parameters = algorithm.parameters
         else:
             self.parameters = parameters
-            
+        
         if measures is None:
             self.measures = algorithm.measures
         else:
@@ -57,6 +57,9 @@ class ModelData:
     def get_algorithm(self):
         return self.algorithm
 
+    def get_parameters(self):
+        return self.parameters
+    
     def get_measures(self):
         return self.measures
     

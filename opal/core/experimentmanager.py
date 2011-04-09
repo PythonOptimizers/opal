@@ -42,9 +42,9 @@ class ExperimentManager(Agent):
     def __init__(self, 
                  name='experiment manager',
                  algorithm=None, 
-                 parameters=None, measures=None,
+                 parameters=None,
+                 measures=None,
                  problems=[],
-                 interruptible=False, 
                  logHandlers=[], 
                  options={},
                  **kwargs):
@@ -58,6 +58,9 @@ class ExperimentManager(Agent):
         else:
             self.parameters = parameters
 
+        log.debugger.log(str([(param.name, param.kind) \
+                              for param in self.parameters]))
+            
         if measures is None: # No measure subset is specified
             self.measures = algorithm.measures # All measures of algorithm is
                                              # is considered
@@ -75,7 +78,8 @@ class ExperimentManager(Agent):
         else:
             self.problems = problems
         
-        self.options = {'platform': 'LINUX'}
+        self.options = {'platform': 'LINUX',
+                        'interruptible':True}
         if options is not None:
             self.options.update(options)
         self.options.update(kwargs)
@@ -103,6 +107,7 @@ class ExperimentManager(Agent):
     #  Private method
     def update_parameter(self, values):
         for (param, val) in zip(self.parameters, values):
+            log.debugger.log(str((param.name, param.kind)))
             param.set_value(val)
         return 
 

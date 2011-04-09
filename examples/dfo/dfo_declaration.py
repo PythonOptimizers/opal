@@ -8,9 +8,6 @@ DFO = Algorithm(name='DFO', description='Derivative-free Optimization')
 # Register executable for DFO.
 DFO.set_executable_command('python dfo_run.py')
 
-# Register parameter file.
-DFO.set_parameter_file('dfo.param')
-
 # Define parameters.
 nx = Parameter(kind='integer', default=1, name='NX')
 maxit = Parameter(kind='integer', default=5000, name='MAXIT')
