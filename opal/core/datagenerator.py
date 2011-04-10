@@ -18,15 +18,8 @@ from ..Platforms import supported_platforms
 
 from .. import config
 
-class Experiment(Data):
-    '''
-
-    Contains information, status of an experiment
-    '''
-    def __init__(self):
-        return
         
-class ExperimentManager(Agent):
+class DataGenerator(Agent):
     """ 
     
     This class represents a data generator for a parameter optimization
@@ -40,7 +33,7 @@ class ExperimentManager(Agent):
     """
 
     def __init__(self, 
-                 name='experiment manager',
+                 name='data generator',
                  algorithm=None, 
                  parameters=None,
                  measures=None,

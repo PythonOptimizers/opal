@@ -7,9 +7,8 @@ import hashlib
 
 from .mafrw import Agent
 from .mafrw import Message
-from .datamanager import DataManager
-from .experimentmanager import ExperimentManager
-from .structcomp import StructureComputer
+from .datagenerator import DataGenerator
+from .structureevaluator import StructureEvaluator
 from ..Platforms import supported_platforms
 
 #from opal.core.modelstructure import ModelEvaluator
@@ -67,25 +66,23 @@ class ModelEvaluator(Agent):
         if self.model is None:
             return
         
-        #if self.find_collaborator('data manager',environment) is None:
-        #    data_manager = DataManager(rows=self.model.get_problems(),
-        #                               columns=self.model.get_measures())
-        #    data_manager.register(environment)
+        # Find the neccessary collaborators. If could find it, create the
+        # predefinded collaborators
         
-        if self.find_collaborator('exeperiment manager', environment) is None:
-            experiment_manager =\
-                       ExperimentManager(algorithm=self.model.get_algorithm(),
-                                         parameters=self.model.get_parameters(),
-                                         problems=self.model.get_problems(),
-                                         platform=self.options['platform'])
-            experiment_manager.register(environment)
+        if self.find_collaborator('data generator', environment) is None:
+            dataGenerator =\
+                       DataGenerator(algorithm=self.model.get_algorithm(),
+                                     parameters=self.model.get_parameters(),
+                                     problems=self.model.get_problems(),
+                                     platform=self.options['platform'])
+            dataGenerator.register(environment)
 
-        if self.find_collaborator('structure computer', environment) is None:
-            structure_computer = \
-                          StructureComputer(structure=self.model.structure,
+        if self.find_collaborator('structure evaluator', environment) is None:
+            structureEvaluator = \
+                          StructureEvaluator(structure=self.model.structure,
                                             problems=self.model.get_problems(),
                                             measures=self.model.get_measures())
-            structure_computer.register(environment)
+            structureEvaluator.register(environment)
 
         return
     

@@ -69,7 +69,7 @@ class DataCache(Set):
        
     
 
-class StructureComputer(Agent):
+class StructureEvaluator(Agent):
     """
     
     An object of this class represent for the model structure that is 
@@ -79,7 +79,7 @@ class StructureComputer(Agent):
     can be done by the interpreters.
     """
     def __init__(self,
-                 name='structcomp',
+                 name='structure evaluator',
                  structure=None,
                  problems=None,
                  measures=None,
