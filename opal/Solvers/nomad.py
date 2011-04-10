@@ -2,6 +2,7 @@ import sys
 import os
 import logging
 from ..core.solver import Solver
+from ..core.set import Set
 #from ..core.blackbox import BlackBox
 
 __docformat__ = 'restructuredtext'
@@ -14,6 +15,9 @@ class NOMADSpecification:
         self.value = value
         pass
 
+    def identify(self):
+        return self.name
+    
     def str(self):
         if (self.name is not None) and (self.value is not None):
             return self.name + ' ' + str(self.value)
@@ -145,11 +149,13 @@ class NOMADSolver(Solver):
     def __init__(self, name='NOMAD', parameterFile='nomad-param.txt', **kwargs):
         Solver.__init__(self, name='NOMAD', **kwargs)
         self.paramFileName = parameterFile
-        self.resultFileName = 'nomad-result.txt'
-        self.solutionFileName = 'nomad-solution.txt'
+        self.result_file = None
+        self.solution_file = None
         self.blackbox = None
         self.surrogate = None
-        self.parameter_settings = [] # List of line in parameter file
+        # List of line in parameter file
+        self.parameter_settings = Set(name='NOMAD specification')
+      
         return
 
     def solve(self, blackbox=None, surrogate=None):
@@ -168,72 +174,97 @@ class NOMADSolver(Solver):
         #   surrogate.save()
         self.initialize()
         self.run()
+        self.finalize()
         return
 
     def initialize(self):
         "Write NOMAD config to file based on parameter optimization problem."
 
-        descrFile = open(self.paramFileName, "w")
+        if self.blackbox is None:
+            return
+        
+        model = self.blackbox.model
+        self.set_parameter(name='DIMENSION',
+                           value=str(model.n_var))
+           
+        self.set_parameter(name='DISPLAY_DEGREE',
+                           value=1)
+        self.set_parameter(name='DISPLAY_STATS',
+                           value='EVAL BBE [ SOL, ] OBJ TIME')
+        self.set_parameter(name='BB_EXE',
+                           value='"$python ' +  self.blackbox.file_name + '"')
+        bbTypeStr = 'OBJ'
+        for i in range(model.m_con):
+            bbTypeStr = bbTypeStr + ' PB'
+       
+        self.set_parameter(name='BB_OUTPUT_TYPE',
+                           value=bbTypeStr)
+      
+        if self.surrogate is not None:
+           
+            self.set_parameter(name='SGTE_EXE',
+                               value='"$python ' + \
+                               self.surrogate.file_name + '"')
+        pointStr = str(model.initial_points)
+       
+        self.set_parameter(name='X0',
+                           value= pointStr.replace(',',' '))
 
-        if self.blackbox.model is not None:
-            model = self.blackbox.model
-            descrFile.write('DIMENSION ' + str(model.n_var) + '\n')
-            # descrFile.write('DISPLAY_DEGREE 4\n')
-            # descrFile.write('DISPLAY_STATS EVAL BBE [ SOL, ] OBJ TIME \\\\\n')
-            descrFile.write('BB_EXE "$python ' + \
-                    self.blackbox.file_name + '"\n')
-            bbTypeStr = 'BB_OUTPUT_TYPE OBJ'
-            #for cons in model.m_:
-            bbTypeStr = bbTypeStr + ' PB'*model.m_con # All constraints are
-                                                      # traited as progressive
-                                                      # constraints
-            descrFile.write(bbTypeStr + '\n')
-            #surrogate = self.surrogate
-            if self.surrogate is not None:
-                descrFile.write('SGTE_EXE "$python ' + \
-                                    self.surrogate.file_name + '"\n')
-            varTypeStr = '( '
-            for var in model.variables:
-                if var.kind == 'real':
-                    varTypeStr = varTypeStr + 'R '
-                elif var.kind == 'integer':
-                    varTypeStr = varTypeStr + 'I '
-                elif var.kind == 'binary':
-                    varTypeStr = varTypeStr + 'B '
-                else:
-                    varTypeStr = varTypeStr + 'C '
-            varTypeStr = varTypeStr + ')\n'
-            descrFile.write('BB_INPUT_TYPE ' + varTypeStr)
-            pointStr = str(model.initial_points)
-            descrFile.write('X0 ' +  pointStr.replace(',',' ') + '\n')
-            if model.bounds is not None:
-                lowerBoundStr = str([bound[0] for bound in model.bounds \
-                                         if bound is not None])\
-                                         .replace('None','-').replace(',',' ')
-                upperBoundStr = str([bound[1] for bound in model.bounds \
-                                         if bound is not None])\
-                                         .replace('None','-').replace(',',' ')
-                if len(lowerBoundStr.replace(']','').replace('[','')) > 1:
-                    descrFile.write('LOWER_BOUND ' + lowerBoundStr + '\n')
-                if len(upperBoundStr.replace(']','').replace('[','')) > 1:
-                    descrFile.write('UPPER_BOUND ' + upperBoundStr + '\n')
-
+        if model.bounds is not None:
+            lowerBoundStr = str([bound[0] for bound in model.bounds \
+                                     if bound is not None])\
+                                     .replace('None','-').replace(',',' ')
+            upperBoundStr = str([bound[1] for bound in model.bounds \
+                                     if bound is not None])\
+                                     .replace('None','-').replace(',',' ')
+            if len(lowerBoundStr.replace(']','').replace('[','')) > 1:
+                self.set_parameter(name='LOWER_BOUND',
+                                   value=lowerBoundStr)
+            if len(upperBoundStr.replace(']','').replace('[','')) > 1:
+                self.set_parameter(name='UPPER_BOUND',
+                                   value=upperBoundStr)
         # Write other settings.
-        descrFile.write('SOLUTION_FILE ' + self.solutionFileName + '\n')
-        descrFile.write('STATS_FILE ' + self.resultFileName + \
-                ' $EVAL$ & $BBE$ &  [ $SOL$ ] & $OBJ$ & $TIME$ \\\\\n')
+    
+        if self.solution_file is not None:
+            self.set_parameter(name='SOLUTION_FILE',
+                               value=self.solution_file)
+        if self.result_file is not None:
+            self.set_parameter(name='STATS_FILE',
+                               value=self.result_file + \
+                               ' EVAL & BBE & [ SOL ] & OBJ & TIME \\\\')
+        
+        descrFile = open(self.paramFileName, "w")
         for param_setting in self.parameter_settings:
-            descrFile.write(param_setting + '\n')
+            descrFile.write(param_setting.str() + '\n')
         descrFile.close()
+
         return
 
     def set_parameter(self, name=None, value=None):
         param = NOMADSpecification(name=name,value=value)
-        self.parameter_settings.append(param.str())
+        self.parameter_settings.append(param)
         return
 
     def run(self):
         os.system('nomad ' + self.paramFileName)
+        return
+
+    def finalize(self):
+        # Clean up the temporary file
+        if os.path.exists('blackbox.py'):
+            os.remove('blackbox.py')
+
+        if os.path.exists('blackbox.dat'):
+            os.remove('blackbox.dat')
+
+        if os.path.exists('surrogate.py'):
+            os.remove('surrogate.py')
+
+        if os.path.exists('surrogate.dat'):
+            os.remove('surrogate.dat')
+
+        if os.path.exists(self.paramFileName):
+            os.remove(self.paramFileName)
         return
 
 class NOMADMPISolver(NOMADSolver):
