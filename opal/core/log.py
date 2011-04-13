@@ -69,7 +69,7 @@ class OPALLogger:
         return
         
     def log(self, message, level=logging.INFO):
-        self.logger.log(level, message)
+        self.logger.log(level, message + '\n')
         return
 
 

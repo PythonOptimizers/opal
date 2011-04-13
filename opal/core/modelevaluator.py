@@ -46,7 +46,11 @@ class ModelEvaluator(Agent):
         self.message_handlers['cfp-evaluate-point'] = \
                                             self.activate_parameter_evaluation
         self.message_handlers['inform-experiment-failed'] = \
-                                                          self.experiment_failed
+                                                  self.handle_experiment_failed
+        self.message_handlers['inform-objective-partially-exceed'] = \
+                                                  self.estimate_partially_model
+        self.message_handlers['inform-constraint-partially-violated'] = \
+                                                  self.estimate_partially_model
         return
 
     def register(self, environment):
@@ -113,7 +117,7 @@ class ModelEvaluator(Agent):
         self.send_message(message)
         return
 
-    def experiment_failed(self, info):
+    def handle_experiment_failed(self, info):
         paramTag = info['proposition']['parameter-tag']
         message = Message(sender=self.id,
                           performative='inform',
@@ -126,9 +130,18 @@ class ModelEvaluator(Agent):
         self.send_message(message)
         return
 
-    def stop_expriment(self, info):
-        paramTag = info['proposition']['parameterTag']
-        log.debugger.log('There is a request to stop experiment')
+    def estimate_partially_model(self, info):
+
+        paramTag = info['proposition']['parameter-tag']
+        message = Message(sender=self.id,
+                          performative='inform',
+                          content={'proposition':{'what':'model-value',
+                                                  'values':None,
+                                                  'why':'parameters invalid',
+                                                  'parameter-tag':paramTag
+                                                  }
+                                   })
+        self.send_message(message)
         return
         
       

@@ -51,8 +51,8 @@ class DataGenerator(Agent):
         else:
             self.parameters = parameters
 
-        log.debugger.log(str([(param.name, param.kind) \
-                              for param in self.parameters]))
+        #log.debugger.log(str([(param.name, param.kind) \
+        #                      for param in self.parameters]))
             
         if measures is None: # No measure subset is specified
             self.measures = algorithm.measures # All measures of algorithm is
@@ -87,6 +87,10 @@ class DataGenerator(Agent):
         self.experiments = {} # List of all experiements in executions
         self.message_handlers['cfp-evaluate-parameter'] = self.run_experiment
         self.message_handlers['inform-task-finish'] = self.get_result
+        self.message_handlers['inform-objective-partially-exceed'] = \
+                                                     self.terminate_experiment
+        self.message_handlers['inform-constraint-partially-violated'] = \
+                                                     self.terminate_experiment
         return
 
     def register(self, environment):
@@ -100,7 +104,7 @@ class DataGenerator(Agent):
     #  Private method
     def update_parameter(self, values):
         for (param, val) in zip(self.parameters, values):
-            log.debugger.log(str((param.name, param.kind)))
+            #log.debugger.log(str((param.name, param.kind)))
             param.set_value(val)
         return 
 
@@ -161,11 +165,23 @@ class DataGenerator(Agent):
                               performative='cfp',
                               content={'action':'execute',
                                        'proposition':{'command':cmd,
-                                                      'tag':sessionTag}}
+                                                      'tag':sessionTag,
+                                                      'queue':parameterTag}}
                               )
             self.send_message(message)
         return
 
+    def terminate_experiment(self, info):
+        paramTag = info['proposition']['parameter-tag']
+        message = Message(sender=self.id,
+                          performative='cfp',
+                          content={'action':'cancel-queue',
+                                   'proposition':{'queue':paramTag}
+                                   }
+                          )
+        self.send_message(message)
+        return
+    
     def get_result(self, info=None):
         '''
 
@@ -192,6 +208,8 @@ class DataGenerator(Agent):
                                    }
                           )
         self.send_message(message)
+        # Remove the information entry
+        del self.experiments[sessionTag]
         # Remove the parameter file
         if os.path.exists(paramFile):
             os.remove(paramFile)

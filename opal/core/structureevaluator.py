@@ -135,43 +135,48 @@ class StructureEvaluator(Agent):
         if storageRatio < 1.0: # A partial data is obtained
             # Check if there is violation of objective function before
             # computing the constraint
+            
             if self.structure.objective.is_partially_exceed(objVal):
-                msg = Message(performative='cfp',
+                msg = Message(performative='inform',
                               sender=self.id,
-                              content={'action':'terminate-experiment',
-                                       'proposition':{'why':'objective exceeds',
-                                                      'parameter-tag':paramTag
-                                                      }})
+                              content={'proposition':\
+                                       {'what':'objective-exceeds',
+                                        'parameter-tag':paramTag,
+                                        'value':objVal
+                                        }}
+                              )
                 self.send_message(msg)
                 return
-            else: # Evaluate the constraints
-                consVals = []
-                for cons in self.structure.constraints:
-                    val = cons.evaluate(parameters, measures)
-                    if cons.is_partially_violated(val):
-                        msg = Message(performative='cfp',
-                                      sender=self.id,
-                                      content={\
-                                          'action':'terminate-experiment',
-                                          'proposition':\
-                                          {'why':'a constraint is violated',
-                                           'parameter-tag':paramTag,
-                                           'what':cons.name
-                                           }}
-                                      )
-                        self.send_message(msg)
-                        return
-                    consVals.append(val)
+            # Evaluate the constraints
+            consVals = []
+            for cons in self.structure.constraints:
+                val = cons.evaluate(parameters, measures)
+                if cons.is_partially_violated(val):
+                    msg = Message(performative='inform',
+                             sender=self.id,
+                             content={'proposition':\
+                                       {'parameter-tag':paramTag,
+                                        'what':'constraint-partially-violated',
+                                        'who':cons.name,
+                                        'value':consVals
+                                       }}
+                                  )
+                    self.send_message(msg)
+                    return
+                consVals.append(val)
                 # The message to inform partial model value is issued
-                msg = Message(performative='inform',
+            msg = Message(performative='inform',
                           sender=self.id,
                           content={'proposition':{'what':'partial-model-value',
                                                   'values':(objVal, consVals),
                                                   'parameter-tag':paramTag
                                                   }
                                    })
-                self.send_message(msg)
-                return
+            self.send_message(msg)
+            log.debugger.log('Partial model with storage ratio ' + \
+                             str(storageRatio) + ' is evaluated as ' + \
+                             str(objVal) + ', ' + str(consVals))
+            return
         # The full data is obtained, all of constraints are evaluated
         # without checking violation and update the bounds of objective function
         self.structure.objective.update_bounds(objVal)

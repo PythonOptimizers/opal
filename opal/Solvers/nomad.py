@@ -152,15 +152,17 @@ class NOMADBlackbox(Environment):
     def __init__(self, 
                  name='nomad blackbox',
                  logHandlers=[],
-                 model=None,
+                 modelFile=None,
                  input=None,
                  output=None):
         # Initialize agents
         Environment.__init__(self, name=name, logHandlers=logHandlers)
+        self.model_file = modelFile
         self.communicator = NOMADCommunicator(name='communicator',
                                               input=input, 
                                               output=output)
-        self.evaluator = ModelEvaluator(name='evaluator', modelFile=model)
+    
+        self.evaluator = ModelEvaluator(name='evaluator', modelFile=modelFile)
         # Register the agnets
         self.communicator.register(self)
         self.evaluator.register(self)
@@ -175,6 +177,11 @@ class NOMADBlackbox(Environment):
         # (evaluator replies)
         self.communicator.join()
         self.finalize()
+        # Dump the model to data file, some information is updated
+        if self.evaluator.model is not None:
+            f = open(self.model_file, 'w')
+            pickle.dump(self.evaluator.model, f)
+            f.close()
         self.logger.log('End of a session')
         return 
    
@@ -197,7 +204,7 @@ class NOMADSolver(Solver):
         self.solution_file = 'nomad-solution.txt'
         self.blackbox = None
         self.surrogate = None
-        self.parameter_settings = Set(name='specifcation') # List of line in parameter file
+        self.parameter_settings = Set(name='specifcation')
         return
 
     def solve(self, blackbox=None, surrogate=None):
@@ -268,7 +275,7 @@ class NOMADSolver(Solver):
         bb.write('from opal.Solvers.nomad import NOMADBlackbox' + endl)
         bb.write('from opal.core.modelevaluator import ModelEvaluator' + endl)
         bb.write(comment + 'Create model evaluation environment' + endl)
-        bb.write('env = NOMADBlackbox(model="' + dataFile + \
+        bb.write('env = NOMADBlackbox(modelFile="' + dataFile + \
                  '",input=sys.argv[1], output=sys.stdout)' + endl)
         bb.write(comment + 'Activate the environment' + endl)
         bb.write('env.start()')
@@ -294,9 +301,6 @@ class NOMADSolver(Solver):
         if model is None:
             return
         
-        
-        
-       
         self.set_parameter(name='DIMENSION',
                            value=str(model.get_n_variable()))
            

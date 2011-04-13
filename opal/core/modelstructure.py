@@ -107,9 +107,11 @@ class Objective:
     """
     def __init__(self,
                  function=None,
+                 name='objective',
                  lowerBound=None,
                  upperBound=None,
                  **kwargs):
+        self.name = name
         if isinstance(function, MeasureFunction):
             self.function = function
             self.function.add_information(**kwargs)
@@ -124,6 +126,10 @@ class Objective:
         return funcVal
 
     def update_bounds(self, funcVal):
+        log.debugger.log('Bounds ' + \
+                         str((self.lower_bound, self.upper_bound)) + \
+                         ' on bbjective function is updated by new value ' + \
+                         str(funcVal))
         if self.lower_bound is None:
             self.lower_bound = funcVal
         elif funcVal < self.lower_bound:
@@ -160,13 +166,14 @@ class Constraint:
     """
 
     def __init__(self,
-                function=None,
-                lowerBound=None,
-                upperBound=None,
-                **kwargs):
+                 function=None,
+                 lowerBound=None,
+                 upperBound=None,
+                 name='constraint',
+                 **kwargs):
         if (lowerBound is None) and (upperBound is None):
             raise Exception('Constraint definition is invalid')
-        
+        self.name = name
         if isinstance(function, MeasureFunction):
             self.function = function
             self.function.add_information(**kwargs)
@@ -195,16 +202,21 @@ class Constraint:
             values.append(None)
         return values
 
-    def is_partially_violated(self, val, ):
+    def is_partially_violated(self, val):
         # The partially-violated checking is feasible if the constraint
         # function is either positively-additive or negatively-additive
+        log.debugger.log('Constraints bounded by ' + \
+                         str((self.lower_bound, self.upper_bound)) + \
+                         ' is checked whether is partially violated ' +\
+                         'by value ' + str(val))
         if self.function.is_positively_additive():
             if self.upper_bound is not None:
-                return (val > self.upper_bound)
+                # log.debugger.log('The constraint is partially violated')
+                return (val[1] > self.upper_bound)
             return False
         if self.function.is_negatively_additive():
             if self.lower_bound is not None:
-                return (val < self.lower_bound)
+                return (val[0] < self.lower_bound)
             return False
         # In the case of funtion's additive-behavior is undetermined,
         # the checking is not feasible

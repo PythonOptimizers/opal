@@ -177,7 +177,8 @@ class Agent(threading.Thread):
 
         if cmd in self.message_handlers.keys():
             self.logger.log('The message with id = ' + str(message.id) + \
-                            '\n\t interpreted as command: ' + cmd)
+                            ' interpreted as command: ' + cmd + \
+                            ' with info: ' + str(info))
             self.message_handlers[cmd](info)
         return
 
@@ -242,7 +243,7 @@ class Agent(threading.Thread):
         self.id = environment.directory_service.add(self)
         self.environment = environment
         self.message_handlers[environment.id + '-request' + '-stop'] = self.stop
-        self.logger.log('I am registered with id = ' + self.id[0:4] + '...')
+        #self.logger.log('I am registered with id = ' + self.id[0:4] + '...')
         return
 
     def unregister(self):
@@ -268,7 +269,7 @@ class Agent(threading.Thread):
         Message handlers by default.
         '''
         self.working = False
-        self.logger.log('I finish my work')
+        # self.logger.log('I finish my work')
         return
 
 
@@ -358,9 +359,9 @@ class MessageService(ManagementService):
         id = ManagementService.add(self, msg)
         msg.id = id
         self.logger.log('Receive a ' + msg.performative + ' message' +\
-                        '\n\t from ' + str(msg.sender)[0:4] + '...' +\
-                        '\n\t assigned id as ' + str(msg.id) +\
-                        '\n\t with content ' + str(msg.content))
+                        ' from ' + str(msg.sender)[0:4] + '...' +\
+                        ' assigned id as ' + str(msg.id) +\
+                        ' with content ' + str(msg.content))
         return id
 
 class DirectoryService(ManagementService):
@@ -418,7 +419,12 @@ class Environment(threading.Thread):
                       receiver=None,
                       reference=None,
                       content={'action':'stop'})
-        self.message_service.add(msg)       
+        self.message_service.add(msg)
+        # Wait all agent finish there work
+        for agent in self.directory_service.get_all():
+            if agent.is_alive():
+                agent.join()
+        self.logger.log('Environment is shut down \n\n')
         return
 
     def run(self):

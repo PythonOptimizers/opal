@@ -41,14 +41,65 @@ class Task(Agent):
         self.send_message(message)
         self.unregister()
         return
+
+
+
+class QueueSystem:
+    # The default queue system managed the tasks in one or many queue
+    # where each queue is identified by name
+    def __init__(self):
+        self.tasks = {'default':[]}
+        return
+
+    def get_length(self):
+        length = 0
+        for queueTag in self.tasks:
+            length = length + len(self.tasks[queueTag])
+        return length
+
+    def append(self, task, queue=None):
+        if (queue is None) or (queue is 'default'):
+            self.tasks['default'].append(task)
+        else:
+            if queue in self.tasks.keys():
+                self.tasks[queue].append(task)
+            else:
+                self.tasks[queue] = [task]         
+        return
+
+    def pop(self, queue=None):
+        if (queue is None) or (queue is 'default'):
+            return self.tasks['default'].pop()
+        if queue in self.tasks.keys():
+            task = self.tasks[queue].pop()
+            # Remove the queue if it is empty
+            if len(self.tasks[queue]) == 0:
+                del self.tasks[queue]
+            return task
+        raise Exception('The task queue does not exist')
+
+    
+    def remove_tasks(self, queue=None):
+        if (queue is None) or (queue is 'default'):
+            del self.tasks['default'][0:]
+            return
+        if queue in self.tasks.keys():
+            del self.tasks[queue]
+            return
+        return
     
 class Platform(Agent):
     def __init__(self,
                  name='platform',
                  maxTask=1,
                  synchronous=False,
+                 queueSystem=None,
                  logHandlers=[]):
-        self.queue = []
+        # A platform can contains many queues
+        if queueSystem is None:
+            self.queue_system = QueueSystem()
+        else:
+            self.queue_system = queueSystem
         self.running = {}
         self.max_task = maxTask
         self.synchronous = synchronous
@@ -57,11 +108,11 @@ class Platform(Agent):
         self.message_handlers['inform-task-finish'] = self.finalize_task
         return
 
-    def submit(self, task):
+    def submit(self, task, queue=None):
         # A task is created by each platform
         task.register(self.environment)
-        self.queue.append(task)
-        self.logger.log('Task ' + task.name + ' is added to queue')
+        self.queue_system.append(task, queue)
+        #self.logger.log('Task ' + task.name + ' is added to queue')
         return task.id
    
     def finalize_task(self, info):
@@ -77,16 +128,11 @@ class Platform(Agent):
                 #self.logger.log('Begin a launching session, we have ' + \
                 #                str(len(self.queue)) + ' task')
                 while (len(self.running) < self.max_task) and \
-                          (len(self.queue) > 0):
-                    task = self.queue.pop()
+                          (self.queue_system.get_length() > 0):
+                    task = self.queue_system.pop()
                     self.running[task.name] = task
                     task.start()
-                    self.logger.log('Task: ' + str(task.name) + ' is launched')
-                    #self.logger.log('We have ' + str(len(self.queue)) + \
-                    #                ' task')
-                    #self.logger.log('There are ' + \
-                    #                str(self.max_task - len(self.running)) + \
-                    #                ' available slot')
+                    #self.logger.log('Task: ' + str(task.name) + ' is launched')
             # Work as an agent
             messages = self.fetch_messages()
             for msg in messages:

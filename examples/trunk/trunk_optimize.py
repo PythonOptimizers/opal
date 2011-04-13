@@ -3,8 +3,9 @@ from trunk_declaration import trunk
 
 from opal import ModelStructure, ModelData, Model, MeasureFunction
 from opal.Solvers import NOMAD
-
+from opal.Platforms import SMP
 from opal.TestProblemCollections import CUTEr
+
 def sum_heval(parameters, measures):
     val = sum(measures['HEVAL'])
     return val
@@ -17,27 +18,32 @@ def get_error(parameters, measures):
 par_names = ['eta1', 'eta2', 'gamma1', 'gamma2', 'gamma3']
 #params = [param for param in trunk.parameters if param.name in par_names]
 
-params = [trunk.parameters['eta1'], trunk.parameters['eta2']]
+params = [trunk.parameters['eta1'],
+          trunk.parameters['eta2'],
+          trunk.parameters['gamma1'],
+          trunk.parameters['gamma2'],
+          trunk.parameters['gamma3']
+          ]
 problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
-#                                                             'BROYDN7D',
+                                                             'BROYDN7D',
                                                              'BRYBND',
-#                                                             'CURLY10',
+                                                             'CURLY10',
 #                                                             'CURLY20',
 #                                                             'CURLY30',
-#                                                             'CRAGGLVY',
-#                                                             'DIXON3DQ',
-#                                                             'EIGENALS',
-#                                                             'FMINSRF2',
-#                                                             'FMINSURF',
-#                                                             'GENROSE',
+                                                             'CRAGGLVY',
+                                                             'DIXON3DQ',
+                                                             'EIGENALS',
+                                                             'FMINSRF2',
+                                                             'FMINSURF',
+                                                             'GENROSE',
                                                              'HIELOW',
-#                                                             'MANCINO',
-#                                                             'NCB20',
-#                                                             'NCB20B',
-#                                                             'NONDQUAR',
-#                                                             'POWER',
-#                                                             'SENSORS',
-#                                                             'SINQUAD',
+                                                             'MANCINO',
+                                                             'NCB20',
+                                                             'NCB20B',
+                                                             'NONDQUAR',
+                                                             'POWER',
+                                                             'SENSORS',
+                                                             'SINQUAD',
                                                              'TESTQUAD',
                                                              'TRIDIA',
                                                              'WOODS']]

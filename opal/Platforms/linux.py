@@ -24,10 +24,10 @@ class LINUXTask(Task):
         Task.run(self)
         return
 
-
 class LINUXPlatform(Platform):
     def __init__(self, logHandlers=[]):
-        Platform.__init__(self, logHandlers=logHandlers)
+        Platform.__init__(self, name='LINUX',
+                          logHandlers=logHandlers)
         self.message_handlers['cfp-execute'] = self.create_task
         return
 
@@ -43,6 +43,7 @@ class LINUXPlatform(Platform):
 
         proposition = info['proposition']
         command = proposition['command']
+        
         if 'output' in proposition.keys():
             output = proposition['output']
         else:
@@ -52,6 +53,14 @@ class LINUXPlatform(Platform):
                          command=command)
         self.submit(task)
         return 
+
+    def cancel_tasks(self, info):
+        '''
+
+        Handle message terminate experiment
+        '''
+        return
+    
   
     def test_a(self):
         print 'Hello'

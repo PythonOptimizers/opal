@@ -37,7 +37,8 @@ class SMPTask(Task):
 class SMPPlatform(Platform):
     def __init__(self, maxTask=2, logHandlers=[]):
         Platform.__init__(self, name='SMP',
-                          maxTask=2, synchronous=False,
+                          maxTask=2,
+                          synchronous=False,
                           logHandlers=logHandlers)
         self.configuration = {}
         #self.logger = log.OPALLogger(name='smpPlatform', handlers=logHandlers)
@@ -50,7 +51,7 @@ class SMPPlatform(Platform):
 
     def initialize(self, testId):      
         #self.children = []
-        self.logger.log('Platform is initialized for the test ' + testId)
+        #self.logger.log('Platform is initialized for the test ' + testId)
         return
 
     # Message handlers
