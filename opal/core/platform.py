@@ -69,7 +69,13 @@ class QueueSystem:
 
     def pop(self, queue=None):
         if (queue is None) or (queue is 'default'):
-            return self.tasks['default'].pop()
+            if len(self.tasks['default']) > 0 :
+                return self.tasks['default'].pop()
+            for queue in self.tasks.keys():
+                if queue is not 'default':
+                    return self.tasks[queue].pop()
+            raise Exception('The task queue is empty')
+        
         if queue in self.tasks.keys():
             task = self.tasks[queue].pop()
             # Remove the queue if it is empty
@@ -106,6 +112,7 @@ class Platform(Agent):
         self.task_id = 0
         Agent.__init__(self, name=name, logHandlers=logHandlers)
         self.message_handlers['inform-task-finish'] = self.finalize_task
+        self.message_handlers['cfp-cancel-queue'] = self.cancel_queue
         return
 
     def submit(self, task, queue=None):
@@ -139,4 +146,15 @@ class Platform(Agent):
                 self.handle_message(msg)
             del messages
         return
-        
+
+    # Message handlers
+
+    def cancel_queue(self, info):
+        if 'queue' in info['proposition'].keys():
+            queueTag = info['proposition']['queue']
+        else:
+            queueTag = None
+        self.queue_system.remove_tasks(queue=queueTag)
+        return
+    
+    

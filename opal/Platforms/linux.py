@@ -49,9 +49,13 @@ class LINUXPlatform(Platform):
         else:
             output='/dev/null'
         name = proposition['tag']
-        task = LINUXTask(name=name,
-                         command=command)
-        self.submit(task)
+        if 'queue' in proposition.keys():
+            queueTag = proposition['queue']
+        else:
+            queueTag = None
+        queueTag = proposition['queue']
+        task = LINUXTask(name=name, command=command)
+        self.submit(task, queue=queueTag)
         return 
 
     def cancel_tasks(self, info):

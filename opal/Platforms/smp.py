@@ -73,6 +73,10 @@ class SMPPlatform(Platform):
         else:
             output='/dev/null'
         name = proposition['tag']
+        if 'queue' in proposition.keys():
+            queueTag = proposition['queue']
+        else:
+            queueTag = None
         jobId = str(hash(command))
         # str(ltime.tm_year) +  str(ltime.tm_mon) + str(ltime.tm_mday) + \
             # str(ltime.tm_hour) + str(ltime.tm_min) + str(ltime.tm_sec)
@@ -83,7 +87,7 @@ class SMPPlatform(Platform):
         cmdStr = optionStr + command
         task = SMPTask(name=name,
                        command=cmdStr)
-        self.submit(task)
+        self.submit(task, queue=queueTag)
         return 
   
         
