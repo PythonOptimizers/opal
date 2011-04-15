@@ -49,6 +49,7 @@ class SMPPlatform(Platform):
         self.configuration[parameterName] = parameterValue 
         return
 
+    
     def initialize(self, testId):      
         #self.children = []
         #self.logger.log('Platform is initialized for the test ' + testId)

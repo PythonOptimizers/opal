@@ -205,10 +205,6 @@ class Constraint:
     def is_partially_violated(self, val):
         # The partially-violated checking is feasible if the constraint
         # function is either positively-additive or negatively-additive
-        log.debugger.log('Constraints bounded by ' + \
-                         str((self.lower_bound, self.upper_bound)) + \
-                         ' is checked whether is partially violated ' +\
-                         'by value ' + str(val))
         if self.function.is_positively_additive():
             if self.upper_bound is not None:
                 # log.debugger.log('The constraint is partially violated')
