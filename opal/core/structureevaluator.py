@@ -129,8 +129,10 @@ class StructureEvaluator(Agent):
         # Compute the model values
         parameters = self.data_cache.get_parameters(paramTag)
         storageRatio, measures = self.data_cache.get_measure_vectors(paramTag)
-        #log.debugger.log('Obtained measure vectors: ' + str(measures) +\
-        #                 '\n\t with storage ratio:' + str(storageRatio))
+        log.debugger.log('Add measure values of problem ' + problem # + \
+                         #'and obtained measure vectors: ' + str(measures) +\
+                         #' with storage ratio:' + str(storageRatio)
+                         )
         objVal = self.structure.objective.evaluate(parameters, measures)
         if storageRatio < 1.0: # A partial data is obtained
             # Check if there is violation of objective function before
@@ -173,9 +175,9 @@ class StructureEvaluator(Agent):
                                                   }
                                    })
             self.send_message(msg)
-            log.debugger.log('Partial model with storage ratio ' + \
-                             str(storageRatio) + ' is evaluated as ' + \
-                             str(objVal) + ', ' + str(consVals))
+            #log.debugger.log('Partial model with storage ratio ' + \
+            #                 str(storageRatio) + ' is evaluated as ' + \
+            #                 str(objVal) + ', ' + str(consVals))
             return
         # The full data is obtained, all of constraints are evaluated
         # without checking violation and update the bounds of objective function

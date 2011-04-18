@@ -159,6 +159,9 @@ class DataTable:
         self.name = name
         self.row_identities = rowIdentities
         self.column_identities = columnIdentities
+        log.debugger.log('Row identities: ' + str(self.row_identities))
+        log.debugger.log('Column identities: ' + str(self.column_identities))
+                         
         # We store only the valid values like a dense matrix
         # The table is a dictionary of dictionary-column.
         # This means that the coordination of a cell is formed
@@ -173,10 +176,15 @@ class DataTable:
     def __len__(self):
         length = 0
         for row in self.table.keys():
+            #log.debugger.log(str(self.table[row]))
             length = length + len(self.table[row])
         return length
 
     def get_formal_length(self):
+        #log.debugger.log('row, column: ' +\
+        #                 str(len(self.row_identities)) + ', ' +\
+        #                 str(len(self.column_identities))
+        #                 )
         return len(self.row_identities)*len(self.column_identities)
     
     def __getitem__(self, key):
@@ -200,6 +208,10 @@ class DataTable:
          - Dense: ration > 0.5
          - Complete: ratio = 1
         '''
+        log.debugger.log('Actual length, formal length: ' +\
+                         str(self.__len__() + 0.0) + ', ' +\
+                         str(self.get_formal_length() + 0.0)
+                         )
         ratio =  (self.__len__() + 0.0)/(self.get_formal_length() + 0.0)
         return ratio
        
