@@ -12,7 +12,7 @@ from ..Platforms import LINUX
 __docformat__ = 'restructuredtext'
 
 
-class Model:
+class Model: 
     def __init__(self, modelData=None, 
                  modelStructure=None,
                  evaluatingOptions=None,
