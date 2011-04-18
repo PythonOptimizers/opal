@@ -75,10 +75,10 @@ class ModelEvaluator(Agent):
         
         if self.find_collaborator('data generator', environment) is None:
             dataGenerator =\
-                       DataGenerator(algorithm=self.model.get_algorithm(),
-                                     parameters=self.model.get_parameters(),
-                                     problems=self.model.get_problems(),
-                                     platform=self.options['platform'])
+                   DataGenerator(algorithm=self.model.get_algorithm(),
+                                 parameters=self.model.get_parameters(),
+                                 problems=self.model.get_problems(),
+                                 platform=self.model.platform_description)
             dataGenerator.register(environment)
 
         if self.find_collaborator('structure evaluator', environment) is None:

@@ -14,6 +14,7 @@ from testproblem import TestProblem
 from data import Data
 from mafrw import *
 
+from platform import Platform
 from ..Platforms import supported_platforms
 
 from .. import config
@@ -38,6 +39,7 @@ class DataGenerator(Agent):
                  parameters=None,
                  measures=None,
                  problems=[],
+                 platform=None,
                  logHandlers=[], 
                  options={},
                  **kwargs):
@@ -70,9 +72,10 @@ class DataGenerator(Agent):
                                                            # is created
         else:
             self.problems = problems
+
+        self.platform_description = platform
         
-        self.options = {'platform': 'LINUX',
-                        'interruptible':True}
+        self.options = {'interruptible':True}
         if options is not None:
             self.options.update(options)
         self.options.update(kwargs)
@@ -95,8 +98,8 @@ class DataGenerator(Agent):
 
     def register(self, environment):
         Agent.register(self, environment)
-        if self.find_platform(self.options['platform'], environment) is None:
-            platform = supported_platforms[self.options['platform']]
+        if self.find_platform(self.platform_description, environment) is None:
+            platform = self.create_platform()
             platform.register(environment)
         return
 
@@ -117,6 +120,21 @@ class DataGenerator(Agent):
     def find_platform(self, platformName, environment):
         return None
 
+    def create_platform(self):
+        if self.platform_description['name'] in supported_platforms:
+            platform = supported_platforms[self.platform_description['name']]
+            try:
+                settings = self.platform_description['settings']
+                platform.set_parameter(**settings)
+            except:
+                pass # Do nothing, leave the platform with default setting
+            return platform
+        # Could not find a supported platform by the name, create a Platform
+        # object
+        platform = Platform(name=self.platform_description['name'],
+                            settings=self.platform_description['settings'])
+        return platform
+        
     # Message handlers
     def run_experiment(self, info=None):
         '''

@@ -4,6 +4,7 @@ import os.path
 import pickle
 import log
 
+from platform import Platform
 from ..Platforms import LINUX
 
 #from opal.core.modelstructure import ModelEvaluator
@@ -42,12 +43,29 @@ class Model:
         # the options of simple type like boolean, integer
         # or string. In general, it accepts the options 
         # of picklable data type.
+            
         self.evaluating_options = {}
-        
         if evaluatingOptions is not None:
             self.evaluating_options.update(evaluatingOptions)
         self.evaluating_options.update(kwargs)
 
+        # Get the information about used platform. Normally, platform object
+        # is not be picklable, So we try to get the information to save
+        # along with the model data, and use it to reconstruct the platform
+        # object in run-time.
+        # By default, LINUX is used 
+        self.platform_description = {'name':'LINUX',
+                                     'settings':{}}
+        if 'platform' in self.evaluating_options.keys():
+            platform = self.evaluating_options['platform']
+            if type(platform) == type('a platform name'):
+                self.platform_description['name'] = platform
+            elif isinstance(platform, Platform): # A Platform object
+                self.platform_description['name'] = platform.name
+                self.platform_description['settings'] = platform.settings
+            else: # Unable to recognize the specified platfom
+                pass # Do nothing and use the default platform
+            del self.evaluating_options['platform'] # Remove platform setting
         self.initialize()
         return
     
@@ -115,18 +133,20 @@ class Model:
     # The serialized content is two lines, one for data
     # and the other for structure
 
-    def __getstate__(self):
-        content = {}
-        content['data'] = pickle.dumps(self.data)
-        content['structure'] = pickle.dumps(self.structure)
-        content['options'] = pickle.dumps(self.evaluating_options)
-        return content
+    ## def __getstate__(self):
+    ##     content = {}
+    ##     content['data'] = pickle.dumps(self.data)
+    ##     content['structure'] = pickle.dumps(self.structure)
+    ##     content['options'] = pickle.dumps(self.evaluating_options)
+    ##     content['platform'] = pickle.dumps(self.platform_description)
+    ##     return content
 
-    def __setstate__(self, content):
-        self.data = pickle.loads(content['data'])
-        self.structure = pickle.loads(content['structure'])
-        self.evaluating_options = pickle.loads(content['options'])
-        self.initialize()
-        return
+    ## def __setstate__(self, content):
+    ##     self.data = pickle.loads(content['data'])
+    ##     self.structure = pickle.loads(content['structure'])
+    ##     self.evaluating_options = pickle.loads(content['options'])
+    ##     self.platform_description = pickle.loads(content['platform'])
+    ##     self.initialize()
+    ##     return
     
 

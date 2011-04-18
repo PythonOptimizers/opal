@@ -100,21 +100,34 @@ class Platform(Agent):
                  maxTask=1,
                  synchronous=False,
                  queueSystem=None,
-                 logHandlers=[]):
+                 settings=None,
+                 logHandlers=[],
+                 **kwargs):
         # A platform can contains many queues
         if queueSystem is None:
             self.queue_system = QueueSystem()
         else:
             self.queue_system = queueSystem
+        self.settings = {'MAX_TASK':maxTask,
+                         'SYNCHRONOUS':synchronous}
+        if settings is not None:
+            self.settings.update(settings)
+        self.settings.update(kwargs)
+
+        # Running information
         self.running = {}
-        self.max_task = maxTask
-        self.synchronous = synchronous
         self.task_id = 0
         Agent.__init__(self, name=name, logHandlers=logHandlers)
         self.message_handlers['inform-task-finish'] = self.finalize_task
         self.message_handlers['cfp-cancel-queue'] = self.cancel_queue
         return
 
+    def set_parameter(self, settings=None, **kwargs):
+        if settings is not None:
+            self.settings.update(settings)
+        self.settings.update(kwargs)
+        return
+    
     def submit(self, task, queue=None):
         # A task is created by each platform
         task.register(self.environment)
@@ -129,12 +142,12 @@ class Platform(Agent):
 
     def run(self):
         while self.working :
-            if not self.synchronous or len(self.running) == 0: 
+            if not self.settings['SYNCHRONOUS'] or len(self.running) == 0: 
                 # Submit task when there is no
                 # running task
                 #self.logger.log('Begin a launching session, we have ' + \
                 #                str(len(self.queue)) + ' task')
-                while (len(self.running) < self.max_task) and \
+                while (len(self.running) < self.settings['MAX_TASK']) and \
                           (self.queue_system.get_length() > 0):
                     task = self.queue_system.pop()
                     self.running[task.name] = task

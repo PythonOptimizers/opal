@@ -48,31 +48,6 @@ class MeasureFunction:
         #del self.func
         #self.func = None # Keep self.func is None for the next pickling
         #return value
-               
-    ## def save(self, dir='./', fileName=None):
-        
-    ##     if self.func is None:
-    ##         return
-    ##     if fileName is None: # Dump to string
-    ##         self.file_name = None
-    ##         self.code_string = marshal.dumps(self.func.__code___)
-    ##     else: 
-    ##         self.file_name = os.path.abspath(dir) + '/' + fileName 
-    ##         f = open(self.file_name,'w')
-    ##         marshal.dump(self.func.__code__,f)
-    ##         f.close()
-    ##     self.func = None # This is neccessary for pickling a measure function. 
-    ##     return
-
-    ## def load(self, fileName=None):
-    ##     if self.file_name is not None:
-    ##         f = open(self.file_name)
-    ##         self.func = new.function(marshal.load(f),globals()) 
-    ##         f.close()
-    ##     else: # Load from code string
-    ##         self.func = new.function(marshal.loads(self.code_string),
-    ##                                  globals())
-    ##     return
     
     def __getstate__(self):
         content = {}
