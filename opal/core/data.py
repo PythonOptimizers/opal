@@ -208,10 +208,10 @@ class DataTable:
          - Dense: ration > 0.5
          - Complete: ratio = 1
         '''
-        log.debugger.log('Actual length, formal length: ' +\
-                         str(self.__len__() + 0.0) + ', ' +\
-                         str(self.get_formal_length() + 0.0)
-                         )
+        #log.debugger.log('Actual length, formal length: ' +\
+        #                 str(self.__len__() + 0.0) + ', ' +\
+        #                 str(self.get_formal_length() + 0.0)
+        #                 )
         ratio =  (self.__len__() + 0.0)/(self.get_formal_length() + 0.0)
         return ratio
        
