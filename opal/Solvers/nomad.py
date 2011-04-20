@@ -17,7 +17,7 @@ class NOMADSpecification:
 
     def identify(self):
         return self.name
-    
+
     def str(self):
         if (self.name is not None) and (self.value is not None):
             return self.name + ' ' + str(self.value)
@@ -155,7 +155,7 @@ class NOMADSolver(Solver):
         self.surrogate = None
         # List of line in parameter file
         self.parameter_settings = Set(name='NOMAD specification')
-      
+
         return
 
     def solve(self, blackbox=None, surrogate=None):
@@ -182,11 +182,11 @@ class NOMADSolver(Solver):
 
         if self.blackbox is None:
             return
-        
+
         model = self.blackbox.model
         self.set_parameter(name='DIMENSION',
                            value=str(model.n_var))
-           
+
         self.set_parameter(name='DISPLAY_DEGREE',
                            value=1)
         self.set_parameter(name='DISPLAY_STATS',
@@ -196,17 +196,17 @@ class NOMADSolver(Solver):
         bbTypeStr = 'OBJ'
         for i in range(model.m_con):
             bbTypeStr = bbTypeStr + ' PB'
-       
+
         self.set_parameter(name='BB_OUTPUT_TYPE',
                            value=bbTypeStr)
-      
+
         if self.surrogate is not None:
-           
+
             self.set_parameter(name='SGTE_EXE',
                                value='"$python ' + \
                                self.surrogate.file_name + '"')
         pointStr = str(model.initial_points)
-       
+
         self.set_parameter(name='X0',
                            value= pointStr.replace(',',' '))
 
@@ -224,7 +224,7 @@ class NOMADSolver(Solver):
                 self.set_parameter(name='UPPER_BOUND',
                                    value=upperBoundStr)
         # Write other settings.
-    
+
         if self.solution_file is not None:
             self.set_parameter(name='SOLUTION_FILE',
                                value=self.solution_file)
@@ -232,7 +232,7 @@ class NOMADSolver(Solver):
             self.set_parameter(name='STATS_FILE',
                                value=self.result_file + \
                                ' EVAL & BBE & [ SOL ] & OBJ & TIME \\\\')
-        
+
         descrFile = open(self.paramFileName, "w")
         for param_setting in self.parameter_settings:
             descrFile.write(param_setting.str() + '\n')
