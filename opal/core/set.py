@@ -1,6 +1,5 @@
 class Set:
     """
-
     Set is a group of elements distinguished by identity (given by identify()
     method). The Set class cover the apsects of two Python built-in data
     structures: dict and list. It keeps the order of the element like it added
@@ -9,7 +8,9 @@ class Set:
     elements. A requirement applied to the elements of a Set object is each
     element has a method that show its identity.
     """
+
     def __init__(self,name="", elements=[], *argv, **kwargv):
+
         self.name = name
         self.indices = {}
         self.db = []
@@ -20,29 +21,31 @@ class Set:
                 self.db.append(elem)
                 index = index + 1
         return
-    
-    def __getitem__(self, id):
-        '''
 
+    def __getitem__(self, id):
+        """
         A data set object provide two ways to access an element: by order or by
-        identity that provided by methode {\sf identify()} 
-        '''
+        identity that provided by methode {\sf identify()}
+        """
+
         if (type(id) == type(0)):
             return self.db[id]
         else:
             return self.db[self.indices[id]]
-      
+
+
     def __len__(self):
         return len(self.db)
 
-    def __contains__(self, elem):
-        '''
 
-        There are two way to verify the existence of an element in a DataSet 
+    def __contains__(self, elem):
+        """
+        There are two way to verify the existence of an element in a DataSet
         object.
         Either element or its identity can be provided for the verification.
-        '''
-        # if this is an empty DataSet object the False signal is returned 
+        """
+
+        # if this is an empty DataSet object the False signal is returned
         # immediately
         if len(self.indices) <= 0:
             return False
@@ -57,23 +60,25 @@ class Set:
             except:
                 return False
 
-    def append(self, elem):
-        '''
 
+    def append(self, elem):
+        """
         Add an element to the set
-        '''
+        """
+
         # An element with the same name is in the set. Nothing to add
         if elem.identify() in self.indices:
-            return 
+            return
         self.indices[elem.identify()] = len(self.db)
         self.db.append(elem)
         return
 
-    def remove(self, elem):
-        '''
 
+    def remove(self, elem):
+        """
         Remove an element from the set.
-        '''
+        """
+
         if len(self.inidces) <= 0:
             return
         idType = type(self.indices.keys()[0])
@@ -97,9 +102,11 @@ class Set:
         id = self.db[index].identify()
         self.db.remove(self.db[index])
         del self.indices[id]
-        return 
+        return
+
 
     def select(self, query):
+
         queryResult = Set(name='query-result')
         for elem in self.db:
             if query.match(elem):

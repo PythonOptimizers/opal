@@ -184,29 +184,42 @@ class NOMADSolver(Solver):
             return
 
         model = self.blackbox.model
-        self.set_parameter(name='DIMENSION',
-                           value=str(model.n_var))
 
-        self.set_parameter(name='DISPLAY_DEGREE',
-                           value=1)
+        self.set_parameter(name='DIMENSION', value=str(model.n_var))
+        self.set_parameter(name='DISPLAY_DEGREE', value=1)
         self.set_parameter(name='DISPLAY_STATS',
                            value='EVAL BBE [ SOL, ] OBJ TIME')
         self.set_parameter(name='BB_EXE',
                            value='"$python ' +  self.blackbox.file_name + '"')
+
+        bbInputType = '( '
+        for p in model.variables:
+            if p.is_real:
+                bbInputType += 'R '
+            elif p.is_integer:
+                bbInputType += 'I '
+            elif p.is_binary:
+                bbInputType += 'B '
+            elif p.is_categorical:
+                bbInputType += 'C '
+            else:
+                msg = 'Unrecognized parameter kind for %s' % p.name
+                raise ValueError, msg
+        bbInputType += ')'
+        self.set_parameter(name='BB_INPUT_TYPE', value=bbInputType)
+
         bbTypeStr = 'OBJ'
         for i in range(model.m_con):
             bbTypeStr = bbTypeStr + ' PB'
-
         self.set_parameter(name='BB_OUTPUT_TYPE',
                            value=bbTypeStr)
 
         if self.surrogate is not None:
-
             self.set_parameter(name='SGTE_EXE',
                                value='"$python ' + \
                                self.surrogate.file_name + '"')
-        pointStr = str(model.initial_points)
 
+        pointStr = str(model.initial_point)
         self.set_parameter(name='X0',
                            value= pointStr.replace(',',' '))
 

@@ -1,6 +1,6 @@
-__docformat__ = 'restructuredText'
-
 from set import Set
+
+__docformat__ = 'restructuredText'
 
 class TestProblem:
     """
@@ -20,14 +20,18 @@ class TestProblem:
         self.description = description
         self.classify_string = classifyStr
 
+
     def get_name(self):
         return self.name
+
 
     def identify(self):
         return self.name
 
+
     def get_description(self):
         return self.description
+
 
     def get_classify_string(self):
         return self.classify_string
@@ -43,13 +47,9 @@ class OptimizationTestProblem(TestProblem):
     HS26 3 1
     """
 
-    def __init__(self,
-                 name='Optimization Problem',
-                 description=None,
-                 classifyStr=None,
-                 nvar=0,
-                 ncon=0,
-                 **kwargs):
+    def __init__(self, name='Optimization Problem', description=None,
+                 classifyStr=None, nvar=0, ncon=0, **kwargs):
+
         TestProblem.__init__(self,
                              name=name,
                              description=description,
@@ -57,6 +57,7 @@ class OptimizationTestProblem(TestProblem):
                              **kwargs)
         self.nvar = nvar
         self.ncon = ncon
+        return
 
 
 class ProblemSet(Set):
@@ -80,12 +81,15 @@ class ProblemSet(Set):
         Set.__init__(self, name=name, **kwargs)
         return
 
+
     def add_problem(self, problem):
         "Add problem to collection."
+
         if isinstance(problem, TestProblem):
             self.append(problem)
         else:
             raise TypeError, 'Problem must be a TestProblem'
+
 
     def remove_problem(self, problem):
         self.remove(problem)
@@ -93,13 +97,13 @@ class ProblemSet(Set):
 
     def select(self, query):
         """
-
         Return the list of problems matching the given query.
         The `query` object is any object that possesses a `match()` method.
         The result of `match(name, string)` must be True if `name` matches
         `string`. During the query, `name` is the problem name and `string`
         is its classification string.
         """
+
         queryResult = ProblemSet(name='query result')
         for prob in self.db:
             if query.match(prob):
@@ -132,6 +136,7 @@ class ProblemCollection(ProblemSet):
     """
 
     def __init__(self, name=None, description=None, **kwargs):
+
         self.name = name
         self.description = description
         ProblemSet.__init__(self, name=name, **kwargs)
@@ -140,12 +145,15 @@ class ProblemCollection(ProblemSet):
                                                           # this collection
 
     def __len__(self):
+
         size = ProblemSet.__len__(self)
         for collection in self.subcollections:
             size = size + collection.__len__()
         return size
 
+
     def __getitem__(self, key):
+
         try:
             return ProblemSet.__getitem__(self, key)
         except IndexError:
@@ -158,7 +166,9 @@ class ProblemCollection(ProblemSet):
             # an exception of index error is raised
             raise IndexError, 'Element can not be found in the set'
 
+
     def __contains__(self,prob):
+
         if ProblemSet.__contains__(self, prob):
             return True
         for collection in self.subcollections:
@@ -167,10 +177,13 @@ class ProblemCollection(ProblemSet):
                 return True
         return False
 
+
     def identify(self):
         return self.name
 
+
     def find_sub_collection(self, collectionId):
+
         for collection in self.subcollections:
             if collection.identify() is collectionId:
                 return collection
@@ -179,8 +192,10 @@ class ProblemCollection(ProblemSet):
                 return result
         return None # No subcollection can be found
 
+
     def add_subcollection(self, collection):
         "Add a subcollection to this collection."
+
         if isinstance(collection, ProblemCollection):
             self.subcollections.append(collection)
         else:

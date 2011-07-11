@@ -2,6 +2,7 @@
 import re
 
 def extract_measure(content, description, name, valueType = 'int'):
+
     numberPattern = {'int':'\d+',
                      'real':'-?\d*\.\d+',
                      'float':'-?\d*\.\d+E(\+|-)\d+'}
@@ -23,13 +24,16 @@ def extract_measure(content, description, name, valueType = 'int'):
 
 
 class TableFormatter:
+
     def __init__(self, fieldDelimiter=' ', recordDelimiter='\n'):
+
         self.field_delimiter = fieldDelimiter
         self.record_delimiter = recordDelimiter
         self.row_template = None
         return
 
     def set_header(self, headers=None, *args):
+
         cols = []
         if headers is not None:
             cols.extend(headers)
@@ -46,7 +50,9 @@ class TableFormatter:
         headerStr = headerStr + self.record_delimiter
         return headerStr
 
+
     def format(self, problem, record, **kwargs):
+
         record.update(kwargs)
         if len(record) == 0:
             return None
