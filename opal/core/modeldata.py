@@ -145,10 +145,11 @@ class ModelData:
                 return TestResult(testIsFailed=True)
 
             if len(measure_values) == 0: # Some error in getting the measure,
-                                         # so we could not get the meaure
                 self.finalize()
                 return TestResult(testIsFailed=True)
-            self.measure_value_table.add_problem_measures(prob.name,measure_values)
+
+            self.measure_value_table.add_problem_measures(prob.name,
+                                                          measure_values)
         self.logger.log(str(self.measure_value_table))
         self.finalize()
 

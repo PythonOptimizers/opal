@@ -6,9 +6,7 @@ def extract_measure(content, description, name, valueType = 'int'):
     numberPattern = {'int':'\d+',
                      'real':'-?\d*\.\d+',
                      'float':'-?\d*\.\d+E(\+|-)\d+'}
-    converters = {'int':int,
-                  'real': float,
-                  'float': float}
+    converters = {'int':int, 'real': float, 'float': float}
 
     matches = re.finditer(description + '\s+:\s+(?P<' +
                           name + '>' +

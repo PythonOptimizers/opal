@@ -31,41 +31,37 @@ class Parameter(Data):
     def __init__(self, kind='real', default=None, bound=None, name=None,
                  description='', **kwargs):
 
-        if kind not in ['real', 'integer', 'binary', 'categorical']:
-            raise TypeError, 'kind must be real, integer or categorical'
+        _kinds = ['real', 'integer', 'binary', 'categorical']
+        if kind not in _kinds:
+            raise TypeError, 'kind must be one of ' + str(_kinds)
 
-        if kind == 'real' and type(default) != type(0.0):
-            raise ValueError, 'default value must agree with type'
+        _defaults = {'real': 0.0, 'integer': 0, 'binary': True,
+                    'categorical': 'something'}
 
-        if kind == 'integer' and type(default) != type(0):
-            raise ValueError, 'default value must agree with type'
+        if default is not None:
+            if kind in ['real', 'integer'] and \
+                    type(default) != type(_defaults[kind]):
+                    raise ValueError, 'default value must agree with type'
+            self._default = default
+        else:
+            self._default = _defaults[kind]
 
         self.kind = kind
         self.is_real = (kind == 'real')
         self.is_integer = (kind == 'integer')
+        self.is_binary = (kind == 'binary')
         self.is_categorical = (kind == 'categorical')
 
-        # The attribute value store the value of parameter in run time.
-        # this is a run-time information
-        # The _default is a description
-        if default is not None:
-            if kind == 'real' and type(default) != type(0.0):
-                raise ValueError, 'default value must agree with type'
-            if kind == 'integer' and type(default) != type(0):
-                raise ValueError, 'default value must agree with type'
-            self._default = default
+        neighbors = None  # For categorical variables only.
+        if self.is_categorical:
+            domain = kwargs.get('domain', [])
+            neighbors = kwargs.get('neighbors', {})
         else:
-            if self.kind == 'real':
-                self._default = 0.0
-            elif self.kind == 'integer':
-                self._default = 0
-            elif self.kind == 'binary':
-                self._default = True
-            else:
-                self._default = 'something'
+            domain = bound
 
         Data.__init__(self, name=name, description=description, type=kind,
-                      value=self._default, dimension=1, domain=bound)
+                      value=self._default, dimension=1,
+                      domain=domain, neighbors=neighbors)
         self.bound = bound
         return
 
@@ -74,7 +70,8 @@ class Parameter(Data):
         "Return default value"
         return self._default
 
-    def set_default(self,value):
+
+    def set_default(self, value):
         "Set default value."
 
         if self.is_real:
@@ -85,6 +82,10 @@ class Parameter(Data):
             self._default = value
         self.value = self._default
         return
+
+
+    def get_value(self):
+        return self.value
 
 
     def set_value(self, value):
@@ -154,15 +155,13 @@ class Parameter(Data):
             valueToVerify = value
         else:
             valueToVerify = self.value
+
+        if self.is_categorical or self.is_binary:
+            return valueToVerify in self.domain
+
         if self.bound is None:
             return True
-        if self.is_categorical:
-            return valueToVerify in self.bound
 
-        # There is the error in transforming from string to int or float
-        # For example, the value 0.0010000000 (in string in input file) is
-        # 0.00100000000001 after forcing it as real number
-        # Pay attention to verify the bound at bounded point
         if self.bound[0] is not None:
             if valueToVerify < self.bound[0]:
                 return False
@@ -170,18 +169,6 @@ class Parameter(Data):
             if valueToVerify > self.bound[1]:
                 return False
         return True
-
-
-    def export_to_dict(self):
-        """
-        Convert `Parameter` object to a dictionary.
-
-        .. warning::
-
-            This does not include the bounds!!!
-        """
-        return {'kind':self.kind, 'name':self.name, 'value':self.value,
-                'default':self._default}
 
 
 class ParameterConstraint:

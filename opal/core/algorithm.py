@@ -45,11 +45,8 @@ class Algorithm:
         # Algorithmic description
         self.name = name
         self.description = description
-        self.parameters = DataSet(name='Parameter set')  # List of parameters
-                                                         # (of type Parameter)
-        self.measures = DataSet(name='Measure set')  # List of measures
-                                                     # (the observation of the
-                                                     # algorithm)
+        self.parameters = DataSet(name='Parameter set')
+        self.measures = DataSet(name='Measure set')
         self.constraints = []
 
         # Computational description
@@ -57,10 +54,12 @@ class Algorithm:
         self.parameter_writing_method = None
         self.measure_reading_method = None
         self.executable = None
+        self.neighbors_executable = None
+        return
 
 
     def add_param(self, param):
-        "Add a parameter to an algorithm"
+        "Register a new parameter with an algorithm"
 
         if isinstance(param, Parameter):
             self.parameters.append(param)
@@ -70,7 +69,7 @@ class Algorithm:
 
 
     def add_measure(self, measure):
-        "Add a measure to an algorithm"
+        "Register a new measure with an algorithm"
 
         if isinstance(measure, Measure):
             self.measures.append(measure)
@@ -82,6 +81,12 @@ class Algorithm:
     def set_executable_command(self, executable):
 
         self.executable = executable
+        return
+
+
+    def set_neighbors_command(self, executable):
+
+        self.neighbors_executable = executable
         return
 
 
@@ -162,10 +167,6 @@ class Algorithm:
         return
 
 
-    def get_output(self):
-        return 'file'
-
-
     def get_parameter_file(self, testId=''):
         return self.name + '_' + testId + '.param'
 
@@ -177,12 +178,12 @@ class Algorithm:
 
     def get_measure(self, problem, testId):
         """
-        Ths virtual method determines how to  measure value from the
+        Ths virtual method determines how to measure value from the
         output of the algorithm.
 
         :parameters:
             :problem:
-            :measures: List of measures we want to extract
+            :testId:
 
         :returns: A mapping measure name --> measure value
 
@@ -220,13 +221,11 @@ class Algorithm:
         """
         .. warning::
 
-            Why do we need `paramValues` here???
             What kind of object is `problem`???
 
         This virtual method determines how to run the algorithm.
 
         :parameters:
-            :paramValues: List of parameter values
             :problem: Problem (???)
 
         :returns: The command for executing the algorithm.
@@ -238,19 +237,22 @@ class Algorithm:
 
         outputFile = self.get_measure_file(problem=problem, testId=testId)
         paramFile = self.get_parameter_file(testId=testId)
-        cmd = self.executable + ' ' + paramFile + ' ' + problem.name + ' ' + outputFile
+        cmd = ' '.join(self.executable, paramFile, problem.name, outputFile)
+        #cmd = self.executable + ' ' + paramFile + ' ' + problem.name + ' ' + outputFile
         return cmd
 
+
     def clean_running_data(self, testId=''):
+
         paramFile = self.get_parameter_file(testId=testId)
         if os.path.exists(paramFile):
             os.remove(paramFile)
         return
 
+
     def add_parameter_constraint(self, paramConstraint):
-        """
-        Specify the domain of a parameter.
-        """
+        "Register a new simple constraint on a parameter."
+
         if isinstance(paramConstraint, ParameterConstraint):
             self.constraints.append(paramConstraint)
         elif isinstance(paramConstraint, str):
@@ -260,12 +262,13 @@ class Algorithm:
             raise TypeError, msg
         return
 
+
     def are_parameters_valid(self):
         """
         Return True if all parameters are in their domain and satisfy the
         constraints. Return False otherwise.
         """
-        #print '[algorithm.py]',[param.value for param in parameters]
+
         for constraint in self.constraints:
             if constraint(self.parameters) is ParameterConstraint.violated:
                 return ParameterConstraint.violated

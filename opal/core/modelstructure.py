@@ -33,7 +33,7 @@ class ModelStructure:
         return
 
 
-    def evaluate(self,testResult):
+    def evaluate(self, testResult):
 
         self.logger.log('Begin of a model evaluation')
         if testResult.test_is_failed:
@@ -53,7 +53,7 @@ class ModelStructure:
 
         # Evaluate the objective function by passing the parameter vector and
         # measure vector
-        objValue = self.objective(parameterSet,measureValues)
+        objValue = self.objective(parameterSet, measureValues)
         consValues = []
         for i in range(len(self.constraints)):
             consValues.extend([val for val \

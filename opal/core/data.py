@@ -17,7 +17,7 @@ class Data:
     a vector, a matrix.
     """
     def __init__(self, name='', description='', type='real', dimension=1,
-                 value=None, domain=None, *argv,**kwargv):
+                 value=None, domain=None, neighbors=None, *args, **kwargs):
 
         self.name = name
         self.description = description
@@ -25,6 +25,7 @@ class Data:
         self.value = value
         self.dimension = dimension
         self.domain = domain
+        self.neighbors = neighbors
         self.is_scalar = (self.dimension == 1)
         self.is_real = (self.type == 'real')
         self.is_integer = (self.type == 'integer')
@@ -38,7 +39,7 @@ class Data:
     def identify(self):
         """
         The method provide the identity of a Data object. By default,
-        the name is considered as the identity
+        the name is the identity.
         """
         return self.name
 
@@ -60,6 +61,18 @@ class Data:
         return self.domain
 
 
+    def get_neighbors(self):
+        """
+        Return the neighbors of the categorical variable. For example, we
+        could have domain=[a,b,c] and neighbors={a:[b,c], b:[c], c:[a,b]}. If
+        the current value of the variable is c, this function should return the
+        list [a,b].
+        """
+        if self.is_categorical:
+            return self.neighbors[self.value]
+        return [self.value]
+
+
     def get_dimension(self):
         return self.dimension
 
@@ -70,7 +83,7 @@ class DataSet(Set):
     a Set object, the set_values() method. This method to update value of the
     elements belong to set
     """
-    def __init__(self,name="", elements=[], *arg, **kwarg):
+    def __init__(self, name="", elements=[], *args, **kwargs):
 
         self.name = name
         self.indices = {}

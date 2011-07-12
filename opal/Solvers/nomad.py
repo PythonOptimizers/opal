@@ -164,7 +164,8 @@ class NOMADSolver(Solver):
 
         self.initialize()
         self.run()
-        self.finalize()
+        # RESTORE THIS
+        #self.finalize()
         return
 
 
@@ -209,6 +210,9 @@ class NOMADSolver(Solver):
                                value='"$python ' + \
                                self.surrogate.file_name + '"')
 
+        self.set_parameter(name='NEIGHBORS_EXE',
+                           value='"$python neighbors.py"')
+
         pointStr = str(model.initial_point)
         self.set_parameter(name='X0',
                            value= pointStr.replace(',',' '))
@@ -230,6 +234,7 @@ class NOMADSolver(Solver):
         if self.solution_file is not None:
             self.set_parameter(name='SOLUTION_FILE',
                                value=self.solution_file)
+
         if self.result_file is not None:
             self.set_parameter(name='STATS_FILE',
                                value=self.result_file + \
@@ -245,7 +250,7 @@ class NOMADSolver(Solver):
 
     def set_parameter(self, name=None, value=None):
 
-        param = NOMADSpecification(name=name,value=value)
+        param = NOMADSpecification(name=name, value=value)
         self.parameter_settings.append(param)
         return
 
