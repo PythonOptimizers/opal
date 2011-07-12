@@ -2,7 +2,7 @@
 
 def read_params_from_file(filename):
 
-    converters = {'categorical':str, 'integer':int, 'real':float}
+    converters = {'categorical':int, 'binary':int, 'integer':int, 'real':float}
     fp = open(filename, 'rb')
     params = {}
     for line in fp:

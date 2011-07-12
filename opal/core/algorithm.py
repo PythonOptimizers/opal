@@ -220,7 +220,7 @@ class Algorithm:
         lines = f.readlines()
         f.close()
         os.remove(measureFile)
-        converters = {'categorical':str, 'integer':int, 'real':float}
+        converters = {'categorical':int, 'binary':int, 'integer':int, 'real':float}
         measure_values = {}
         for line in lines:
             line.strip('\n')
