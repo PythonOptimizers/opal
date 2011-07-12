@@ -1,12 +1,16 @@
 import os
+import log
 
 class Solver:
 
     def __init__(self, name='', command=None, input=None, parameter='',
-                 output=None, **kwargs):
+                 output=None, logHandlers=[], **kwargs):
+
         self.name = name
         self.command = command
         self.args = [input, parameter, output]
+        self.logger = log.OPALLogger(name=name, handlers=logHandlers)
+        self.logger.log('Initializing solver %s' % name)
         return
 
 
@@ -33,4 +37,5 @@ class Solver:
         initial point
         """
 
+        self.logger.log('Calling solve() of generic solver. Subclass this method!')
         return None

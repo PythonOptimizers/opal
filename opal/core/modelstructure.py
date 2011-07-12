@@ -28,20 +28,21 @@ class ModelStructure:
                 self.constraints.append(constraint)
                 constraint.function.dump(dir=self.working_directory)
 
-        self.logger = log.OPALLogger(name='modelStructure',
+        self.logger = log.OPALLogger(name='ModelStructure',
                                      handlers=logHandlers)
+        self.logger.log('Initializing ModelStructure object')
         return
 
 
     def evaluate(self, testResult):
 
-        self.logger.log('Begin of a model evaluation')
+        self.logger.log('Start of a model evaluation')
         if testResult.test_is_failed:
             consValues = []
             for i in range(len(self.constraints)):
                 consValues.append(1.0e20)
-            self.logger.log(' - The model values are infinite')
-            self.logger.log('End of a model evaluation')
+            self.logger.log('   Model values are infinite due to failure')
+            self.logger.log('End of model evaluation')
             return (1.0e20, consValues)
 
         # Get the optimizing parameter
@@ -60,7 +61,7 @@ class ModelStructure:
                                in self.constraints[i].evaluate(parameterSet,
                                                                measureValues) \
                                if val is not None])
-        self.logger.log(' - OBJ: ' + str(objValue) + \
+        self.logger.log('   OBJ: ' + str(objValue) + \
                          ', CONS: ' + str(consValues))
         self.logger.log('End of model evaluation')
         return (objValue,consValues)
@@ -72,7 +73,7 @@ class MeasureFunction:
     *** built up from the parameter and elementary measure \varphi(p,\mu)
     """
 
-    def __init__(self, function=None):
+    def __init__(self, function=None, logHandlers=[]):
 
         if function is None: return
 
@@ -82,11 +83,16 @@ class MeasureFunction:
         if function.__code__.co_argcount < 2: return
         self.func = function
         self.name = function.__code__.co_name
+        self.fileName = None
+        self.logger = log.OPALLogger(name='MeasureFunction',
+                                     handlers=logHandlers)
+        self.logger.log('Initializing measure funtion %s' % self.name)
         return
 
 
     def evaluate(self, *args, **kwargs):
 
+        self.logger.log('Evaluating measure function %s' % self.name)
         if self.func is not  None:
             return self.func(*args, **kwargs)
 
@@ -99,6 +105,7 @@ class MeasureFunction:
 
     def dump(self, dir='./', fileName=None):
 
+        self.logger.log('Dumping measure function %s to disk' % self.name)
         if fileName is None:
             self.file_name = os.path.join(os.path.abspath(dir),
                                           self.func.__code__.co_name + '.code')
@@ -126,8 +133,17 @@ class Constraint:
     *** To define a constraint, there is at least a bound is not Non
     """
 
+    __classid = -1
+
     def __init__(self, function=None, lowerBound=None, upperBound=None,
-                 **kwargs):
+                 name=None, logHandlers=[], **kwargs):
+
+        # If name is not given, assign a unique constraint name.
+        self.__class__.__classid += 1          # Number of instances.
+        self.__id = self.__class__.__classid   # Instance number.
+
+        if name is None:
+            name = 'cons%d' % self.__id
 
         self.function = MeasureFunction(function)
         self.n_size = 2
@@ -137,11 +153,15 @@ class Constraint:
         self.upper_bound = upperBound
         if self.upper_bound is None:
             self.n_size = self.n_size - 1
+        self.logger = log.OPALLogger(name='Constraint',
+                                     handlers=logHandlers)
+        self.logger.log('Initializing constraint %s' % self.name)
         return
 
 
     def evaluate(self,*args,**kwargs):
 
+        self.logger.log('Evaluating constraint %s' % self.name)
         funcVal = self.function(*args,**kwargs)
         values = []
         if self.lower_bound is not None:

@@ -4,6 +4,7 @@ import log
 __docformat__ = 'restructuredtext'
 
 class Model:
+
     def __init__(self, modelData=None, modelStructure=None,
                  dataFile='blackbox.dat', logHandlers=[], **kwargs):
         """
@@ -24,8 +25,9 @@ class Model:
         self.model_data = modelData
         self.model_structure = modelStructure
         self.data_file = dataFile
-        self.logger = log.OPALLogger(name='opalBlackboxModel',
+        self.logger = log.OPALLogger(name='Model',
                                      handlers=logHandlers)
+        self.logger.log('Initializing Model object')
 
         self.variables = self.model_data.get_parameters()
         self.n_var = len(self.variables)
@@ -72,6 +74,7 @@ class Model:
 
     def save(self):
 
+        self.logger.log('Dumping model object to file')
         blackboxDataFile = open(self.data_file, "w")
         pickle.dump(self, blackboxDataFile)
         blackboxDataFile.close()
@@ -79,8 +82,12 @@ class Model:
 
 
     def get_initial_point(self):
+
+        self.logger.log('Requesting initial point')
         return self.initial_point
 
 
     def get_bound_constraints(self):
+
+        self.logger.log('Requesting bound constraints')
         return self.bounds

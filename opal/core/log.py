@@ -5,13 +5,17 @@ import logging
 class HandlerDescription:
 
     def __init__(self, handler):
+
         self.file_name = handler.baseFilename
         self.level = handler.level
+        return
 
     def generate_handler(self):
+
         handler = logging.FileHandler(filename=self.file_name)
         handler.set_level(self.level)
         return handler
+
 
 class OPALLogger:
     """
@@ -33,12 +37,15 @@ class OPALLogger:
         return
 
 
+    def set_name(self, name):
+        "Change logger name (useful for inherited objects)."
+        self.name = name
+
+
     def initialize(self):
 
         self.logger = logging.getLogger(self.name)
-        self.logger.setLevel(logging.DEBUG)  # Set level to highest level so
-                                             # that actual level depends on the
-                                             # handler level
+        self.logger.setLevel(logging.DEBUG)
 
         # A default handler is created for logging to file with INFO level
         handler = logging.FileHandler(filename='opal.log')

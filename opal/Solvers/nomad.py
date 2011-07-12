@@ -1,6 +1,6 @@
 import sys
 import os
-import logging
+from ..core import log
 from ..core.solver import Solver
 from ..core.set import Set
 
@@ -9,8 +9,11 @@ __docformat__ = 'restructuredtext'
 class NOMADSpecification:
     "Used to specify black-box solver options."
 
-    def __init__(self,name=None,value=None,**kwargs):
+    def __init__(self, name=None, value=None, logHandlers=[], **kwargs):
 
+        self.logger = log.OPALLogger(name='NOMADSpecification',
+                                     handlers=logHandlers)
+        #self.logger.log('Setting specification %s to %s' % (name, str(value)))
         self.name = name
         self.value = value
         return
@@ -18,6 +21,7 @@ class NOMADSpecification:
 
     def identify(self):
         return self.name
+
 
     def str(self):
 
@@ -42,8 +46,13 @@ class NOMADBlackbox:
     Those are specialized to NOMAD solver
     """
 
-    def __init__(self, model=None, fileName='blackbox.py', **kwargs):
+    def __init__(self, model=None, fileName='blackbox.py', logHandlers=[],
+                 **kwargs):
 
+
+        self.logger = log.OPALLogger(name='NOMADBlackbox',
+                                     handlers=logHandlers)
+        self.logger.log('Initializing NOMADBlackbox object')
         self.model=model
         self.file_name = fileName
         return
@@ -56,6 +65,7 @@ class NOMADBlackbox:
             Document this method!!!
         """
 
+        self.logger.log('Reading input from file %s' % args[1])
         inputValues = []
         paramValues = []
         if len(args) < 1:
@@ -76,6 +86,7 @@ class NOMADBlackbox:
             Document this method!!!
         """
 
+        self.logger.log('Writing objective and constraint values')
         print >> sys.stdout, objectiveValue,
         if len(constraintValues) > 0:
             for i in range(len(constraintValues)):
@@ -87,6 +98,7 @@ class NOMADBlackbox:
     def generate_executable_file(self):
         "Generate Python code to play the role of black box executable."
 
+        self.logger.log('Generating executable black box')
         tab = ' '*4
         bb = open(self.file_name, 'w')
         # To avoid the error compability of python version (local version
@@ -117,6 +129,7 @@ class NOMADBlackbox:
 
     def run(self, *args, **kwargs):
 
+        self.logger.log('Running black box')
         inputValues = []
         paramValues = []
         (inputValues, paramValues) = self.read_input(*args, **kwargs)
@@ -135,7 +148,10 @@ class NOMADSolver(Solver):
     """
 
     def __init__(self, name='NOMAD', parameterFile='nomad-param.txt', **kwargs):
+
+        # self.logger is inherited from Solver.
         Solver.__init__(self, name='NOMAD', **kwargs)
+
         self.paramFileName = parameterFile
         self.result_file = None
         self.solution_file = None
@@ -164,14 +180,15 @@ class NOMADSolver(Solver):
 
         self.initialize()
         self.run()
-        # RESTORE THIS
-        #self.finalize()
+        self.finalize()
+        self.logger.log('Finished solving')
         return
 
 
     def initialize(self):
         "Write NOMAD config to file based on parameter optimization problem."
 
+        self.logger.log('Setting solver specifications')
         if self.blackbox is None: return
 
         model = self.blackbox.model
@@ -240,6 +257,7 @@ class NOMADSolver(Solver):
                                value=self.result_file + \
                                ' EVAL & BBE & [ SOL ] & OBJ & TIME \\\\')
 
+        self.logger.log('Writing solver specification file')
         descrFile = open(self.paramFileName, "w")
         for param_setting in self.parameter_settings:
             descrFile.write(param_setting.str() + '\n')
@@ -250,6 +268,7 @@ class NOMADSolver(Solver):
 
     def set_parameter(self, name=None, value=None):
 
+        self.logger.log('Setting %s to %s' % (name, str(value)))
         param = NOMADSpecification(name=name, value=value)
         self.parameter_settings.append(param)
         return
@@ -257,12 +276,14 @@ class NOMADSolver(Solver):
 
     def run(self):
 
+        self.logger.log('Running solver')
         os.system('nomad ' + self.paramFileName)
         return
 
 
     def finalize(self):
 
+        self.logger.log('Cleaning up temporary solver files')
         # Clean up the temporary file
         if os.path.exists('blackbox.py'):
             os.remove('blackbox.py')
@@ -276,8 +297,8 @@ class NOMADSolver(Solver):
         if os.path.exists('surrogate.dat'):
             os.remove('surrogate.dat')
 
-        if os.path.exists(self.paramFileName):
-            os.remove(self.paramFileName)
+        #if os.path.exists(self.paramFileName):
+        #    os.remove(self.paramFileName)
         return
 
 
@@ -286,7 +307,9 @@ class NOMADMPISolver(NOMADSolver):
     def __init__(self, name='NOMAD.MPI', parameterFile='nomad.mpi-param.txt',
                  np=None, **kwargs):
 
+        # self.logger is inherited from NOMADSolver
         NOMADSolver.__init__(self, name=name, parameterFile=parameterFile)
+
         self.mpi_config = {}  # Contains the settings for MPI environment
         self.mpi_config['np'] = None  # If None, the number process is
                                       # the problem dimension
@@ -295,11 +318,13 @@ class NOMADMPISolver(NOMADSolver):
 
     def set_mpi_config(self, name, value):
 
+        self.logger.log('Setting MPI parameter %s to %s' % (name, str(value)))
         self.mpi_config[name] = value
         return
 
     def run(self):
 
+        self.logger.log('Running solver')
         optionStr = ''
         for opt in self.mpi_config.keys():
             optionStr = ' -' + opt + ' ' + str(self.mpi_config[opt])

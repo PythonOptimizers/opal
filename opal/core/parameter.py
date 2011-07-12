@@ -35,8 +35,8 @@ class Parameter(Data):
         if kind not in _kinds:
             raise TypeError, 'kind must be one of ' + str(_kinds)
 
-        _defaults = {'real': 0.0, 'integer': 0, 'binary': True,
-                    'categorical': 'something'}
+        _defaults = {'real': 0.0, 'integer': 0, 'binary': 0,
+                    'categorical': 0}
 
         if default is not None:
             if kind in ['real', 'integer'] and \

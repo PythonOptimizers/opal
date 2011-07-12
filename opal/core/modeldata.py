@@ -53,7 +53,8 @@ class ModelData:
 
         self.platform = platform
 
-        self.logger = log.OPALLogger(name='modelData', handlers=logHandlers)
+        self.logger = log.OPALLogger(name='ModelData', handlers=logHandlers)
+        self.logger.log('Initializing ModelData object')
         self.test_number = 0
         self.test_id = None
 
@@ -66,6 +67,8 @@ class ModelData:
 
 
     def get_parameters(self):
+
+        self.logger.log('Requesting parameters')
         return self.parameters
 
 
@@ -89,33 +92,39 @@ class ModelData:
         self.test_number += 1
         self.test_is_failed = False
         self.measure_value_table.clear()
-        self.logger.log('Initialize the ' + str(self.test_number) + \
-                         ' test with id ' + str(self.test_id))
+        self.logger.log('Initializing test ' + str(self.test_number) + \
+                         ' with id ' + str(self.test_id))
         self.logger.log(' - Parameter values: ' + valuesStr.replace('_', ' '))
         return
 
 
     def finalize(self):
 
-        self.algorithm.clean_running_data(testId=self.test_id)
         self.logger.log('Finalize the test ' + str(self.test_id))
+        self.algorithm.clean_running_data(testId=self.test_id)
         return
 
 
     def run(self, parameterValues):
 
         self.initialize(parameterValues=parameterValues)
-        self.logger.log('Run the test ' + str(self.test_id))
+
+        self.logger.log('Running test ' + str(self.test_id))
+
+        # Assign parameter values in algorithm and write to file.
         self.algorithm.set_parameter(parameters=self.parameters,
                                      testId=self.test_id)
+
+        # Check feasibility.
         if not self.algorithm.are_parameters_valid():
             self.test_is_failed = True
-            self.logger.log(' - The parameter values are invalid, ' + \
-                             'the test is stopped')
+            self.logger.log(' - Parameter values are invalid, ' + \
+                             'test aborted')
             return
 
+        # Launch algorithm.
         self.platform.initialize(self.test_id)
-        self.logger.log(' - Solve the test problems')
+        self.logger.log(' - Solving test problems')
         for prob in self.problems:
             self.platform.execute(\
                 self.algorithm.get_full_executable_command(problem=prob,
@@ -123,13 +132,13 @@ class ModelData:
 
         resultIsReady = "numended(/g" + self.test_id + ", *)"
         self.platform.waitForCondition(resultIsReady)
-        self.logger.log(' - All problems are solved, the test is stopped')
+        self.logger.log(' - All problems solved, test stopped')
         return
 
 
     def get_test_result(self):
 
-        self.logger.log('Collect the test result')
+        self.logger.log('Collecting test results')
         if self.test_is_failed is True:
             self.finalize()
             return TestResult(testIsFailed=True)
@@ -139,8 +148,7 @@ class ModelData:
             # atomic measure are get from all of the problems. Any error
             # causes the test failed signal.
             measure_values = self.algorithm.get_measure(prob, self.test_id)
-            if measure_values is None: # Some error in running the algorithm,
-                                       # so we could not get the meaure
+            if measure_values is None: # Error occurred
                 self.finalize()
                 return TestResult(testIsFailed=True)
 
@@ -161,4 +169,4 @@ class ModelData:
 
 
     def log(self,fileName):
-        self.logging.write(self,fileName)
+        self.logging.write(self, fileName)

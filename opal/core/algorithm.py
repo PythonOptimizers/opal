@@ -4,6 +4,7 @@ import os
 from opal.core.parameter import Parameter, ParameterConstraint
 from opal.core.data import DataSet
 from opal.core.measure import Measure
+import log
 
 __docformat__ = 'restructuredtext'
 
@@ -40,9 +41,12 @@ class Algorithm:
       ['DELMIN']
     """
 
-    def __init__(self, name=None, description=None, **kwargs):
+    def __init__(self, name=None, description=None, logHandlers=[], **kwargs):
 
         # Algorithmic description
+        self.logger = log.OPALLogger(name='Algorithm',
+                                     handlers=logHandlers)
+
         self.name = name
         self.description = description
         self.parameters = DataSet(name='Parameter set')
@@ -55,6 +59,7 @@ class Algorithm:
         self.measure_reading_method = None
         self.executable = None
         self.neighbors_executable = None
+        self.logger.log('Initializing Algorithm %s' % self.name)
         return
 
 
@@ -62,6 +67,8 @@ class Algorithm:
         "Register a new parameter with an algorithm"
 
         if isinstance(param, Parameter):
+            self.logger.log('Registering parameter %s (%s)' % (param.name,
+                                                               param.kind))
             self.parameters.append(param)
         else:
             raise TypeError, 'param must be a Parameter'
@@ -72,6 +79,7 @@ class Algorithm:
         "Register a new measure with an algorithm"
 
         if isinstance(measure, Measure):
+            self.logger.log('Registering measure %s' % measure.name)
             self.measures.append(measure)
         else:
             raise TypeError, 'measure must be a Measure object'
@@ -80,12 +88,15 @@ class Algorithm:
 
     def set_executable_command(self, executable):
 
+        self.logger.log('Setting executable command to %s' % executable)
         self.executable = executable
         return
 
 
     def set_neighbors_command(self, executable):
 
+        self.logger.log('Setting executable command for neighbors to %s' % \
+                executable)
         self.neighbors_executable = executable
         return
 
@@ -104,6 +115,7 @@ class Algorithm:
         where `algo` is an Algorithm instance.
         """
 
+        self.logger.log('Setting parameter file name to %s' % parameter_file)
         self.parameter_file = parameter_file
         self.parameter_writing_method = copy.copy(writing_method)
         return
@@ -124,6 +136,7 @@ class Algorithm:
         values from the output of the algorithm.
         """
 
+        self.logger.log('Setting measure file name to %s' % measure_file)
         self.measure_file = measure_file
         self.measure_reading_method = reading_method
         return
@@ -145,6 +158,8 @@ class Algorithm:
         The format of intermediated file depend on this method. By default,
         the parameter set are written by pickle.
         """
+
+        self.logger.log('Assigning parameter values and writing to file')
 
         # Fill the values to parameter set
         j = 0
@@ -168,11 +183,16 @@ class Algorithm:
 
 
     def get_parameter_file(self, testId=''):
+        "Return parameter file name."
+
+        self.logger.log('Requesting parameter file name')
         return self.name + '_' + testId + '.param'
 
 
     def get_measure_file(self, problem, testId=''):
         "Return measure file name."
+
+        self.logger.log('Requesting measure file name')
         return self.name + '_' + problem.name + '_' + testId + '.out'
 
 
@@ -190,6 +210,8 @@ class Algorithm:
         By default, the algorithm returns the measure values to the standard
         output. In the `run()` method, the output is redirected to file.
         """
+
+        self.logger.log('Gathering measures from output of algorithm')
 
         if self.measure_reading_method is not None:
             return self.measure_reading_method(self, problem)
@@ -235,15 +257,16 @@ class Algorithm:
             `./algorithm paramfile problem`
         """
 
+        self.logger.log('Requesting complete executable command')
         outputFile = self.get_measure_file(problem=problem, testId=testId)
         paramFile = self.get_parameter_file(testId=testId)
-        cmd = ' '.join(self.executable, paramFile, problem.name, outputFile)
-        #cmd = self.executable + ' ' + paramFile + ' ' + problem.name + ' ' + outputFile
+        cmd = ' '.join([self.executable, paramFile, problem.name, outputFile])
         return cmd
 
 
     def clean_running_data(self, testId=''):
 
+        self.logger.log('Cleaning up parameter file')
         paramFile = self.get_parameter_file(testId=testId)
         if os.path.exists(paramFile):
             os.remove(paramFile)
@@ -253,6 +276,7 @@ class Algorithm:
     def add_parameter_constraint(self, paramConstraint):
         "Register a new simple constraint on a parameter."
 
+        self.logger.log('Registering simple constraint')
         if isinstance(paramConstraint, ParameterConstraint):
             self.constraints.append(paramConstraint)
         elif isinstance(paramConstraint, str):
@@ -269,6 +293,7 @@ class Algorithm:
         constraints. Return False otherwise.
         """
 
+        self.logger.log('Checking if parameters satisfy constraints')
         for constraint in self.constraints:
             if constraint(self.parameters) is ParameterConstraint.violated:
                 return ParameterConstraint.violated
