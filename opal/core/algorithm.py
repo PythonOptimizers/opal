@@ -160,7 +160,10 @@ class Algorithm:
             fields = line.split(' ')
             if len(fields) < 2:
                 continue
-            measure_values[fields[0].strip(' ')] = fields[1].strip(' ')
+            measureName = fields[0].strip(' ')
+            if measureName not in self.measures:
+                continue
+            measure_values[measureName] = fields[1].strip(' ')
         for i in range(len(self.measures)):
             convert = converters[self.measures[i].get_type()]
             try:

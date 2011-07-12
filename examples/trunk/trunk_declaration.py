@@ -15,8 +15,8 @@ trunk.set_executable_command('python trunk_run.py')
 trunk.add_param(Parameter(name='eta1',
                           kind='real',
                           default=0.25,
-                          bound=[0,1],
-                          description='Step acceptance threshold'))
+                          bound=[0, 1],
+                          description='Gradient scaling cut-off'))
 trunk.add_param(Parameter(name='eta2',
                           kind='real',
                           default=0.75,

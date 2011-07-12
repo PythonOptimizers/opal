@@ -358,10 +358,10 @@ class MessageService(ManagementService):
     def add(self, msg):
         id = ManagementService.add(self, msg)
         msg.id = id
-        self.logger.log('Receive a ' + msg.performative + ' message' +\
-                        ' from ' + str(msg.sender)[0:4] + '...' +\
-                        ' assigned id as ' + str(msg.id) +\
-                        ' with content ' + str(msg.content))
+        #self.logger.log('Receive a ' + msg.performative + ' message' +\
+        #                ' from ' + str(msg.sender)[0:4] + '...' +\
+        #                ' assigned id as ' + str(msg.id) +\
+        #                ' with content ' + str(msg.content))
         return id
 
 class DirectoryService(ManagementService):
