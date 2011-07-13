@@ -106,10 +106,10 @@ class NOMADCommunicator(Agent):
         for cons in consValues:
             if cons[0] is not None:
                 self.outputStream.write(str(cons[0]) + ' ')
-                outputStr = outputStr + str(cons[0]) + ' ')
+                outputStr = outputStr + str(cons[0]) + ' '
             if cons[1] is not None:
                 self.outputStream.write(str(cons[1]))
-                outputStr = outputStr + str(cons[1]) + ' ')
+                outputStr = outputStr + str(cons[1]) + ' '
         self.outputStream.write('\n')
         self.logger.log('Output: ' + outputStr) 
         self.stop()
@@ -322,7 +322,7 @@ class NOMADSolver(Solver):
         self.set_parameter(name='DISPLAY_DEGREE',
                            value=1)
         self.set_parameter(name='DISPLAY_STATS',
-                           value='EVAL BBE [ SOL, ] OBJ TIME')
+                           value='EVAL BBE [ SOL, ] BBO TIME')
         self.set_parameter(name='BB_EXE',
                            value='"' +  modelExecutable + '"')
         bbTypeStr = 'OBJ'
