@@ -90,8 +90,9 @@ class NOMADCommunicator(Agent):
             return
         
         objValue, consValues = info['proposition']['values']
+        outputStr = ''
         self.outputStream.write(str(objValue) + '\n')
-        
+        outputStr = outputStr + str(objValue) + ' '
         # Constraint values are list of tuple
         # (left_size_value, right_size_value) values that computed from a 
         # constraint of form
@@ -105,10 +106,14 @@ class NOMADCommunicator(Agent):
         for cons in consValues:
             if cons[0] is not None:
                 self.outputStream.write(str(cons[0]) + ' ')
+                outputStr = outputStr + str(cons[0]) + ' ')
             if cons[1] is not None:
                 self.outputStream.write(str(cons[1]))
+                outputStr = outputStr + str(cons[1]) + ' ')
         self.outputStream.write('\n')
+        self.logger.log('Output: ' + outputStr) 
         self.stop()
+        
         return
 
     def  run(self):

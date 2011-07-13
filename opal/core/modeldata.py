@@ -31,7 +31,8 @@ class ModelData:
                  algorithm, 
                  problems=[],
                  parameters=None, 
-                 measures=None):
+                 measures=None,
+                 **kwargs):
         # The core variables
         self.algorithm = algorithm
         if (problems is None) or (len(problems) == 0):
@@ -49,6 +50,8 @@ class ModelData:
         else:
             self.measures = measures
 
+        self.running_options = {}
+        self.running_options.update(kwargs)
         return
 
     def get_problems(self):

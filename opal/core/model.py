@@ -45,6 +45,10 @@ class Model:
         # of picklable data type.
             
         self.evaluating_options = {}
+        # Update the running options from data
+        self.evaluating_options.update(modelData.running_options)
+        # If there is an option with the same name, it is overwritten by
+        # the setting in model
         if evaluatingOptions is not None:
             self.evaluating_options.update(evaluatingOptions)
         self.evaluating_options.update(kwargs)

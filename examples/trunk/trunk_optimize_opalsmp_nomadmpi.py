@@ -46,11 +46,10 @@ problems = [problem for problem in CUTEr if problem.name in ['BDQRTIC',
 
 data = ModelData(algorithm=trunk,
                  problems=problems,
-                 parameters=params,
-                 platform=SMP)
+                 parameters=params)
 struct = ModelStructure(objective=get_error,
                         constraints=[])  # Unconstrained
-model = Model(modelData=data, modelStructure=struct)
+model = Model(modelData=data, modelStructure=struct, platform=SMP)
 
 # Solve parameter optimization problem.
 NOMADMPI.set_mpi_config(name='np', value=5)

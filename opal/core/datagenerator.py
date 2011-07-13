@@ -89,7 +89,7 @@ class DataGenerator(Agent):
       
         self.experiments = {} # List of all experiements in executions
         self.message_handlers['cfp-evaluate-parameter'] = self.run_experiment
-        self.message_handlers['inform-task-finish'] = self.get_result
+        self.message_handlers['cfp-collect-result'] = self.get_result
         self.message_handlers['inform-objective-partially-exceed'] = \
                                                      self.terminate_experiment
         self.message_handlers['inform-constraint-partially-violated'] = \
@@ -210,7 +210,7 @@ class DataGenerator(Agent):
         if 'proposition' not in info.keys():
             return
         proposition =  info['proposition']
-        sessionTag = proposition['who']
+        sessionTag = proposition['session-tag']
         exprInfo = self.experiments[sessionTag]
         outputFile = exprInfo['output-file']
         problem = exprInfo['problem-name']

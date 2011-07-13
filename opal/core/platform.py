@@ -39,6 +39,14 @@ class Task(Agent):
                                    }
                           )
         self.send_message(message)
+        message = Message(sender=self.id,
+                          performative='cfp',
+                          receiver=None,
+                          content={'action':'collect-result',
+                                   'proposition':{'session-tag':self.name}
+                                   }
+                          )
+        self.send_message(message)
         self.unregister()
         return
 
