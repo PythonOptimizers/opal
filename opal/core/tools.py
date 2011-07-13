@@ -1,6 +1,11 @@
 # Miscellaneous tools.
 import re
 
+_kinds = ['real', 'integer', 'binary', 'categorical']
+_defaults = {'real': 0.0, 'integer': 0, 'binary': 0, 'categorical': 0}
+converters = {'categorical':int, 'binary':int, 'integer':int, 'real':float}
+formats = {'categorical':'%d', 'binary':'%d', 'integer':'%d', 'real':'%f'}
+
 def extract_measure(content, description, name, valueType = 'int'):
 
     numberPattern = {'int':'\d+',
