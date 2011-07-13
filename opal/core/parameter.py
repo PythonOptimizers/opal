@@ -1,5 +1,6 @@
 import string
 from opal.core.data import Data, DataSet
+from opal.core.tools import _kinds, _defaults, converters
 
 class Parameter(Data):
     """
@@ -31,12 +32,8 @@ class Parameter(Data):
     def __init__(self, kind='real', default=None, bound=None, name=None,
                  description='', **kwargs):
 
-        _kinds = ['real', 'integer', 'binary', 'categorical']
         if kind not in _kinds:
             raise TypeError, 'kind must be one of ' + str(_kinds)
-
-        _defaults = {'real': 0.0, 'integer': 0, 'binary': 0,
-                    'categorical': 0}
 
         if default is not None:
             if kind in ['real', 'integer'] and \
@@ -157,6 +154,7 @@ class Parameter(Data):
             valueToVerify = self.value
 
         if self.is_categorical or self.is_binary:
+            valueToVerify = converters[self.kind](valueToVerify)
             return valueToVerify in self.domain
 
         if self.bound is None:
