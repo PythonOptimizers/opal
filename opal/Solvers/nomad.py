@@ -303,7 +303,17 @@ class NOMADSolver(Solver):
         
         self.set_parameter(name='DIMENSION',
                            value=str(model.get_n_variable()))
-           
+        bbInputType = '( '
+        for var in model.variables:
+            if var.is_real:
+                bbInputType = bbInputType + 'R '
+            elif var.is_integer:
+                bbInputType = bbInputType + 'I '
+            else: # Categorical variable
+                bbInputType = bbInputType + 'C '
+        bbInputType = bbInputType + ')'
+        self.set_parameter(name='BB_INPUT_TYPE',
+                           value=bbInputType)
         self.set_parameter(name='DISPLAY_DEGREE',
                            value=1)
         self.set_parameter(name='DISPLAY_STATS',
