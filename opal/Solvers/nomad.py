@@ -157,6 +157,7 @@ class NOMADSolver(Solver):
         self.solution_file = None
         self.blackbox = None
         self.surrogate = None
+        self.cleanup = kwargs.get('cleanup', True)
         # List of line in parameter file
         self.parameter_settings = Set(name='NOMAD specification')
 
@@ -180,7 +181,7 @@ class NOMADSolver(Solver):
 
         self.initialize()
         self.run()
-        self.finalize()
+        if self.cleanup: self.finalize()
         self.logger.log('Finished solving')
         return
 
@@ -297,8 +298,8 @@ class NOMADSolver(Solver):
         if os.path.exists('surrogate.dat'):
             os.remove('surrogate.dat')
 
-        #if os.path.exists(self.paramFileName):
-        #    os.remove(self.paramFileName)
+        if os.path.exists(self.paramFileName):
+            os.remove(self.paramFileName)
         return
 
 
