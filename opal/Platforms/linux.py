@@ -44,10 +44,6 @@ class LINUXPlatform(Platform):
         proposition = info['proposition']
         command = proposition['command']
         
-        if 'output' in proposition.keys():
-            output = proposition['output']
-        else:
-            output='/dev/null'
         name = proposition['tag']
         if 'queue' in proposition.keys():
             queueTag = proposition['queue']

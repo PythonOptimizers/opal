@@ -127,12 +127,18 @@ class DataGenerator(Agent):
                 settings = self.platform_description['settings']
                 platform.set_parameter(**settings)
             except:
-                pass # Do nothing, leave the platform with default setting
+                # Leave the options as default if there is an error
+                # in setting values
+                pass
+            self.logger.log('A platform is found  with setting ' +\
+                           str(platform.settings))
             return platform
-        # Could not find a supported platform by the name, create a Platform
-        # object
+        # Could not find a supported platform by the name, create a
+        # Platform object
         platform = Platform(name=self.platform_description['name'],
                             settings=self.platform_description['settings'])
+        self.logger.log('A general platform is created with setting ' +\
+                        str(platform.settings))
         return platform
         
     # Message handlers

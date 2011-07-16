@@ -25,8 +25,10 @@ class SMPTask(Task):
         return
 
     def run(self):
-        cmd = shlex.split(self.command)
-        self.proc = subprocess.Popen(args=cmd)
+        #cmd = shlex.split(self.command)
+        #self.proc = subprocess.Popen(args=cmd)
+        cmd = self.command + '> /dev/null'
+        self.proc = subprocess.Popen(args=cmd, shell=True)
         self.pid = self.proc.pid
         if self.proc.poll() is None: # check if child process is still running
             self.proc.wait() # wait until the child process finish
@@ -37,7 +39,7 @@ class SMPTask(Task):
 class SMPPlatform(Platform):
     def __init__(self, maxTask=2, logHandlers=[]):
         Platform.__init__(self, name='SMP',
-                          maxTask=2,
+                          maxTask=maxTask,
                           synchronous=False,
                           logHandlers=logHandlers)
         self.configuration = {}
@@ -69,25 +71,13 @@ class SMPPlatform(Platform):
 
         proposition = info['proposition']
         command = proposition['command']
-        if 'output' in proposition.keys():
-            output = proposition['output']
-        else:
-            output='/dev/null'
         name = proposition['tag']
         if 'queue' in proposition.keys():
             queueTag = proposition['queue']
         else:
             queueTag = None
-        jobId = str(hash(command))
-        # str(ltime.tm_year) +  str(ltime.tm_mon) + str(ltime.tm_mday) + \
-            # str(ltime.tm_hour) + str(ltime.tm_min) + str(ltime.tm_sec)
-        optionStr = " "
-        for param in self.configuration.keys():
-            optionStr = optionStr + param + " " + \
-                self.configuration[param] + " "
-        cmdStr = optionStr + command
         task = SMPTask(name=name,
-                       command=cmdStr)
+                       command=command)
         self.submit(task, queue=queueTag)
         return 
   
