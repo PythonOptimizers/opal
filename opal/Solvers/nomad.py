@@ -234,7 +234,7 @@ class NOMADSolver(Solver):
                                               dataFile='surrogate.dat')
         #   surrogate.save()
         self.create_specification_file(model=blackbox,
-                                       modelExecutable='$python  blackbox.py', 
+                                       modelExecutable='$python blackbox.py', 
                                        surrogate=surrogate,
                                        surrogateExecutable=\
                                        '$python surrogate.py')
@@ -327,13 +327,11 @@ class NOMADSolver(Solver):
                            value='"' +  modelExecutable + '"')
         bbTypeStr = 'OBJ'
         for i in range(model.get_n_constraints()):
-            bbTypeStr = bbTypeStr + ' PB'
-       
+            bbTypeStr = bbTypeStr + ' PB'  
         self.set_parameter(name='BB_OUTPUT_TYPE',
                            value=bbTypeStr)
       
-        if self.surrogate is not None:
-           
+        if surrogate is not None:
             self.set_parameter(name='SGTE_EXE',
                                value='"' + surrogateExecutable + '"')
         pointStr = str(model.initial_point)
