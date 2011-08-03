@@ -124,6 +124,11 @@ class Agent(threading.Thread):
         # and the info obtained by function `eval`.
         self.content_parsers = {}
         self.logger = log.OPALLogger(name=name, handlers=logHandlers)
+        # Each agent has some "timing" variables for synchronizing to the
+        # environment. For example, to avoid to fetch a message one more time,
+        # each agent use an integer variable to store the id of last message
+        # examined in the previous fetching. 
+        self.last_examined_message_id = 0
         return
     
     def send_message(self, msg):
@@ -153,8 +158,14 @@ class Agent(threading.Thread):
             return []
         # Fetch all message that receiver is agent or whose receiver is not 
         # specified
+        #msgNum = self.environment.message_service.__len__()
         pattern = 'None|' + str(self.id)
-        queryResult = self.environment.message_service.search(receiver=pattern)
+        (queryResult, lastExamined) = self.environment.message_service.search(
+            beginPos=self.last_examined_message_id,
+            receiver=pattern)
+        self.last_examined_message_id = lastExamined
+        #for msg in queryResult:
+        #    self.logger.log('Fetch message with id ' + str(msg.id))
         result = []
         for msg in queryResult:
             if msg.id not in self.handled_messages and\
@@ -312,9 +323,18 @@ class ManagementService:
         del self.managed_objects[objId]
         return
 
+    def __len__(self):
+        return len(self.managed_objects)
+
+    def get(self, id):
+        try:
+            return self.managed_objects[id]
+        except:
+            return None
+        
     def search(self, query=None, **kwargs):
         if query is None:
-            query = MessageQuery(kwargs)
+            query = Query(kwargs)
         query.update(**kwargs)
         result = []
         for obj in self.managed_objects.values():
@@ -323,7 +343,7 @@ class ManagementService:
         return result
     
 
-class MessageQuery:
+class Query:
     def __init__(self, name='query', patterns=None, **kwargs):
         self.patterns = {}
         if patterns is not None:
@@ -333,6 +353,15 @@ class MessageQuery:
 
     def update(self, **kwargs):
         self.patterns.update(kwargs)
+        return
+
+    def match(self, obj):
+        # This method will be overriden by the sub-class
+        return True
+    
+class MessageQuery(Query):
+    def __init__(self, name='message-query', pattern=None, **kwargs):
+        Query.__init__(self, name=name, pattern=pattern, **kwargs)
         return
 
     def match(self, msg):
@@ -348,22 +377,52 @@ class MessageService(ManagementService):
     def __init__(self, logHandlers=[]):
         ManagementService.__init__(self, name='message service', 
                                    logHandlers=logHandlers)
+        
         return
 
     def create_id(self, obj):
-        import time
-        id = time.time()
+        #import time
+        #id = time.time()
+        # Creaating id following this way has potential problem if
+        # message service has a deleting message feature
+        id = self.__len__()
         return id
 
     def add(self, msg):
         id = ManagementService.add(self, msg)
         msg.id = id
-        #self.logger.log('Receive a ' + msg.performative + ' message' +\
-        #                ' from ' + str(msg.sender)[0:4] + '...' +\
-        #                ' assigned id as ' + str(msg.id) +\
-        #                ' with content ' + str(msg.content))
+        self.logger.log('Receive a ' + msg.performative + ' message' +\
+                        ' from ' + str(msg.sender)[0:4] + '...' +\
+                        ' assigned id as ' + str(msg.id) +\
+                        ' with content ' + str(msg.content))
         return id
 
+    def search(self, query=None, beginPos=0, **kwargs):
+        if query is None:
+            query = MessageQuery(**kwargs)
+        else:
+            query.update(**kwargs)
+        # Because the id also plays the role of ordering,
+        # the searching in message service is modified a little
+        # This method is called possibly with a argument indicating
+        # the begin position of search. This to avoid the
+        # research the old message (the handled message)
+        endPos = self.__len__()
+        #self.logger.log('Searching from ' + str(beginPos) + ' to ' +\
+        #               str(endPos))
+        result = []
+        for pos in range(beginPos, endPos):
+            msg = self.get(pos)
+            #self.logger.log('Examine message' +\
+            #                ' from ' + str(msg.sender)[0:4] + '...' +\
+            #                ' assigned id as ' + str(msg.id) +\
+            #                ' with content ' + str(msg.content))
+            if (msg is not None) and query.match(msg):
+                result.append(msg)
+        return (result, endPos)
+                
+        
+    
 class DirectoryService(ManagementService):
     def __init__(self, logHandlers=[]):
         ManagementService.__init__(self, name='directory service', 

@@ -200,12 +200,13 @@ class Algorithm:
             sessionTag = problem.name + '_' + parameterTag
         else:
             sessionTag = self.create_tag(problem)
-            
-        parameterFile = self.name + '_' +\
+
+        algoName = self.name.replace(' ','_')
+        parameterFile = algoName + '_' +\
                         str(sessionTag) +\
                         '.param'
                                                         
-        outputFile = self.name + '_' +\
+        outputFile = algoName + '_' +\
                      str(sessionTag) +\
                      '.measure'
 
