@@ -159,18 +159,21 @@ class Agent(threading.Thread):
         # Fetch all message that receiver is agent or whose receiver is not 
         # specified
         #msgNum = self.environment.message_service.__len__()
-        pattern = 'None|' + str(self.id)
-        (queryResult, lastExamined) = self.environment.message_service.search(
-            beginPos=self.last_examined_message_id,
-            receiver=pattern)
-        self.last_examined_message_id = lastExamined
+        ## pattern = 'None|' + str(self.id)
+        ## (queryResult, lastExamined) = self.environment.message_service.search(
+        ##     beginPos=self.last_examined_message_id,
+        ##     receiver=pattern)
+        ## self.last_examined_message_id = lastExamined
         #for msg in queryResult:
         #    self.logger.log('Fetch message with id ' + str(msg.id))
         result = []
-        for msg in queryResult:
-            if msg.id not in self.handled_messages and\
-                   msg.sender is not self.id:
-                result.append(msg)
+        ## for msg in queryResult:
+        ##     if msg.id not in self.handled_messages and\
+        ##            msg.sender is not self.id:
+        ##         result.append(msg)
+        messageBoxes = self.environment.message_service.message_boxes[self.id]
+        while len(messageBoxes):
+            result.append(messageBoxes.pop())
         return result
 
 
@@ -184,6 +187,8 @@ class Agent(threading.Thread):
         self.handled_messages.append(message.id)
         cmd, info = self.parse_message(message)
         if cmd is None: # The message could not be parsed
+            self.logger.log('The message with id = ' + str(message.id) + \
+                            ' could not be parsed')
             return
 
         if cmd in self.message_handlers.keys():
@@ -251,14 +256,17 @@ class Agent(threading.Thread):
         
         register to
         """
-        self.id = environment.directory_service.add(self)
+        self.id = environment.add_agent(self)
+        # Set the pointer to registed environment
         self.environment = environment
+        # Handle message requesting stop working
         self.message_handlers[environment.id + '-request' + '-stop'] = self.stop
         #self.logger.log('I am registered with id = ' + self.id[0:4] + '...')
         return
 
     def unregister(self):
-        self.environment.directory_service.remove(self.id)
+        self.environment.remove_agent(self.id)
+      
         return
     
     def run(self):
@@ -377,7 +385,13 @@ class MessageService(ManagementService):
     def __init__(self, logHandlers=[]):
         ManagementService.__init__(self, name='message service', 
                                    logHandlers=logHandlers)
-        
+        # message boxes store the messages for each agent. When
+        # an agent registers to the environment, its messages box
+        # is created. When a broadcast message is received, its
+        # content will be delivered to all message box but the
+        # sender. The elements in a message box is deleted by
+        # the owner agent.
+        self.message_boxes = {} 
         return
 
     def create_id(self, obj):
@@ -395,6 +409,18 @@ class MessageService(ManagementService):
                         ' from ' + str(msg.sender)[0:4] + '...' +\
                         ' assigned id as ' + str(msg.id) +\
                         ' with content ' + str(msg.content))
+        # Now deliver the message to message boxes.
+        # If it is not a broadcast message, deliver to corresponding message
+        # box
+        if msg.receiver is not None:
+            if receiver in self.message_boxes.keys():
+                self.message_boxes[receiver].append(msg)
+        else: # If it is a broadcast, deliver copies to all message boxes but
+            # sender
+            for receiver in self.message_boxes.keys():
+                if not (receiver == msg.sender):
+                    self.message_boxes[receiver].append(msg)
+        
         return id
 
     def search(self, query=None, beginPos=0, **kwargs):
@@ -486,6 +512,20 @@ class Environment(threading.Thread):
         self.logger.log('Environment is shut down \n\n')
         return
 
+    def add_agent(self, agent):
+        # Add new agent and prepare everything for this new agent.
+        # First of all, create an id for new agent add it to
+        # directory service
+        agentId = self.directory_service.add(agent)
+        # Create an empty message box for new agent
+        self.message_service.message_boxes[agentId] = []
+        return agentId
+
+    def remove_agent(self, agentId):
+        self.directory_service.remove(agentId)
+        self.message_service.message_boxes[agentId]
+        return
+    
     def run(self):
         return
 

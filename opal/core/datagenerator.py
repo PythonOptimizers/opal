@@ -109,6 +109,10 @@ class DataGenerator(Agent):
         for (param, val) in zip(self.parameters, values):
             #log.debugger.log(str((param.name, param.kind)))
             param.set_value(val)
+        # Update parameter set stored in algorithm. In the case that
+        # parameters of model data point actually to algorithm's parameter set,
+        # the following updating is not neccessary.
+        self.algorithm.update_parameters(self.parameters)
         return 
 
     def create_tag(self):
