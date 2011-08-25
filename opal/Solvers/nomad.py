@@ -47,7 +47,7 @@ class NOMADCommunicator(Agent):
       NOMAD solver
     '''
 
-    def __init__(self, name='nomad blackbox communicator',
+    def __init__(self, name='communicator',
                  logHandlers=[],
                  input=None, output=None):
         Agent.__init__(self, name=name, logHandlers=logHandlers)
@@ -269,6 +269,7 @@ class NOMADSolver(Solver):
         tab = ' '*4
         endl = '\n'
         comment = '# '
+        envName = dataFile.strip('.dat')
         bb = open(execFile, 'w')
         # Import the neccessary modules
         bb.write('import os' + endl)
@@ -280,7 +281,8 @@ class NOMADSolver(Solver):
         bb.write('from opal.Solvers.nomad import NOMADBlackbox' + endl)
         bb.write('from opal.core.modelevaluator import ModelEvaluator' + endl)
         bb.write(comment + 'Create model evaluation environment' + endl)
-        bb.write('env = NOMADBlackbox(modelFile="' + dataFile + \
+        bb.write('env = NOMADBlackbox(name="' + envName + \
+                 '",modelFile="' + dataFile + \
                  '",input=sys.argv[1], output=sys.stdout)' + endl)
         bb.write(comment + 'Activate the environment' + endl)
         bb.write('env.start()')

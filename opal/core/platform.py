@@ -6,6 +6,7 @@ class Task(Agent):
                  name=None,
                  taskId=None,
                  command=None,
+                 sessionTag=None,
                  input=None,
                  output='/dev/null',
                  logHandlers=[]):
@@ -22,6 +23,10 @@ class Task(Agent):
             Agent.__init__(self, name=command, logHandlers=logHandlers)
         else:
             Agent.__init__(self, name=name, logHandlers=logHandlers)
+        if sessionTag is None:
+            self.session_tag = self.name
+        else:
+            self.session_tag = sessionTag
         return
 
     def run(self):
@@ -43,7 +48,7 @@ class Task(Agent):
                           performative='cfp',
                           receiver=None,
                           content={'action':'collect-result',
-                                   'proposition':{'session-tag':self.name}
+                                   'proposition':{'session-tag':self.session_tag}
                                    }
                           )
         self.send_message(message)

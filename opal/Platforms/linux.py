@@ -8,11 +8,13 @@ class LINUXTask(Task):
     def __init__(self,
                  name=None,
                  command=None,
+                 sessionTag=None,
                  output='/dev/null',
                  logHandlers=[]):
         Task.__init__(self,
                       name=name,
                       command=command,
+                      sessionTag=sessionTag,
                       output=output,
                       logHandlers=logHandlers)
         return
@@ -50,7 +52,9 @@ class LINUXPlatform(Platform):
         else:
             queueTag = None
         queueTag = proposition['queue']
-        task = LINUXTask(name=name, command=command)
+        task = LINUXTask(name=name,
+                         command=command,
+                         sessionTag=proposition['tag'])
         self.submit(task, queue=queueTag)
         return 
 

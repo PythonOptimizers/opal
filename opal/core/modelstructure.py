@@ -101,10 +101,10 @@ class Objective:
         return funcVal
 
     def update_bounds(self, funcVal):
-        log.debugger.log('Bounds ' + \
-                         str((self.lower_bound, self.upper_bound)) + \
-                         ' on bbjective function is updated by new value ' + \
-                         str(funcVal))
+        #log.debugger.log('Bounds ' + \
+        #                 str((self.lower_bound, self.upper_bound)) + \
+        #                 ' on bbjective function is updated by new value ' + \
+        #                 str(funcVal))
         if self.lower_bound is None:
             self.lower_bound = funcVal
         elif funcVal < self.lower_bound:

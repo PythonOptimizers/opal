@@ -58,8 +58,8 @@ class ExperimentManager(Agent):
         else:
             self.parameters = parameters
 
-        log.debugger.log(str([(param.name, param.kind) \
-                              for param in self.parameters]))
+        #log.debugger.log(str([(param.name, param.kind) \
+        #                      for param in self.parameters]))
             
         if measures is None: # No measure subset is specified
             self.measures = algorithm.measures # All measures of algorithm is
@@ -107,7 +107,7 @@ class ExperimentManager(Agent):
     #  Private method
     def update_parameter(self, values):
         for (param, val) in zip(self.parameters, values):
-            log.debugger.log(str((param.name, param.kind)))
+            #log.debugger.log(str((param.name, param.kind)))
             param.set_value(val)
         return 
 

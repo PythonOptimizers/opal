@@ -259,6 +259,8 @@ class Agent(threading.Thread):
         self.id = environment.add_agent(self)
         # Set the pointer to registed environment
         self.environment = environment
+        # Add environment name as prefix of the name
+        self.name = environment.name + '.' + self.name
         # Handle message requesting stop working
         self.message_handlers[environment.id + '-request' + '-stop'] = self.stop
         #self.logger.log('I am registered with id = ' + self.id[0:4] + '...')

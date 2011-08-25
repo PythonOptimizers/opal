@@ -18,8 +18,12 @@ class SMPTask(Task):
     some stubs to communicate with the platform
     
     """
-    def __init__(self, name=None, taskId=None, command=None):
-        Task.__init__(self, name=name, taskId=taskId, command=command)
+    def __init__(self, name=None, taskId=None, command=None, sessionTag=None):
+        Task.__init__(self,
+                      name=name,
+                      taskId=taskId,
+                      command=command,
+                      sessionTag=sessionTag)
         self.proc = None
         self.pid = None
         return
@@ -77,7 +81,8 @@ class SMPPlatform(Platform):
         else:
             queueTag = None
         task = SMPTask(name=name,
-                       command=command)
+                       command=command,
+                       sessionTag=proposition['tag'])
         self.submit(task, queue=queueTag)
         return 
   
