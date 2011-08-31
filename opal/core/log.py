@@ -19,9 +19,7 @@ class HandlerDescription:
 
 class OPALLogger:
     """
-    We specialize logging facility of Python by this class to support
-    the ability of pickling an logger with handlers that are the streamming
-    objects
+    We specialize logging facility of Python by this class to support pickling.
     """
 
     def __init__(self, name, handlers=[]):
@@ -37,11 +35,6 @@ class OPALLogger:
         return
 
 
-    def set_name(self, name):
-        "Change logger name (useful for inherited objects)."
-        self.name = name
-
-
     def initialize(self):
 
         self.logger = logging.getLogger(self.name)
@@ -49,7 +42,7 @@ class OPALLogger:
 
         # A default handler is created for logging to file with INFO level
         handler = logging.FileHandler(filename='opal.log')
-        handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s:  %(message)s'))
+        handler.setFormatter(logging.Formatter('%(asctime)s %(name)s: %(message)s'))
         handler.setLevel(logging.INFO)
         self.logger.addHandler(handler)
         return
