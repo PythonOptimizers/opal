@@ -4,6 +4,7 @@ import os
 from opal.core.parameter import Parameter, ParameterConstraint
 from opal.core.data import DataSet
 from opal.core.measure import Measure
+from opal.core.tools import converters
 import log
 
 __docformat__ = 'restructuredtext'
@@ -52,6 +53,7 @@ class Algorithm:
         self.parameters = DataSet(name='Parameter set')
         self.measures = DataSet(name='Measure set')
         self.constraints = []
+        self.n_apriori = 0   # Number of a priori constraints.
 
         # Computational description
         self.parameter_file = self.name + '.param'
@@ -220,7 +222,7 @@ class Algorithm:
         lines = f.readlines()
         f.close()
         os.remove(measureFile)
-        converters = {'categorical':int, 'binary':int, 'integer':int, 'real':float}
+        #converters = {'categorical':int, 'binary':int, 'integer':int, 'real':float}
         measure_values = {}
         for line in lines:
             line.strip('\n')
@@ -274,9 +276,9 @@ class Algorithm:
 
 
     def add_parameter_constraint(self, paramConstraint):
-        "Register a new simple constraint on a parameter."
+        "Register a new a priori constraint on a parameter."
 
-        self.logger.log('Registering simple constraint')
+        self.logger.log('Registering a priori constraint %d' % self.n_apriori)
         if isinstance(paramConstraint, ParameterConstraint):
             self.constraints.append(paramConstraint)
         elif isinstance(paramConstraint, str):
@@ -284,6 +286,7 @@ class Algorithm:
         else:
             msg = 'paramConstraint must be a String or ParameterConstraint'
             raise TypeError, msg
+        self.n_apriori += 1
         return
 
 
