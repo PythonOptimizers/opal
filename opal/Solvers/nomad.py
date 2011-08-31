@@ -11,9 +11,6 @@ class NOMADSpecification:
 
     def __init__(self, name=None, value=None, logHandlers=[], **kwargs):
 
-        self.logger = log.OPALLogger(name='NOMADSpecification',
-                                     handlers=logHandlers)
-        #self.logger.log('Setting specification %s to %s' % (name, str(value)))
         self.name = name
         self.value = value
         return
@@ -334,5 +331,5 @@ class NOMADMPISolver(NOMADSolver):
         return
 
 
-NOMAD = NOMADSolver()
-NOMADMPI = NOMADMPISolver()
+#NOMAD = NOMADSolver()
+#NOMADMPI = NOMADMPISolver()
