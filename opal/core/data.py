@@ -180,13 +180,21 @@ class DataTable:
             length = length + len(self.table[row])
         return length
 
+
     def get_formal_length(self):
         #log.debugger.log('row, column: ' +\
         #                 str(len(self.row_identities)) + ', ' +\
         #                 str(len(self.column_identities))
         #                 )
         return len(self.row_identities)*len(self.column_identities)
-    
+
+    def get_size(self):
+        '''
+
+        Return a tuple of which each element is the size of a dimension
+        '''
+        return (len(self.row_identities), len(self.column_identities))
+            
     def __getitem__(self, key):
         if (type(key) == type(('a','tuple'))) or \
            (type(key) == type(['a list'])):

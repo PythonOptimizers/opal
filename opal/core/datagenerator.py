@@ -227,15 +227,42 @@ class DataGenerator(Agent):
         paramTag = exprInfo['parameter-tag']
         paramFile = exprInfo['parameter-file']
         measureValues = self.algorithm.read_measure(outputFile)
-        message = Message(sender=self.id,
-                          performative='inform',
-                          content={'proposition':{'what':'measure-values',
-                                                  'values':measureValues,
-                                                  'parameter-tag':paramTag,
-                                                  'problem':problem}
-                                   }
-                          )
+        if measureValues is None:
+            #self.logger.log('DEBUG for ' + paramTag + \
+            #                ' create inform-experiment-failed message')
+            message = Message(sender=self.id,
+                              performative='inform',
+                              content={'proposition':\
+                                       {'what':'experiment-failed',
+                                        'why':'result-collection-failed',
+                                        'measure-values':measureValues,
+                                        'parameter-tag':paramTag,
+                                        'problem':problem}
+                                       }
+                              )
+            ## message = Message(sender=self.id,
+            ##                   performative='inform',
+            ##                   content={'proposition':\
+            ##                            {'what':'experiment-failed',
+            ##                             'why':'result-collection-failed',
+            ##                             'problem':problem,
+            ##                             'parameter-tag':parameterTag}
+            ##                            }
+            ##                   )
+            #self.logger.log('DEBUG for ' + paramTag + str(message.content))
+            ## return
+        else:
+            message = Message(sender=self.id,
+                              performative='inform',
+                              content={'proposition':\
+                                       {'what':'measure-values',
+                                        'values':measureValues,
+                                        'parameter-tag':paramTag,
+                                        'problem':problem}
+                                       }
+                              )
         self.send_message(message)
+        #self.logger.log('DEBUG for ' + paramTag + str(message.content))
         # Remove the information entry
         del self.experiments[sessionTag]
         # Remove the parameter file

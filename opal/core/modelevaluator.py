@@ -119,11 +119,15 @@ class ModelEvaluator(Agent):
 
     def handle_experiment_failed(self, info):
         paramTag = info['proposition']['parameter-tag']
+        reason = info['proposition']['why']
+        # Send an inform message about the model-value with the value
+        # is set to None. That indicates that there is something wrong in model
+        # evaluation.
         message = Message(sender=self.id,
                           performative='inform',
                           content={'proposition':{'what':'model-value',
                                                   'values':None,
-                                                  'why':'parameters invalid',
+                                                  'why':reason,
                                                   'parameter-tag':paramTag
                                                   }
                                    })

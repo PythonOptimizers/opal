@@ -12,6 +12,10 @@ from data import DataTable
 
 
 class DataCacheEntry(DataTable):
+    '''
+
+    A data cache entry is a data table plus the paremeter values. 
+    '''
     def __init__(self, name, parameters, problems, measures):
         self.parameters = parameters
         DataTable.__init__(self,
@@ -36,6 +40,12 @@ class DataCacheEntry(DataTable):
         return valVect
 
 class DataCache(Set):
+    '''
+
+    Data cache is set of data table. Each element in set is identified by
+    parameter tag
+    
+    '''
     def __init__(self, name, problems, measures):
         self.problems = problems
         self.measures = measures
@@ -106,7 +116,15 @@ class StructureEvaluator(Agent):
         entry = self.data_cache.__getitem__(paramTag)
         entry.update_row(problem, measureValues)
         #log.debugger.log(str(entry.table))
-        return
+        # Return updated entry information.
+        storageRatio = entry.get_storage_ratio()
+        formalLength = entry.get_formal_length()
+        realLength = entry.__len__()
+        return {'storage-ratio':storageRatio,
+                'formal-length':formalLength,
+                'real-length':realLength,
+                'new-problem':problem,
+                'new-measure':measureValues}
       
     
     
@@ -125,7 +143,23 @@ class StructureEvaluator(Agent):
         problem = info['proposition']['problem']
         measureValues = info['proposition']['values']
         #log.debugger.log('Update data cache by values: ' + str(measureValues))
-        self.update_data_cache(paramTag, problem, measureValues)
+        if measureValues is None:
+            # We fail to collect the measure values of the test problem
+            # We consider the test is failed and inform it to the communicator
+            msg = Message(performative='inform',
+                          sender=self.id,
+                          content={'proposition':\
+                                   {'what':'measure-value-invalid',
+                                    'parameter-tag':paramTag,
+                                    'problem':problem,
+                                    'measure-values':measureValues
+                                    }
+                                   }
+                          )
+            self.send_message(msg)
+            return
+        
+        storageInfo = self.update_data_cache(paramTag, problem, measureValues)
         # Compute the model values
         parameters = self.data_cache.get_parameters(paramTag)
         storageRatio, measures = self.data_cache.get_measure_vectors(paramTag)
@@ -171,7 +205,8 @@ class StructureEvaluator(Agent):
                           sender=self.id,
                           content={'proposition':{'what':'partial-model-value',
                                                   'values':(objVal, consVals),
-                                                  'parameter-tag':paramTag
+                                                  'parameter-tag':paramTag,
+                                                  'storage-info':storageInfo
                                                   }
                                    })
             self.send_message(msg)
