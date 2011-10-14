@@ -91,8 +91,9 @@ class Model:
         
         self.bounds = [var.bound for var in self.variables]
         
-        # Initial point is the default values of the parameters.
-        self.initial_point = [var.value for var in self.variables]
+        # Initial points has at least one point that is the default values
+        # of the parameters.
+        self.initial_points = [[var.value for var in self.variables]]
         
         # The "simple constraints" that contain only the function of
         # parameters. This constraints will be verified before running 
@@ -110,9 +111,23 @@ class Model:
     def get_n_constraints(self):
         return len(self.inequality_constraints) + len(self.equality_constraints)
 
-    def get_iniitial_points(self):
+    def get_initial_points(self):
         return self.initial_points
 
+    def add_initial_point(self, point):
+        converters = {'real':float,
+                      'integer':int,
+                      'categorical':str}
+        initialPoint = []
+        for param, val in map(None, self.variables, point):
+            if param is None: # The point is longer
+                pass # do nothing
+            elif val is None: # Set to default value
+                initialPoint.append(param.get_default())
+            else: # Convert automatically to the corresponding type
+                initialPoint.append(converters[param.kind](val))
+        self.initial_points.append(initialPoint)
+        
     def get_bound_constraints(self):
         return self.bounds
 

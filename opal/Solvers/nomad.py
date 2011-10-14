@@ -19,17 +19,36 @@ __docformat__ = 'restructuredtext'
 class NOMADSpecification:
     "Used to specify black-box solver options."
 
-    def __init__(self,name=None, value=None,**kwargs):
+    def __init__(self,name=None, value=None, multiplicity=False, **kwargs):
         self.name = name
-        self.value = value
+        # Multiplicity indicates that the specification may be set to be
+        # several possilibities at once. For example the value of initial point
+        # X0. In the case multiplicity is True, value is a list
+        self.multiplicity = multiplicity
+        if value is not None:
+            self.values = [value]
+        else:
+            self.values = []
         pass
 
+    def set_value(self, value):
+        if self.multiplicity:
+            # print self.multiplicity
+            self.values.append(value)
+        else:
+            self.values = [value]
+        return
+    
     def identify(self):
         return self.name
     
     def str(self):
-        if (self.name is not None) and (self.value is not None):
-            return self.name + ' ' + str(self.value)
+        if (self.name is not None) and (len(self.values) > 0):
+            resultStr = ''
+            for val in self.values:
+                resultStr = resultStr + self.name + ' ' + str(val) + '\n'
+            resultStr = resultStr.strip('\n') # Remove the last break line
+            return resultStr
         return ""
 
 class NOMADCommunicator(Agent):
@@ -253,8 +272,8 @@ class NOMADSolver(Solver):
         if os.path.exists('surrogate.dat'):
             os.remove('surrogate.dat')
 
-        if os.path.exists(self.paramFileName):
-            os.remove(self.paramFileName)
+        #if os.path.exists(self.paramFileName):
+        #    os.remove(self.paramFileName)
         return
 
     def generate_blackbox_executable(self,
@@ -321,10 +340,7 @@ class NOMADSolver(Solver):
         bbInputType = bbInputType + ')'
         self.set_parameter(name='BB_INPUT_TYPE',
                            value=bbInputType)
-        self.set_parameter(name='DISPLAY_DEGREE',
-                           value=1)
-        self.set_parameter(name='DISPLAY_STATS',
-                           value='EVAL BBE [ SOL, ] BBO TIME')
+        
         self.set_parameter(name='BB_EXE',
                            value='"' +  modelExecutable + '"')
         bbTypeStr = 'OBJ'
@@ -336,11 +352,15 @@ class NOMADSolver(Solver):
         if surrogate is not None:
             self.set_parameter(name='SGTE_EXE',
                                value='"' + surrogateExecutable + '"')
-        pointStr = str(model.initial_point)
-       
-        self.set_parameter(name='X0',
-                           value= pointStr.replace(',',' '))
-
+            
+        for point in model.get_initial_points():
+            pointStr = str(point)
+            #print pointStr
+            self.set_parameter(name='X0',
+                               value= pointStr.replace(',',' '),
+                               multiplicity=True)
+            
+        #print self.parameter_settings['X0'].str()
         if model.bounds is not None:
             lowerBoundStr = str([bound[0] for bound in model.bounds \
                                      if bound is not None])\
@@ -363,16 +383,26 @@ class NOMADSolver(Solver):
             self.set_parameter(name='STATS_FILE',
                                value=self.resultFileName + \
                                ' EVAL & BBE & [ SOL ] & OBJ & TIME \\\\')
-        
+        if 'DISPLAY_DEGREE' not in self.parameter_settings:
+            self.set_parameter(name='DISPLAY_DEGREE',
+                               value=1)
+        if 'DISPLAY_STATS' not in self.parameter_settings:
+            self.set_parameter(name='DISPLAY_STATS',
+                               value='EVAL BBE [ SOL, ] BBO TIME')
         descrFile = open(self.paramFileName, "w")
         for param_setting in self.parameter_settings:
             descrFile.write(param_setting.str() + '\n')
         descrFile.close()
         return
 
-    def set_parameter(self, name=None, value=None):
-        param = NOMADSpecification(name=name,value=value)
-        self.parameter_settings.append(param)
+    def set_parameter(self, name=None, value=None, multiplicity=False):
+        if name not in self.parameter_settings:
+            param = NOMADSpecification(name=name,
+                                       value=value,
+                                       multiplicity=multiplicity)
+            self.parameter_settings.append(param)
+        else:
+            self.parameter_settings[name].set_value(value)
         return
 
     def run(self):
