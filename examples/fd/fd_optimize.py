@@ -1,7 +1,7 @@
 # Define a parameter optimization problem in relation to the FD algorithm.
 from fd_declaration import FD
 from opal import ModelStructure, ModelData, Model
-from opal.Solvers import NOMAD
+from opal.Solvers import NOMADSolver
 
 # Return the error measure.
 def get_error(parameters, measures):
@@ -11,6 +11,9 @@ def get_error(parameters, measures):
 data = ModelData(FD)
 struct = ModelStructure(objective=get_error)  # Unconstrained
 model = Model(modelData=data, modelStructure=struct)
+
+# Create solver instance.
+NOMAD = NOMADSolver(cleanup=False)
 
 # Solve parameter optimization problem.
 NOMAD.set_parameter(name='DISPLAY_STATS',
