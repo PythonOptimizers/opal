@@ -13,22 +13,22 @@ class LSFTask(Task):
                  logHandlers=[]):
         self.output = "-N -oo /tmp/lsf-output.log" 
         lsfCmd = "bsub " + \
-                 "  -J " + taskId + optionStr + command
+                 "  -J " + taskId + lsfOptions + command
         Task.__init__(self,
                       name=name,
                       taskId=taskId,
                       command=lsfCmd,
-                      logHandler=logHandlers)
+                      logHandlers=logHandlers)
         self.job_id = taskId
         return
 
     def run(self):
         os.system(self.command)
-        os.wait('ended("' + self.job_id +')')
+        self.wait('ended("' + self.job_id +')')
         Task.run(self)
         return
 
-    def wait(self,condition):
+    def wait(self, condition):
         # This function playes in role of synchronyzers
         # 1 - Generate a synchronizing job including a segment code that
         #     notifies to current process by socket (notifyToMaster)

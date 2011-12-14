@@ -148,9 +148,9 @@ def run(param_file, problem, keep=False):
             
     os.chdir(workDir)
     write_specfile(param_file)
-    os.system('sifdecode ' + problem + ' > /dev/null')
-    os.system('runcuter -p ipopt > ' + problem + '.sol')
-    measures = get_measures(problem + '.sol')
+    #os.system('sifdecode ' + problem + ' > /dev/null')
+    #os.system('runcuter -p ipopt > ' + problem + '.sol')
+    #measures = get_measures(problem + '.sol')
     os.chdir(curDir)
     if not keep:
         shutil.rmtree(workDir)
