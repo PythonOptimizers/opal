@@ -6,13 +6,26 @@ from ..core.platform import Platform
 from ..core.platform import Task
 
 class LSFTask(Task):
-    def __init__(self, taskId=None, command=None, logHandlers=[]):
-        Task.__init__(self, taskId=taskId, command=command, logHandler=logHandlers)
+    def __init__(self, name=None,
+                 taskId=None,
+                 command=None,
+                 lsfOptions=None,
+                 logHandlers=[]):
+        self.output = "-N -oo /tmp/lsf-output.log" 
+        lsfCmd = "bsub " + \
+                 "  -J " + taskId + optionStr + command
+        Task.__init__(self,
+                      name=name,
+                      taskId=taskId,
+                      command=lsfCmd,
+                      logHandler=logHandlers)
+        self.job_id = taskId
         return
 
     def run(self):
         os.system(self.command)
-        os.wait('ended("' + self.id +')')
+        os.wait('ended("' + self.job_id +')')
+        Task.run(self)
         return
 
     def wait(self,condition):
@@ -51,24 +64,26 @@ class LSFTask(Task):
         #-----------------------
         #  Generating synchronizing job
         #----------------------
-        synchronizerFile = open('synchronizer.py','w')
+        synchronizerFile = 'synchronizer_' + self.job_id + '.py'
+        f = open('synchronizer.py','w')
         #synchronizerFile.write('#!/usr/bin/env python\n')
-        synchronizerFile.write('import socket\n')
-        synchronizerFile.write('port = ' + str(port) + '\n')
-        synchronizerFile.write('s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n')
-        synchronizerFile.write('s.connect(("' + hostname + '",' + str(port) + '))\n')
-        synchronizerFile.write('s.send("'+ keyStr + '")\n')
-        synchronizerFile.write('s.close()\n')
-        synchronizerFile.close()
-        #os.chmod('synchronizer.py',0755)
-        #------------------------
-        # Launch the synchronizer
-        #------------------------
-        ltime = time.localtime()
-        timeStr = str(ltime.tm_year) + '-' + str(ltime.tm_mon) + '-' + str(ltime.tm_mday) + ' ' + \
-                  str(ltime.tm_hour) + ':' + str(ltime.tm_min) + ':' + str(ltime.tm_sec)
-        os.system('echo ' + timeStr + ' Begin waiting >> lsf-sync.log')
-        synchronizeCmd = 'bsub -w "' + condition + '" python synchronizer.py > /dev/null'
+        f.write('import socket\n')
+        f.write('port = ' + str(port) + '\n')
+        f.write('s = socket.socket(socket.AF_INET, ' + \
+                'socket.SOCK_STREAM)\n')
+        f.write('s.connect(("' + hostname + '",' + \
+                str(port) + '))\n')
+        f.write('s.send("'+ keyStr + '")\n')
+        f.write('s.close()\n')
+        f.close()
+        
+        #ltime = time.localtime()
+        #timeStr = str(ltime.tm_year) + '-' + str(ltime.tm_mon) + '-' + \
+        #          str(ltime.tm_mday) + ' ' + str(ltime.tm_hour) + ':' + \
+        #          str(ltime.tm_min) + ':' + str(ltime.tm_sec)
+        #os.system('echo ' + timeStr + ' Begin waiting >> lsf-sync.log')
+        synchronizeCmd = 'bsub -w "' + condition + \
+                         '" python ' + synchronizerFile + ' > /dev/null'
         os.system(synchronizeCmd)
         #-----------------------
         # Waiting for the notify from synchonizer
@@ -85,20 +100,24 @@ class LSFTask(Task):
 
         #clientsocket.close()
         serversocket.close()
-        ltime = time.localtime()
-        timeStr = str(ltime.tm_year) + '-' + str(ltime.tm_mon) + '-' + str(ltime.tm_mday) + ' ' + \
-                  str(ltime.tm_hour) + ':' + str(ltime.tm_min) + ':' + str(ltime.tm_sec)
-        os.system('echo ' + timeStr + ' End waiting >> lsf-sync.log')
-        os.remove('synchronizer.py')
+        #ltime = time.localtime()
+        #timeStr = str(ltime.tm_year) + '-' + str(ltime.tm_mon) + '-' + \
+        #          str(ltime.tm_mday) + ' ' + str(ltime.tm_hour) + ':' + \
+        #          str(ltime.tm_min) + ':' + str(ltime.tm_sec)
+        #os.system('echo ' + timeStr + ' End waiting >> lsf-sync.log')
+        os.remove(synchronizerFile)
         return
 
 
 
 class LSFPlatform(Platform):
-    def __init__(self, maxTask=3, synchronous=True):
-        Platform.__init__(self, maxTask=3)
+    def __init__(self, maxTask=3, synchronous=False, logHandlers=[]):
+        Platform.__init__(self,
+                          name='LSF',
+                          maxTask=maxTask,
+                          logHandlers=logHandlers)
         self.configuration = {}
-        self.group_id = None
+        self.message_handlers['cfp-execute'] = self.create_task
         pass
 
     def set_config(self, parameterName, parameterValue):
@@ -106,22 +125,38 @@ class LSFPlatform(Platform):
         return
 
     def initialize(self, testId):
-        self.group_id = "/g" + testId
         return
 
-    def submit(self, command):
-        jobId = str(hash(command))
+    def create_task(self, info):
+        '''
+
+        Handle a call for proposal of executing a command through LSF platform
+        '''
+
+        if 'proposition' not in info.keys():
+            self.logger.log('Proposal of executing a command has not ' + \
+                            'information to process')
+            return
+        execCmd = info['proposition']['command']
+        tag = info['proposition']['tag']
+        if 'queue' in info['proposition'].keys():
+            queueTag = info['proposition']['queue']
+        else:
+            queueTag = None
+            
         # str(ltime.tm_year) +  str(ltime.tm_mon) + str(ltime.tm_mday) + \
             # str(ltime.tm_hour) + str(ltime.tm_min) + str(ltime.tm_sec)
         optionStr = " "
         for param in self.configuration.keys():
-            optionStr = optionStr + param + " " + self.configuration[param] + " "
-        cmdString = "bsub -N -oo " + output + " -g " + self.group_id + "  -J " + jobId + optionStr + command 
-        task = LSFTask(id=jobId, command=cmdString)
-        Platform.submit(self, task)
-        return jobId
-
-
-    
+            optionStr = optionStr + param + " " + \
+                        self.configuration[param] + " "
+        if queueTag is not None:
+            optionStr = " -g " + queueTag + optionStr
+        task = LSFTask(name=tag,
+                       taskId=tag,
+                       command=execCmd,
+                       lsfOptions=optionStr)
+        self.submit(task, queue=queueTag)
+        return 
 
 LSF = LSFPlatform()
