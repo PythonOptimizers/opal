@@ -18,7 +18,7 @@ class Task(Agent):
         '''
         self.task_id = taskId # task_id is assigned by platform
         self.command = command
-        self.output=output
+        self.outpu»ƒt=output
         if name is None:
             Agent.__init__(self, name=command, logHandlers=logHandlers)
         else:
