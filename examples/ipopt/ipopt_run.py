@@ -33,8 +33,9 @@ def extract_measure(content, description, name,
 
 def write_specfile(parameter_file, loc='.', name='ipopt.opt'):
     # Read parameters into a dictionary
-    parms = read_params_from_file(parameter_file)
-
+    #parms = read_params_from_file(parameter_file)
+    parms = {}
+    
     # Write out ipopt.opt
     f = open(os.path.join(loc, name), 'w')
     for pName in parms:
@@ -148,9 +149,9 @@ def run(param_file, problem, keep=False):
             
     os.chdir(workDir)
     write_specfile(param_file)
-    #os.system('sifdecode ' + problem + ' > /dev/null')
-    #os.system('runcuter -p ipopt > ' + problem + '.sol')
-    #measures = get_measures(problem + '.sol')
+    os.system('sifdecode ' + problem + ' > /dev/null')
+    os.system('runcuter -p ipopt > ' + problem + '.sol')
+    measures = get_measures(problem + '.sol')
     os.chdir(curDir)
     if not keep:
         shutil.rmtree(workDir)

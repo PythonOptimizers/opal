@@ -11,7 +11,7 @@ params = [param for param in IPOPT.parameters
 # Choose all solvable problems 
 #from ipopt_test_problems import ipopt_solvable_problems as problems
 #from ipopt_test_problems import test_problems as problems
-from ipopt_test_problems import CUTEr_constrained_problems
+from ipopt_test_problems import CUTEr_constrained_problems, test_problems
 
 if len(sys.argv) > 1:
     f = open(sys.argv[1])
@@ -22,7 +22,8 @@ if len(sys.argv) > 1:
                  if prob.name in representativeProblems ]
 else:
     problems = CUTEr_constrained_problems
-    
+problems = test_problems
+
 data = ModelData(IPOPT, problems, params)
 
 from ipopt_composite_measures import sum_eval, sum_unsolvability
@@ -30,10 +31,14 @@ structure = ModelStructure(objective=MeasureFunction(sum_eval, addivity=1),
                            constraints=[(None, sum_unsolvability, 0)])
 
 # Instantiate black-box solver.
-from opal.Platforms import LSF
-LSF.set_parameter({'MAX_TASK':10})
+#from opal.Platforms import LSF
+#LSF.set_parameter({'MAX_TASK':10})
 
-model = Model(modelData=data, modelStructure=structure, platform=LSF)
+from opal.Platforms import SunGrid
+SunGrid.set_config('-q','all.q')
+SunGrid.set_parameter({'MAX_TASK':10})
+
+model = Model(modelData=data, modelStructure=structure, platform=SunGrid)
 
 if len(sys.argv) > 2: # The initial point is provided by external file
     f = open(sys.argv[2])

@@ -18,7 +18,7 @@ class Task(Agent):
         '''
         self.task_id = taskId # task_id is assigned by platform
         self.command = command
-        self.outpu»ƒt=output
+        self.output = output
         if name is None:
             Agent.__init__(self, name=command, logHandlers=logHandlers)
         else:
@@ -122,7 +122,8 @@ class Platform(Agent):
         else:
             self.queue_system = queueSystem
         self.settings = {'MAX_TASK':maxTask,
-                         'SYNCHRONOUS':synchronous}
+                         'SYNCHRONOUS':synchronous,
+                         'OPTIONS':None}
         if settings is not None:
             self.settings.update(settings)
         self.settings.update(kwargs)
