@@ -144,6 +144,7 @@ class Constraint:
 
         if name is None:
             name = 'cons%d' % self.__id
+        self.name = name
 
         self.function = MeasureFunction(function)
         self.n_size = 2
