@@ -113,13 +113,12 @@ class CUTErFactory:
         CUTEr =  ProblemCollection(name='CUTEr collection')
         with open(self.classifyFile, 'r') as f:
             line = f.readline().strip()
-            if len(line) <= 2:
-                # Empty line with new line symbol
-                continue
-            fields = line.split(' ',1)
-            prob = self.generate_problem(fields[0].strip(),fields[1].strip())
-            if prob is not None:
-                CUTEr.add_problem(prob)
+            if len(line) > 2:
+                fields = line.split(' ',1)
+                prob = self.generate_problem(fields[0].strip(),
+                                             fields[1].strip())
+                if prob is not None:
+                    CUTEr.add_problem(prob)
         return CUTEr
 
     def generate_problem(self,problem_name,classify_string=None,param=None):
