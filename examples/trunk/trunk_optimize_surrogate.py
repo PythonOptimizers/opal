@@ -2,7 +2,7 @@
 # This is the sequential version.
 from trunk_declaration import trunk
 from opal import ModelStructure, ModelData, Model
-from opal.Solvers import NOMAD
+from opal.Solvers import NOMADSolver
 from opal.TestProblemCollections import CUTEr
 
 def sum_heval(parameters, measures):
@@ -59,6 +59,7 @@ surr_model = Model(modelData=surr_data, modelStructure=surr_struct,
                    dataFile='surrogate.dat')
 
 # Solve parameter optimization problem.
+NOMAD = NOMADSolver(cleanup=True)
 NOMAD.set_parameter(name='MAX_BB_EVAL', value=10)
 NOMAD.set_parameter(name='DISPLAY_STATS',
                     value='%3dBBE [ %7.1eSOL, ]  %8.3eOBJ  %6.2fTIME')
