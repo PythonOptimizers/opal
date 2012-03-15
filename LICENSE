@@ -1,0 +1,30 @@
+    OPAL --- Optimization of Algorithms
+    Copyright (C) 2012  Charles Audet, Kien-Cong Dang, Dominique Orban.
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+    Charles Audet <Charles.Audet@gerad.ca>
+    GERAD and Ecole Polytechnique de Montreal
+    Department of Mathematics and Industrial Engineering
+    Montreal QC, Canada
+
+    Kien-Cong Dang <Kien.Cong.Dang@gerad.ca>
+    GERAD
+    Montreal QC, Canada
+
+    Dominique Orban <Dominique.Orban@gerad.ca>
+    GERAD and Ecole Polytechnique de Montreal
+    Department of Mathematics and Industrial Engineering
+    Montreal QC, Canada
