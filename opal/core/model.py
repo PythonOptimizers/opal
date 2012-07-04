@@ -1,5 +1,7 @@
+from tempfile import NamedTemporaryFile
 import pickle
 import log
+import os
 
 __docformat__ = 'restructuredtext'
 
@@ -24,7 +26,7 @@ class Model:
 
         self.model_data = modelData
         self.model_structure = modelStructure
-        self.data_file = dataFile
+        #self.data_file = dataFile
         self.logger = log.OPALLogger(name='Model',
                                      handlers=logHandlers)
         self.logger.log('Initializing Model object')
@@ -75,8 +77,10 @@ class Model:
     def save(self):
 
         self.logger.log('Dumping model object to file')
-        blackboxDataFile = open(self.data_file, "w")
+        #blackboxDataFile = open(self.data_file, "w")
+        blackboxDataFile = NamedTemporaryFile(mode="w", delete=False)
         pickle.dump(self, blackboxDataFile)
+        self.data_file = blackboxDataFile.name
         blackboxDataFile.close()
         return
 
@@ -91,3 +95,10 @@ class Model:
 
         self.logger.log('Requesting bound constraints')
         return self.bounds
+
+
+    def __del__(self):
+
+        # Delete temporary data file.
+        self.logger.log('Deleting temp file')
+        os.remove(self.data_file)
