@@ -40,17 +40,20 @@ class CooperationTreeFactory:
     An object of this class is used to create cooperation trees.
     """
     def __init__(self, name="CooperationTreeFactory", mapping=None):
+
         self._mapping = {}
-        self._mapping[0] = (0, sort.insertionsort)
-        self._mapping[1] = (0, sort.mergesort)
-        self._mapping[2] = (0, sort.quicksort)
-        self._mapping[3] = (0, sort.radixsort)
-        self._mapping[4] = (1, split)
-        self._mapping[5] = (1, decompose)
-        self._mapping[6] = (0, sort.heapsort)
-        self._mapping[7] = (0, sort.selectionsort)
-        self._mapping[8] = (0, sort.timsort)
-        if mapping is not None:
+        if mapping is None:
+            # Initialize by default
+            self._mapping[0] = (0, sort.insertionsort)
+            self._mapping[1] = (0, sort.mergesort)
+            self._mapping[2] = (0, sort.quicksort)
+            self._mapping[3] = (0, sort.radixsort)
+            self._mapping[4] = (1, split)
+            self._mapping[5] = (1, decompose)
+            self._mapping[6] = (0, sort.heapsort)
+            self._mapping[7] = (0, sort.selectionsort)
+            self._mapping[8] = (0, sort.timsort)
+        else:
             self._mapping.update(mapping)
         self._name = name
         return
@@ -79,13 +82,12 @@ class CooperationTreeFactory:
 
     def createTreeFromEncodedNumber(self,
                                     name="CoopTree",
-                                    encodedNumber=2): # Quick sort
-        if len(self._mapping) <= 10:
-            radix = 10
-        else:
-            radix = len(self._mapping)
+                                    encodedNumber=2,
+                                    radix=10): # Quick sort
         keySequence = []
         q = encodedNumber
+        if q == 0:
+            return [0]
         while q != 0:
             keySequence.append(q % radix)
             q = q / radix
