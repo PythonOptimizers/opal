@@ -32,6 +32,7 @@ class ModelData:
                  problems=[],
                  parameters=None, 
                  measures=None,
+                 neighborhoods=[],
                  **kwargs):
         # The core variables
         self.algorithm = algorithm
@@ -49,7 +50,10 @@ class ModelData:
             self.measures = algorithm.measures
         else:
             self.measures = measures
-
+        # The information of parameter space can be provided by definitions
+        # of neighborhood.
+        self.neighborhoods = neighborhoods
+        
         self.running_options = {}
         self.running_options.update(kwargs)
         return

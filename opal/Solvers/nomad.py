@@ -251,6 +251,10 @@ class NOMADSolver(Solver):
             self.generate_blackbox_executable(model=surrogate,
                                               execFile='surrogate.py',
                                               dataFile='surrogate.dat')
+        suppInfo = blackbox.get_parameter_space_information()
+        if suppInfo["neighborhood"] is not None:
+            self.generate_neighborhood_executable(suppInfo["neighborhood"],
+                                                  execFile="neighbors.py")
         #   surrogate.save()
         self.create_specification_file(model=blackbox,
                                        modelExecutable='$python blackbox.py', 
@@ -321,7 +325,9 @@ class NOMADSolver(Solver):
                                   model=None,
                                   modelExecutable=None,
                                   surrogate=None,
-                                  surrogateExecutable=None):
+                                  surrogateExecutable=None,
+                                  neighborhood=None,
+                                  neighborhoodExecutable=None):
         "Write NOMAD config to file based on parameter optimization problem."
 
         if model is None:
@@ -352,7 +358,9 @@ class NOMADSolver(Solver):
         if surrogate is not None:
             self.set_parameter(name='SGTE_EXE',
                                value='"' + surrogateExecutable + '"')
-            
+        if neighborhood is not None:
+            self.set_parameter(name='NEIGHBORHOOD_EXE',
+                               value='"' + neighborhoodExecutable + '"')
         for point in model.get_initial_points():
             pointStr = str(point)
             #print pointStr
