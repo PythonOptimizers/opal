@@ -148,24 +148,6 @@ class Model:
     def get_structure(self):
         return self.structure
 
-    # The following methods are used for serialization 
-    # The serialized content is two lines, one for data
-    # and the other for structure
-
-    ## def __getstate__(self):
-    ##     content = {}
-    ##     content['data'] = pickle.dumps(self.data)
-    ##     content['structure'] = pickle.dumps(self.structure)
-    ##     content['options'] = pickle.dumps(self.evaluating_options)
-    ##     content['platform'] = pickle.dumps(self.platform_description)
-    ##     return content
-
-    ## def __setstate__(self, content):
-    ##     self.data = pickle.loads(content['data'])
-    ##     self.structure = pickle.loads(content['structure'])
-    ##     self.evaluating_options = pickle.loads(content['options'])
-    ##     self.platform_description = pickle.loads(content['platform'])
-    ##     self.initialize()
-    ##     return
+   
     
 

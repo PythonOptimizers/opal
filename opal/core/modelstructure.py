@@ -2,22 +2,22 @@ import sys
 import os.path
 import marshal
 import new
+import types 
 import log
 
-class MeasureFunction:
+
+from savablefunction import SavableFunction
+
+class MeasureFunction(SavableFunction):
     """
     This class contains the information of a measure function that
     built up from the parameter and elementary measure \varphi(p,\mu)
     """
     def __init__(self, function=None, **kwargs):
-        if function is None:
-            raise Exception('Measure function definition is invalid')
-        # The information of a function include all possible description
-        # such as convexity, ... Any information is accepted
-        # We concentrate on a property called possitively-additive.
-        # A function objective is called possitively-additive if function value
-        # of partial data is always less than or equal to the data-full one
-        
+       
+        SavableFunction.__init__(self, function, **kwargs)
+        if function.__code__.co_argcount < 2:
+            raise Exception("A measure function has at least two arguments")
         self.information = {'additivity':0, # Undetermined
                                             # additivity = 1 means
                                             # function is possitively-
@@ -27,41 +27,8 @@ class MeasureFunction:
                             'convexity':0 # Undetermined
                             }
         self.information.update(kwargs)
-        # It's important to define a function with two arguments: 
-        #the parameter and the measure
-        # We check if the given function sastifies this constraint:
-
-        if function.__code__.co_argcount < 2:
-            return
-        self.func = function
-        self.name = function.__code__.co_name    
-        #self.name = function.__code__.co_name
-        #self.code_string = None
+       
         pass
-
-    def evaluate(self, *args, **kwargs):
-        if self.func is  None:
-            raise Exception('The measure function is not defined')
-        return self.func(*args, **kwargs)
-        #self.load()
-        #value = self.func(*args, **kwargs)
-        #del self.func
-        #self.func = None # Keep self.func is None for the next pickling
-        #return value
-    
-    def __getstate__(self):
-        content = {}
-        content['code'] = marshal.dumps(self.func.__code__)
-        content['information'] = self.information
-        return content
-
-    def __setstate__(self, content):
-        self.func = new.function(marshal.loads(content['code']),globals())
-        self.information = content['information']
-        return
-        
-    def __call__(self,*args,**kwargs):
-        return self.evaluate(*args,**kwargs)
 
     # Because measure function is kind of special for our
     # problem. Some properties is exploited here, for example
@@ -205,7 +172,8 @@ class ModelStructure:
     def __init__(self,
                  name='modelstruct',
                  objective=None, 
-                 constraints=[]):
+                 constraints=[],
+                 **kwargs):
         self.name = name
         if isinstance(objective, Objective):
             self.objective = objective
@@ -221,5 +189,19 @@ class ModelStructure:
                                             function=cons[1],
                                             upperBound=cons[2])
                     self.constraints.append(constraint)
+        # informations can contain any information about the structure,
+        # this is the supplementary information in addition to two basic
+        # information of the objective function and constraint
+        # An example of this kind of information is the neighborhodd definition
+        # that is user knowledge about the parameter space
+        self.informations = {}
+        self.informations.update(kwargs)
+        # For information that is provided as an user-defined function,
+        # it should be transformed to an SavableFunction object. This allows
+        # to save the structure as a data file
+        for infoName, info in self.informations.items():
+            if isinstance(info, (types.FunctionType, types.BuiltinFunctionType)):
+                self.informations[infoName] = SavableFunction(function=info,
+                                                              name=infoName)
         return
         

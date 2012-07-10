@@ -87,7 +87,7 @@ class CooperationTreeFactory:
         keySequence = []
         q = encodedNumber
         if q == 0:
-            return [0]
+            return self.createTree(name=name, methodSequence=[0])
         while q != 0:
             keySequence.append(q % radix)
             q = q / radix
@@ -162,18 +162,18 @@ def coopsort(l, currentNode):
     if currentNode.isLeafNode():
         sortMethod = currentNode.getMethod()
         l = sortMethod(l)
-        print "sorted by", sortMethod.__name__, l
+        #print "sorted by", sortMethod.__name__, l
         return l
     else:
         decomposeMethod = currentNode.getMethod()
         l1, l2 = decomposeMethod(l)
-        print decomposeMethod.__name__, "the list into", l1, l2
+        #print decomposeMethod.__name__, "the list into", l1, l2
         t1, t2 = currentNode.getChildren()
         l1 = coopsort(l1, t1)
         l2 = coopsort(l2, t2)
         mergeMethod = get_inverse(decomposeMethod)
         l = mergeMethod(l1, l2)
-        print mergeMethod.__name__, "two sorted list to get", l
+        #print mergeMethod.__name__, "two sorted list to get", l
     return l
 
        

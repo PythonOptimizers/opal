@@ -38,6 +38,7 @@ class ModelEvaluator(Agent):
                 f.close()
            
         self.model = model
+        self.model_file = modelFile
         self.options.update(self.model.evaluating_options)
        
         # if platform option is provided by a string representing the name of 
@@ -148,6 +149,16 @@ class ModelEvaluator(Agent):
         self.send_message(message)
         return
         
-      
+    def stop(self, info=None):
+        '''
+        
+        Message handlers for STOP signal
+        '''
+        # the model is saved back to file
+        f = open(self.model_file, 'w')
+        pickle.dump(self.model, f)
+        f.close()
+        Agent.stop(self, info)
+        return
   
    

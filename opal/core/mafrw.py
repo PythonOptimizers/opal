@@ -284,13 +284,14 @@ class Agent(threading.Thread):
         return
 
     # Message handlers
+
     def stop(self, info=None):
         '''
         
         Message handlers by default.
         '''
         self.working = False
-        # self.logger.log('I finish my work')
+        self.logger.log('I finish my work')
         return
 
 
@@ -510,6 +511,7 @@ class Environment(threading.Thread):
         # Wait all agent finish there work
         for agent in self.directory_service.get_all():
             if agent.is_alive():
+                self.logger.log('Waiting for ' + agent.name)
                 agent.join()
         self.logger.log('Environment is shut down \n\n')
         return
