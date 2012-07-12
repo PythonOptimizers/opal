@@ -12,7 +12,8 @@ import time
 def run(param_file, problem):
     N = int(problem)
     params = read_params_from_file(param_file)
-   
+    if int(params['nothing']) != 0:
+        return {'TIME': float("inf")}
     #print params
     coopTreeFactory = CooperationTreeFactory(name="test factory")
     coopTree = coopTreeFactory.createTreeFromEncodedNumber(name='coop tree',

@@ -16,6 +16,11 @@ coopsort.add_param(Parameter(name='coopTree',
                              default=0,
                              description='An encoded number represents cooperation tree'))
 
+coopsort.add_param(Parameter(name='nothing',
+                             kind='integer',
+                             default=0,
+                             description='For avoiding the bug of one categorical variable of NOMAD'))
+			    
 coopsort.add_measure(Measure(name='TIME',
                              kind='real',
                              description='Computing time'))
