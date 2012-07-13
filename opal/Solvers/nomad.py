@@ -72,7 +72,8 @@ class NOMADCommunicator(Agent):
         Agent.__init__(self, name=name, logHandlers=logHandlers)
         self.inputFile = input
         self.outputStream = output
-        self.message_handlers['inform-model-value'] = self.write_output
+        self.message_handlers['inform-model-value'] = self.write_model_value
+        self.message_handlers['inform-neighborhood'] = self.write_neighbors
         return
     
     def read_input(self, inputFile=None):
@@ -94,7 +95,7 @@ class NOMADCommunicator(Agent):
         f.close()
         return inputValues
 
-    def write_output(self, info):
+    def write_model_value(self, info):
         """
 
         Message handlers that write the values obtained by the model-value
@@ -112,16 +113,7 @@ class NOMADCommunicator(Agent):
         outputStr = ''
         self.outputStream.write(str(objValue) + '\n')
         outputStr = outputStr + str(objValue) + ' '
-        # Constraint values are list of tuple
-        # (left_size_value, right_size_value) values that computed from a 
-        # constraint of form
-        #   left_bound <= f(x) <= right_bound
-        # by following rule:
-        #   left_size_value = left_bound - f(x)
-        #   right_size_value = f(x) - right_bound
-        # So in the desired form of NOMAD (g(x) <= 0), each tuple of constraint
-        # value is written as two constraints:
-        #   left_bound - f(x) <= 0, and  f(x) - right_bound <=0
+     
         for cons in consValues:
             if cons[0] is not None:
                 self.outputStream.write(str(cons[0]) + ' ')
@@ -135,6 +127,22 @@ class NOMADCommunicator(Agent):
         
         return
 
+    def write_neighbors(self, info):
+        """
+        Message handlers that write function values of a function evaluation.
+    
+        """
+        neighbors = info['proposition']['values']
+        outputStr = ''
+        for neighbor in neighbors:
+            for coordinate in neighbor:
+                outputStr = outputStr + str(coordinate) + ' '
+            outputStr = outputStr + '\n'
+        self.outputStream.write(outputStr)
+        self.logger.log('Neighbors: ' + outputStr)
+        self.stop()
+        return
+    
     def  run(self):
         if self.inputFile is not None:
             inputValues = self.read_input(inputFile=self.inputFile)
@@ -142,7 +150,8 @@ class NOMADCommunicator(Agent):
                       sender=self.id,
                       receiver=None,
                       content={'action':'evaluate-point',
-                               'proposition':{'point': inputValues}
+                               'proposition':{'point': inputValues,
+                                              'function': 'blackbox-model'}
                                })
         self.sent_request_id = self.send_message(msg)
         Agent.run(self)
@@ -176,20 +185,19 @@ class NOMADBlackbox(Environment):
     def __init__(self, 
                  name='nomad blackbox',
                  logHandlers=[],
-                 modelFile=None,
+                 worker=None,
                  input=None,
                  output=None):
         # Initialize agents
         Environment.__init__(self, name=name, logHandlers=logHandlers)
-        self.model_file = modelFile
+        # Create the default agent of this environment
         self.communicator = NOMADCommunicator(name='communicator',
                                               input=input, 
                                               output=output)
-    
-        self.evaluator = ModelEvaluator(name='evaluator', modelFile=modelFile)
+        self.worker = worker
         # Register the agnets
         self.communicator.register(self)
-        self.evaluator.register(self)
+        self.worker.register(self)
         return
             
 
@@ -201,11 +209,6 @@ class NOMADBlackbox(Environment):
         # (evaluator replies)
         self.communicator.join()
         self.finalize()
-        # Dump the model to data file, some information is updated
-        if self.evaluator.model is not None:
-            f = open(self.model_file, 'w')
-            pickle.dump(self.evaluator.model, f)
-            f.close()
         self.logger.log('End of a session')
         return 
    
@@ -247,30 +250,49 @@ class NOMADSolver(Solver):
         self.generate_blackbox_executable(model=blackbox,
                                           execFile='blackbox.py',
                                           dataFile='blackbox.dat')
+        # Check if surrogate is used
         if surrogate is not None:
             self.generate_blackbox_executable(model=surrogate,
                                               execFile='surrogate.py',
                                               dataFile='surrogate.dat')
+        # Check if there is a neighborhood defintions
+        suppInfo =  blackbox.get_structure().informations
+        if "neighborhood" in suppInfo:
+            self.generate_neighbors_executable(suppInfo["neighborhood"],
+                                               execFile="neighbors.py",
+                                               dataFile="neighbors.data"
+                                               )
+        else:
+            suppInfo["neighborhood"] = None
         #   surrogate.save()
         self.create_specification_file(model=blackbox,
                                        modelExecutable='$python blackbox.py', 
                                        surrogate=surrogate,
                                        surrogateExecutable=\
-                                       '$python surrogate.py')
+                                       '$python surrogate.py',
+                                       neighborhood=suppInfo["neighborhood"],
+                                       neighborhoodExecutable=\
+                                       "$python neighbors.py")
         
         self.run()
         # Clean up the temporary file
-        if os.path.exists('blackbox.py'):
-            os.remove('blackbox.py')
+        ## if os.path.exists('blackbox.py'):
+        ##    os.remove('blackbox.py')
 
-        if os.path.exists('blackbox.dat'):
-            os.remove('blackbox.dat')
+        ## if os.path.exists('blackbox.dat'):
+        ##    os.remove('blackbox.dat')
 
-        if os.path.exists('surrogate.py'):
-            os.remove('surrogate.py')
+        ## if os.path.exists('surrogate.py'):
+        ##    os.remove('surrogate.py')
 
-        if os.path.exists('surrogate.dat'):
-            os.remove('surrogate.dat')
+        ## if os.path.exists('surrogate.dat'):
+        ##    os.remove('surrogate.dat')
+
+        ## if os.path.exists('neighbors.py'):
+        ##    os.remove('neighbors.py')
+
+        ## if os.path.exists('neighbors.dat'):
+        ##    os.remove('neighbors.dat')
 
         #if os.path.exists(self.paramFileName):
         #    os.remove(self.paramFileName)
@@ -299,10 +321,12 @@ class NOMADSolver(Solver):
         bb.write('import logging' + endl)
         bb.write('from opal.Solvers.nomad import NOMADBlackbox' + endl)
         bb.write('from opal.core.modelevaluator import ModelEvaluator' + endl)
+        bb.write('worker = ModelEvaluator(name="model evaluator", ' + \
+                 'modelFile="' + dataFile + '")' + endl)
         bb.write(comment + 'Create model evaluation environment' + endl)
-        bb.write('env = NOMADBlackbox(name="' + envName + \
-                 '",modelFile="' + dataFile + \
-                 '",input=sys.argv[1], output=sys.stdout)' + endl)
+        bb.write('env = NOMADBlackbox(name="' + envName + '", ' + \
+                 'worker=worker, ' + \
+                 'input=sys.argv[1], output=sys.stdout)' + endl)
         bb.write(comment + 'Activate the environment' + endl)
         bb.write('env.start()')
         bb.write(comment + 'Wait for environement finish his life time' + endl)
@@ -316,12 +340,53 @@ class NOMADSolver(Solver):
         pickle.dump(model, f)
         f.close()
         return
+
+    def generate_neighbors_executable(self,
+                                     neighborsFunction=None,
+                                     execFile=None,
+                                     dataFile=None):
+        tab = ' '*4
+        endl = '\n'
+        comment = '# '
+        envName = dataFile.strip('.dat')
+        bb = open(execFile, 'w')
+        # Import the neccessary modules
+        bb.write('import os' + endl)
+        bb.write('import sys' + endl)
+        bb.write('import string' + endl)
+        bb.write('import shutil' + endl)
+        bb.write('import pickle' + endl)
+        bb.write('import logging' + endl)
+        bb.write('from opal.Solvers.nomad import NOMADBlackbox' + endl)
+        bb.write('from opal.core.structureevaluator import FunctionEvaluator' + \
+                 endl)
+        bb.write('worker = FunctionEvaluator(name="neighborhood-function evaluator", ' + \
+                 'functionFile="' + dataFile + '")' + endl)
+        bb.write(comment + 'Create model evaluation environment' + endl)
+        bb.write('env = NOMADBlackbox(name="neighborhood blackbox", ' + \
+                 'worker=worker, ' + \
+                 'input=sys.argv[1], output=sys.stdout)' + endl)
+        bb.write(comment + 'Activate the environment' + endl)
+        bb.write('env.start()')
+        bb.write(comment + 'Wait for environement finish his life time' + endl)
+        bb.write('env.join()' + endl)
+        bb.close()
+
+        # Dump neighbors function to the file so that the executable can load
+        # it as evaluating
+
+        f = open(dataFile, 'w')
+        pickle.dump(neighborsFunction, f)
+        f.close()
+        return
     
     def create_specification_file(self, 
                                   model=None,
                                   modelExecutable=None,
                                   surrogate=None,
-                                  surrogateExecutable=None):
+                                  surrogateExecutable=None,
+                                  neighborhood=None,
+                                  neighborhoodExecutable=None):
         "Write NOMAD config to file based on parameter optimization problem."
 
         if model is None:
@@ -352,7 +417,9 @@ class NOMADSolver(Solver):
         if surrogate is not None:
             self.set_parameter(name='SGTE_EXE',
                                value='"' + surrogateExecutable + '"')
-            
+        if neighborhood is not None:
+            self.set_parameter(name='NEIGHBORS_EXE',
+                               value='"' + neighborhoodExecutable + '"')
         for point in model.get_initial_points():
             pointStr = str(point)
             #print pointStr

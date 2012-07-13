@@ -1,6 +1,7 @@
 import sys
 import os.path
 import marshal
+import pickle
 import new
 import log
 
@@ -230,5 +231,52 @@ class StructureEvaluator(Agent):
                                    })
         self.send_message(msg)    
         return
-    
+
+
+class FunctionEvaluator(Agent):
+    """
+    An agent that has responsibility to 
+    """
+    def __init__(self,
+                 name='function evaluator',
+                 function=None,
+                 functionFile=None,
+                 logHandlers=[],
+                 **kwargs):
+        Agent.__init__(self,
+                       name=name,
+                       logHandlers=logHandlers)
+        if function is None:
+            if functionFile is not None:
+                # The model is loaded by pickling
+                # Be able to be serialized is a requirement for
+                # a model object
+                f = open(functionFile)
+                function = pickle.load(f)
+                f.close()
+        if function is None:
+            raise Exception("Error in creating an evaluator")
+        
+        self.function = function
+
+        self.message_handlers['cfp-evaluate-point'] =  self.evaluate
+                                                        
+        return
+     # Message handlers
+    def evaluate(self, info):
+        if 'point-tag' in info['proposition']:
+            inputTag = info["proposition"]['input-tag']
+        else:
+            inputTag = None
+        
+        inputValue =  info['proposition']['point']
+        outputValue = self.function(inputValue)
+        msg = Message(performative='inform',
+                      sender=self.id,
+                      content={'proposition':{'what': self.function.name,
+                                              'values':outputValue,
+                                              'input-tag':inputTag
+                                              }
+                               })
+        self.send_message(msg)   
 
