@@ -1,0 +1,1865 @@
+
+NOMAD - version 3.5.1 - www.gerad.ca/nomad
+
+Copyright (C) 2001-2012 {
+	Mark A. Abramson     - The Boeing Company
+	Charles Audet        - Ecole Polytechnique de Montreal
+	Gilles Couture       - Ecole Polytechnique de Montreal
+	John E. Dennis, Jr.  - Rice University
+	Sebastien Le Digabel - Ecole Polytechnique de Montreal
+	Christophe Tribes    - Ecole Polytechnique de Montreal
+} 
+
+Funded in part by AFOSR and Exxon Mobil.
+
+License   : '$NOMAD_HOME/src/lgpl.txt'
+User guide: '$NOMAD_HOME/doc/user_guide.pdf'
+Examples  : '$NOMAD_HOME/examples'
+Tools     : '$NOMAD_HOME/tools'
+
+Please report bugs to nomad@gerad.ca
+
+parameters {
+
+	problem directory    : ./
+	dimension            : n=2
+	blackbox input types : (   cat(C)   int(I) )
+	extended poll trigger: 5 (relative)
+	neighbors executable : $python neighbors.py
+	variable groups {
+		group #0 {
+			indexes: { 0 }
+			no directions (categorical variables)
+		} 
+		group #1 {
+			indexes: { 1 }
+			directions {
+				n             : 1
+				types         : { [Ortho-MADS 2n] }
+				sec poll types: { }
+				halton_seed   : 3
+			} 
+		} 
+	} 
+	blackbox outputs (m=1) {
+		#0          OBJ	$python blackbox.py
+	} 
+	signature                       : standard
+	has surrogate                   : no
+	add seed to output file names   : yes
+	solution file                   : nomad-solution.23300.txt
+	history file                    : none
+	stats file                      : none
+	cache file                      : none
+	x0                              : (    3    0 )
+	directions         : Ortho-MADS 2n
+	user halton seed   : 3
+	mesh {
+		update basis       :   4
+		coarsening exponent:   1
+		refining exponent  :  -1
+		initial mesh index :   0
+		max mesh index     :   3
+		initial mesh size  : (    1    1 )
+		min poll size      : (  NaN    1 )
+	} 
+	snap to bounds                   : yes
+	opportunistic evaluations        : yes
+	use models                       : no
+	speculative search               : yes
+	VNS search                       : no
+	Latin-Hypercube (LH) search      : no
+	cache search                     : no
+	random seed / run id             : 23300
+	epsilon                          : 1e-13
+	undefined string                 : NaN
+	infinity string                  : inf
+	display degrees {
+		general  : full (3)
+		search   : full (3)
+		poll     : full (3)
+		iterative: full (3)
+	} 
+	display stats                : EVAL BBE [ SOL, ] BBO TIME
+	display all evaluations      : no
+	point display limit          : no limit
+	max number of blackbox eval. : 100
+	max cache memory             : 2000 MB
+} 
+
+MADS run {
+
+	starting point evaluation {
+
+		x0 eval point: (  3  0 )
+
+		list of points evaluation (x0 evaluation) {
+
+			evaluation 1/1 {
+
+				point #0 (  3  0 )
+
+
+				x0 evaluation dominating point #0 {
+					x    = (  3  0 )
+					F(x) = [ 19.27048564 ]
+					h    = 0
+					f    = 19.27048564
+				} 
+			} 
+
+		} end of evaluations
+
+
+		terminate MADS       : no
+		iteration status     : dominating
+		new feas. incumbent  : #0 {
+			x    = (  3  0 )
+			F(x) = [ 19.27048564 ]
+			h    = 0
+			f    = 19.27048564
+		} 
+		new infeas. incumbent: none
+
+	} end of starting point evaluation
+
+	MADS iteration 0 {
+
+		blackbox evaluations : 1
+		best feas. solution  : (  3  0 ) h=0 f=19.27048564
+		best infeas. solution: none
+		poll center          : (  3  0 )
+		mesh size            : (  1  1 )
+		poll size            : (  1  1 )
+		mesh index           : 0
+		h_max                : inf
+
+		MADS search {
+		} end of search
+
+		MADS poll {
+
+			poll center: (  3  0 )
+
+			poll directions (include mesh size parameter) {
+				dir 0 : (  0 -1 ) Ortho-MADS 2n
+				dir 1 : (  0  1 ) Ortho-MADS 2n
+			} 
+
+			re-ordered list of 2 poll trial points {
+				#1 : (  3 -1 ) (dir 0)
+				#2 : (  3  1 ) (dir 1)
+			} 
+
+			list of points evaluation (poll) {
+
+				evaluation 1/2 {
+
+					point #1 (  3 -1 )
+					direction  : (  0 -1 ) Ortho-MADS 2n
+					mesh index : 0
+
+					poll unsuccessful point #1: evaluation failed
+				} 
+
+				evaluation 2/2 {
+
+					point #2 (  3  1 )
+					direction  : (  0  1 ) Ortho-MADS 2n
+					mesh index : 0
+
+					poll unsuccessful point #2: evaluation failed
+				} 
+
+			} end of evaluations
+
+
+			MADS extended poll {
+
+
+				extended poll pts sorting {
+
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/4 {
+
+							point #3 (  1  0 )
+							mesh index : 0
+
+
+							extended poll dominating point #3 {
+								x    = (  1  0 )
+								F(x) = [ 12.36747766 ]
+								h    = 0
+								f    = 12.36747766
+							} 
+
+							opport. strategy: stop evaluations
+						} 
+
+					} end of evaluations
+
+
+				} end of ext poll pts sorting (success)
+
+
+			} end of extended poll
+
+		} end of poll
+
+		Mesh update {
+			previous mesh index: 0
+			new mesh index     : -1
+		} 
+
+
+		terminate MADS       : no
+		iteration status     : dominating
+		new feas. incumbent  : #3 {
+			x    = (  1  0 )
+			F(x) = [ 12.36747766 ]
+			h    = 0
+			f    = 12.36747766
+		} 
+		new infeas. incumbent: none
+
+	} end of iteration 0
+
+	MADS iteration 1 {
+
+		blackbox evaluations : 4
+		best feas. solution  : (  1  0 ) h=0 f=12.36747766
+		best infeas. solution: none
+		poll center          : (  1  0 )
+		mesh size            : (  1  1 )
+		poll size            : (  2  2 )
+		mesh index           : -1
+		h_max                : inf
+
+		MADS search {
+
+			speculative search {
+
+			} end of speculative search (unsuccessful)
+
+		} end of search
+
+		MADS poll {
+
+			poll center: (  1  0 )
+
+			poll directions (include mesh size parameter) {
+				dir 0 : (  0 -1 ) Ortho-MADS 2n
+				dir 1 : (  0  1 ) Ortho-MADS 2n
+			} 
+
+			re-ordered list of 2 poll trial points {
+				#7 : (  1 -1 ) (dir 0)
+				#8 : (  1  1 ) (dir 1)
+			} 
+
+			list of points evaluation (poll) {
+
+				evaluation 1/2 {
+
+					point #7 (  1 -1 )
+					direction  : (  0 -1 ) Ortho-MADS 2n
+					mesh index : -1
+
+					poll unsuccessful point #7: evaluation failed
+				} 
+
+				evaluation 2/2 {
+
+					point #8 (  1  1 )
+					direction  : (  0  1 ) Ortho-MADS 2n
+					mesh index : -1
+
+					poll unsuccessful point #8: evaluation failed
+				} 
+
+			} end of evaluations
+
+
+			MADS extended poll {
+
+
+				extended poll pts sorting {
+
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/4 {
+
+							point #9 (  2  0 )
+							mesh index : -1
+
+							extended poll unsuccessful point #9 [ h=0 f=67.13917565 ]
+						} 
+
+						evaluation 2/4 {
+
+							point #10 (  3  0 )
+							mesh index : -1
+
+							cache hit: #10 --> #0
+							extended poll unsuccessful point #0 [ h=0 f=19.27048564 ]
+						} 
+
+						evaluation 3/4 {
+
+							point #11 ( 423  0 )
+							mesh index : -1
+
+							extended poll unsuccessful point #11 [ h=0 f=71.7121892 ]
+						} 
+
+						evaluation 4/4 {
+
+							point #12 ( 523  0 )
+							mesh index : -1
+
+							extended poll unsuccessful point #12 [ h=0 f=42.02533245 ]
+						} 
+
+					} end of evaluations
+
+
+					sorted ext poll pts {
+
+						point #1/4 : (     3     0 )
+						point #2/4 : (   523     0 )
+						point #3/4 : (     2     0 )
+						point #4/4 : (   423     0 )
+
+					} 
+
+
+				} end of ext poll pts sorting
+
+
+				extended poll point eval {
+
+					extended poll point = (     3     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #13 (  3  0 )
+							mesh index : -1
+
+							cache hit: #13 --> #0
+							extended poll unsuccessful point #0 [ h=0 f=19.27048564 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (     3     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 1
+					 blackbox eval.  = 9
+					      mesh index = -1
+					ext. poll center = (     3     0 ) f=19.27048564 h=0
+
+
+					MADS run {
+
+						9+BBE	OBJ	(ext-poll)
+
+						9+ 0	19.2704856396	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 0
+					best feasible solution  : ( 3 0 ) h=0 f=19.27048564
+
+				} end of extended poll descent (unsuccessful)
+
+
+				extended poll point eval {
+
+					extended poll point = (   523     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #14 ( 523  0 )
+							mesh index : -1
+
+							cache hit: #14 --> #12
+							extended poll unsuccessful point #12 [ h=0 f=42.02533245 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (   523     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 1
+					 blackbox eval.  = 9
+					      mesh index = -1
+					ext. poll center = (   523     0 ) f=42.02533245 h=0
+
+
+					MADS run {
+
+						9+BBE	OBJ	(ext-poll)
+
+						9+ 0	42.0253324509	(ext-poll)
+						9+ 2	42.0253324509	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 2
+					best feasible solution  : ( 523 0 ) h=0 f=42.02533245
+
+				} end of extended poll descent (unsuccessful)
+
+
+				extended poll point eval {
+
+					extended poll point = (     2     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #15 (  2  0 )
+							mesh index : -1
+
+							cache hit: #15 --> #9
+							extended poll unsuccessful point #9 [ h=0 f=67.13917565 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (     2     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 1
+					 blackbox eval.  = 11
+					      mesh index = -1
+					ext. poll center = (     2     0 ) f=67.13917565 h=0
+
+
+					MADS run {
+
+						11+BBE	OBJ	(ext-poll)
+
+						11+ 0	67.1391756535	(ext-poll)
+						11+ 2	67.1391756535	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 2
+					best feasible solution  : ( 2 0 ) h=0 f=67.13917565
+
+				} end of extended poll descent (unsuccessful)
+
+
+				extended poll point eval {
+
+					extended poll point = (   423     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #16 ( 423  0 )
+							mesh index : -1
+
+							cache hit: #16 --> #11
+							extended poll unsuccessful point #11 [ h=0 f=71.7121892 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (   423     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 1
+					 blackbox eval.  = 13
+					      mesh index = -1
+					ext. poll center = (   423     0 ) f=71.7121892 h=0
+
+
+					MADS run {
+
+						13+BBE	OBJ	(ext-poll)
+
+						13+ 0	71.7121891975	(ext-poll)
+						13+ 2	71.7121891975	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 2
+					best feasible solution  : ( 423 0 ) h=0 f=71.7121892
+
+				} end of extended poll descent (unsuccessful)
+
+
+			} end of extended poll
+
+		} end of poll
+
+		Mesh update {
+			previous mesh index: -1
+			new mesh index     : 0
+		} 
+
+
+		terminate MADS       : no
+		iteration status     : unsuccessful
+		new feas. incumbent  : none
+		new infeas. incumbent: none
+
+	} end of iteration 1
+
+	MADS iteration 2 {
+
+		blackbox evaluations : 15
+		best feas. solution  : (  1  0 ) h=0 f=12.36747766
+		best infeas. solution: none
+		poll center          : (  1  0 )
+		mesh size            : (  1  1 )
+		poll size            : (  1  1 )
+		mesh index           : 0
+		h_max                : inf
+
+		MADS search {
+		} end of search
+
+		MADS poll {
+
+			poll center: (  1  0 )
+
+			poll directions (include mesh size parameter) {
+				dir 0 : (  0 -1 ) Ortho-MADS 2n
+				dir 1 : (  0  1 ) Ortho-MADS 2n
+			} 
+
+			re-ordered list of 2 poll trial points {
+				#29 : (  1 -1 ) (dir 0)
+				#30 : (  1  1 ) (dir 1)
+			} 
+
+			list of points evaluation (poll) {
+
+				evaluation 1/2 {
+
+					point #29 (  1 -1 )
+					direction  : (  0 -1 ) Ortho-MADS 2n
+					mesh index : 0
+
+					cache hit: #29 --> #7
+					poll unsuccessful point #7: evaluation failed
+				} 
+
+				evaluation 2/2 {
+
+					point #30 (  1  1 )
+					direction  : (  0  1 ) Ortho-MADS 2n
+					mesh index : 0
+
+					cache hit: #30 --> #8
+					poll unsuccessful point #8: evaluation failed
+				} 
+
+			} end of evaluations
+
+
+			MADS extended poll {
+
+
+				extended poll pts sorting {
+
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/4 {
+
+							point #31 (  2  0 )
+							mesh index : 0
+
+							cache hit: #31 --> #9
+							extended poll unsuccessful point #9 [ h=0 f=67.13917565 ]
+						} 
+
+						evaluation 2/4 {
+
+							point #32 (  3  0 )
+							mesh index : 0
+
+							cache hit: #32 --> #0
+							extended poll unsuccessful point #0 [ h=0 f=19.27048564 ]
+						} 
+
+						evaluation 3/4 {
+
+							point #33 ( 423  0 )
+							mesh index : 0
+
+							cache hit: #33 --> #11
+							extended poll unsuccessful point #11 [ h=0 f=71.7121892 ]
+						} 
+
+						evaluation 4/4 {
+
+							point #34 ( 523  0 )
+							mesh index : 0
+
+							cache hit: #34 --> #12
+							extended poll unsuccessful point #12 [ h=0 f=42.02533245 ]
+						} 
+
+					} end of evaluations
+
+
+					sorted ext poll pts {
+
+						point #1/4 : (     3     0 )
+						point #2/4 : (   523     0 )
+						point #3/4 : (     2     0 )
+						point #4/4 : (   423     0 )
+
+					} 
+
+
+				} end of ext poll pts sorting
+
+
+				extended poll point eval {
+
+					extended poll point = (     3     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #35 (  3  0 )
+							mesh index : 0
+
+							cache hit: #35 --> #0
+							extended poll unsuccessful point #0 [ h=0 f=19.27048564 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (     3     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 2
+					 blackbox eval.  = 15
+					      mesh index = 0
+					ext. poll center = (     3     0 ) f=19.27048564 h=0
+
+
+					MADS run {
+
+						15+BBE	OBJ	(ext-poll)
+
+						15+ 0	19.2704856396	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 0
+					best feasible solution  : ( 3 0 ) h=0 f=19.27048564
+
+				} end of extended poll descent (unsuccessful)
+
+
+				extended poll point eval {
+
+					extended poll point = (   523     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #36 ( 523  0 )
+							mesh index : 0
+
+							cache hit: #36 --> #12
+							extended poll unsuccessful point #12 [ h=0 f=42.02533245 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (   523     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 2
+					 blackbox eval.  = 15
+					      mesh index = 0
+					ext. poll center = (   523     0 ) f=42.02533245 h=0
+
+
+					MADS run {
+
+						15+BBE	OBJ	(ext-poll)
+
+						15+ 0	42.0253324509	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 0
+					best feasible solution  : ( 523 0 ) h=0 f=42.02533245
+
+				} end of extended poll descent (unsuccessful)
+
+
+				extended poll point eval {
+
+					extended poll point = (     2     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #37 (  2  0 )
+							mesh index : 0
+
+							cache hit: #37 --> #9
+							extended poll unsuccessful point #9 [ h=0 f=67.13917565 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (     2     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 2
+					 blackbox eval.  = 15
+					      mesh index = 0
+					ext. poll center = (     2     0 ) f=67.13917565 h=0
+
+
+					MADS run {
+
+						15+BBE	OBJ	(ext-poll)
+
+						15+ 0	67.1391756535	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 0
+					best feasible solution  : ( 2 0 ) h=0 f=67.13917565
+
+				} end of extended poll descent (unsuccessful)
+
+
+				extended poll point eval {
+
+					extended poll point = (   423     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #38 ( 423  0 )
+							mesh index : 0
+
+							cache hit: #38 --> #11
+							extended poll unsuccessful point #11 [ h=0 f=71.7121892 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (   423     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 2
+					 blackbox eval.  = 15
+					      mesh index = 0
+					ext. poll center = (   423     0 ) f=71.7121892 h=0
+
+
+					MADS run {
+
+						15+BBE	OBJ	(ext-poll)
+
+						15+ 0	71.7121891975	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 0
+					best feasible solution  : ( 423 0 ) h=0 f=71.7121892
+
+				} end of extended poll descent (unsuccessful)
+
+
+			} end of extended poll
+
+		} end of poll
+
+		Mesh update {
+			previous mesh index: 0
+			new mesh index     : 1
+		} 
+
+
+		terminate MADS       : no
+		iteration status     : unsuccessful
+		new feas. incumbent  : none
+		new infeas. incumbent: none
+
+	} end of iteration 2
+
+	MADS iteration 3 {
+
+		blackbox evaluations : 15
+		best feas. solution  : (  1  0 ) h=0 f=12.36747766
+		best infeas. solution: none
+		poll center          : (  1  0 )
+		mesh size            : ( 0.25 0.25 )
+		poll size            : ( 0.5 0.5 )
+		mesh index           : 1
+		h_max                : inf
+
+		MADS search {
+		} end of search
+
+		MADS poll {
+
+			poll center: (  1  0 )
+
+			poll directions (include mesh size parameter) {
+				dir 0 : (  0 -1 ) Ortho-MADS 2n
+				dir 1 : (  0  1 ) Ortho-MADS 2n
+			} 
+
+			re-ordered list of 2 poll trial points {
+				#51 : (  1 -1 ) (dir 0)
+				#52 : (  1  1 ) (dir 1)
+			} 
+
+			list of points evaluation (poll) {
+
+				evaluation 1/2 {
+
+					point #51 (  1 -1 )
+					direction  : (  0 -1 ) Ortho-MADS 2n
+					mesh index : 1
+
+					cache hit: #51 --> #7
+					poll unsuccessful point #7: evaluation failed
+				} 
+
+				evaluation 2/2 {
+
+					point #52 (  1  1 )
+					direction  : (  0  1 ) Ortho-MADS 2n
+					mesh index : 1
+
+					cache hit: #52 --> #8
+					poll unsuccessful point #8: evaluation failed
+				} 
+
+			} end of evaluations
+
+
+			MADS extended poll {
+
+
+				extended poll pts sorting {
+
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/4 {
+
+							point #53 (  2  0 )
+							mesh index : 1
+
+							cache hit: #53 --> #9
+							extended poll unsuccessful point #9 [ h=0 f=67.13917565 ]
+						} 
+
+						evaluation 2/4 {
+
+							point #54 (  3  0 )
+							mesh index : 1
+
+							cache hit: #54 --> #0
+							extended poll unsuccessful point #0 [ h=0 f=19.27048564 ]
+						} 
+
+						evaluation 3/4 {
+
+							point #55 ( 423  0 )
+							mesh index : 1
+
+							cache hit: #55 --> #11
+							extended poll unsuccessful point #11 [ h=0 f=71.7121892 ]
+						} 
+
+						evaluation 4/4 {
+
+							point #56 ( 523  0 )
+							mesh index : 1
+
+							cache hit: #56 --> #12
+							extended poll unsuccessful point #12 [ h=0 f=42.02533245 ]
+						} 
+
+					} end of evaluations
+
+
+					sorted ext poll pts {
+
+						point #1/4 : (     3     0 )
+						point #2/4 : (   523     0 )
+						point #3/4 : (     2     0 )
+						point #4/4 : (   423     0 )
+
+					} 
+
+
+				} end of ext poll pts sorting
+
+
+				extended poll point eval {
+
+					extended poll point = (     3     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #57 (  3  0 )
+							mesh index : 1
+
+							cache hit: #57 --> #0
+							extended poll unsuccessful point #0 [ h=0 f=19.27048564 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (     3     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 3
+					 blackbox eval.  = 15
+					      mesh index = 1
+					ext. poll center = (     3     0 ) f=19.27048564 h=0
+
+
+					MADS run {
+
+						15+BBE	OBJ	(ext-poll)
+
+						15+ 0	19.2704856396	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 0
+					best feasible solution  : ( 3 0 ) h=0 f=19.27048564
+
+				} end of extended poll descent (unsuccessful)
+
+
+				extended poll point eval {
+
+					extended poll point = (   523     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #58 ( 523  0 )
+							mesh index : 1
+
+							cache hit: #58 --> #12
+							extended poll unsuccessful point #12 [ h=0 f=42.02533245 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (   523     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 3
+					 blackbox eval.  = 15
+					      mesh index = 1
+					ext. poll center = (   523     0 ) f=42.02533245 h=0
+
+
+					MADS run {
+
+						15+BBE	OBJ	(ext-poll)
+
+						15+ 0	42.0253324509	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 0
+					best feasible solution  : ( 523 0 ) h=0 f=42.02533245
+
+				} end of extended poll descent (unsuccessful)
+
+
+				extended poll point eval {
+
+					extended poll point = (     2     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #59 (  2  0 )
+							mesh index : 1
+
+							cache hit: #59 --> #9
+							extended poll unsuccessful point #9 [ h=0 f=67.13917565 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (     2     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 3
+					 blackbox eval.  = 15
+					      mesh index = 1
+					ext. poll center = (     2     0 ) f=67.13917565 h=0
+
+
+					MADS run {
+
+						15+BBE	OBJ	(ext-poll)
+
+						15+ 0	67.1391756535	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 0
+					best feasible solution  : ( 2 0 ) h=0 f=67.13917565
+
+				} end of extended poll descent (unsuccessful)
+
+
+				extended poll point eval {
+
+					extended poll point = (   423     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #60 ( 423  0 )
+							mesh index : 1
+
+							cache hit: #60 --> #11
+							extended poll unsuccessful point #11 [ h=0 f=71.7121892 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (   423     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 3
+					 blackbox eval.  = 15
+					      mesh index = 1
+					ext. poll center = (   423     0 ) f=71.7121892 h=0
+
+
+					MADS run {
+
+						15+BBE	OBJ	(ext-poll)
+
+						15+ 0	71.7121891975	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 0
+					best feasible solution  : ( 423 0 ) h=0 f=71.7121892
+
+				} end of extended poll descent (unsuccessful)
+
+
+			} end of extended poll
+
+		} end of poll
+
+		Mesh update {
+			previous mesh index: 1
+			new mesh index     : 2
+		} 
+
+
+		terminate MADS       : no
+		iteration status     : unsuccessful
+		new feas. incumbent  : none
+		new infeas. incumbent: none
+
+	} end of iteration 3
+
+	MADS iteration 4 {
+
+		blackbox evaluations : 15
+		best feas. solution  : (  1  0 ) h=0 f=12.36747766
+		best infeas. solution: none
+		poll center          : (  1  0 )
+		mesh size            : ( 0.0625 0.0625 )
+		poll size            : ( 0.25 0.25 )
+		mesh index           : 2
+		h_max                : inf
+
+		MADS search {
+		} end of search
+
+		MADS poll {
+
+			poll center: (  1  0 )
+
+			poll directions (include mesh size parameter) {
+				dir 0 : (  0 -1 ) Ortho-MADS 2n
+				dir 1 : (  0  1 ) Ortho-MADS 2n
+			} 
+
+			re-ordered list of 2 poll trial points {
+				#73 : (  1 -1 ) (dir 0)
+				#74 : (  1  1 ) (dir 1)
+			} 
+
+			list of points evaluation (poll) {
+
+				evaluation 1/2 {
+
+					point #73 (  1 -1 )
+					direction  : (  0 -1 ) Ortho-MADS 2n
+					mesh index : 2
+
+					cache hit: #73 --> #7
+					poll unsuccessful point #7: evaluation failed
+				} 
+
+				evaluation 2/2 {
+
+					point #74 (  1  1 )
+					direction  : (  0  1 ) Ortho-MADS 2n
+					mesh index : 2
+
+					cache hit: #74 --> #8
+					poll unsuccessful point #8: evaluation failed
+				} 
+
+			} end of evaluations
+
+
+			MADS extended poll {
+
+
+				extended poll pts sorting {
+
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/4 {
+
+							point #75 (  2  0 )
+							mesh index : 2
+
+							cache hit: #75 --> #9
+							extended poll unsuccessful point #9 [ h=0 f=67.13917565 ]
+						} 
+
+						evaluation 2/4 {
+
+							point #76 (  3  0 )
+							mesh index : 2
+
+							cache hit: #76 --> #0
+							extended poll unsuccessful point #0 [ h=0 f=19.27048564 ]
+						} 
+
+						evaluation 3/4 {
+
+							point #77 ( 423  0 )
+							mesh index : 2
+
+							cache hit: #77 --> #11
+							extended poll unsuccessful point #11 [ h=0 f=71.7121892 ]
+						} 
+
+						evaluation 4/4 {
+
+							point #78 ( 523  0 )
+							mesh index : 2
+
+							cache hit: #78 --> #12
+							extended poll unsuccessful point #12 [ h=0 f=42.02533245 ]
+						} 
+
+					} end of evaluations
+
+
+					sorted ext poll pts {
+
+						point #1/4 : (     3     0 )
+						point #2/4 : (   523     0 )
+						point #3/4 : (     2     0 )
+						point #4/4 : (   423     0 )
+
+					} 
+
+
+				} end of ext poll pts sorting
+
+
+				extended poll point eval {
+
+					extended poll point = (     3     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #79 (  3  0 )
+							mesh index : 2
+
+							cache hit: #79 --> #0
+							extended poll unsuccessful point #0 [ h=0 f=19.27048564 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (     3     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 4
+					 blackbox eval.  = 15
+					      mesh index = 2
+					ext. poll center = (     3     0 ) f=19.27048564 h=0
+
+
+					MADS run {
+
+						15+BBE	OBJ	(ext-poll)
+
+						15+ 0	19.2704856396	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 0
+					best feasible solution  : ( 3 0 ) h=0 f=19.27048564
+
+				} end of extended poll descent (unsuccessful)
+
+
+				extended poll point eval {
+
+					extended poll point = (   523     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #80 ( 523  0 )
+							mesh index : 2
+
+							cache hit: #80 --> #12
+							extended poll unsuccessful point #12 [ h=0 f=42.02533245 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (   523     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 4
+					 blackbox eval.  = 15
+					      mesh index = 2
+					ext. poll center = (   523     0 ) f=42.02533245 h=0
+
+
+					MADS run {
+
+						15+BBE	OBJ	(ext-poll)
+
+						15+ 0	42.0253324509	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 0
+					best feasible solution  : ( 523 0 ) h=0 f=42.02533245
+
+				} end of extended poll descent (unsuccessful)
+
+
+				extended poll point eval {
+
+					extended poll point = (     2     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #81 (  2  0 )
+							mesh index : 2
+
+							cache hit: #81 --> #9
+							extended poll unsuccessful point #9 [ h=0 f=67.13917565 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (     2     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 4
+					 blackbox eval.  = 15
+					      mesh index = 2
+					ext. poll center = (     2     0 ) f=67.13917565 h=0
+
+
+					MADS run {
+
+						15+BBE	OBJ	(ext-poll)
+
+						15+ 0	67.1391756535	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 0
+					best feasible solution  : ( 2 0 ) h=0 f=67.13917565
+
+				} end of extended poll descent (unsuccessful)
+
+
+				extended poll point eval {
+
+					extended poll point = (   423     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #82 ( 423  0 )
+							mesh index : 2
+
+							cache hit: #82 --> #11
+							extended poll unsuccessful point #11 [ h=0 f=71.7121892 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (   423     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 4
+					 blackbox eval.  = 15
+					      mesh index = 2
+					ext. poll center = (   423     0 ) f=71.7121892 h=0
+
+
+					MADS run {
+
+						15+BBE	OBJ	(ext-poll)
+
+						15+ 0	71.7121891975	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 0
+					best feasible solution  : ( 423 0 ) h=0 f=71.7121892
+
+				} end of extended poll descent (unsuccessful)
+
+
+			} end of extended poll
+
+		} end of poll
+
+		Mesh update {
+			previous mesh index: 2
+			new mesh index     : 3
+		} 
+
+
+		terminate MADS       : no
+		iteration status     : unsuccessful
+		new feas. incumbent  : none
+		new infeas. incumbent: none
+
+	} end of iteration 4
+
+	MADS iteration 5 {
+
+		blackbox evaluations : 15
+		best feas. solution  : (  1  0 ) h=0 f=12.36747766
+		best infeas. solution: none
+		poll center          : (  1  0 )
+		mesh size            : ( 0.015625 0.015625 )
+		poll size            : ( 0.125 0.125 )
+		mesh index           : 3
+		h_max                : inf
+
+		MADS search {
+		} end of search
+
+		MADS poll {
+
+			poll center: (  1  0 )
+
+			poll directions (include mesh size parameter) {
+				dir 0 : (  0 -1 ) Ortho-MADS 2n
+				dir 1 : (  0  1 ) Ortho-MADS 2n
+			} 
+
+			re-ordered list of 2 poll trial points {
+				#95 : (  1 -1 ) (dir 0)
+				#96 : (  1  1 ) (dir 1)
+			} 
+
+			list of points evaluation (poll) {
+
+				evaluation 1/2 {
+
+					point #95 (  1 -1 )
+					direction  : (  0 -1 ) Ortho-MADS 2n
+					mesh index : 3
+
+					cache hit: #95 --> #7
+					poll unsuccessful point #7: evaluation failed
+				} 
+
+				evaluation 2/2 {
+
+					point #96 (  1  1 )
+					direction  : (  0  1 ) Ortho-MADS 2n
+					mesh index : 3
+
+					cache hit: #96 --> #8
+					poll unsuccessful point #8: evaluation failed
+				} 
+
+			} end of evaluations
+
+
+			MADS extended poll {
+
+
+				extended poll pts sorting {
+
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/4 {
+
+							point #97 (  2  0 )
+							mesh index : 3
+
+							cache hit: #97 --> #9
+							extended poll unsuccessful point #9 [ h=0 f=67.13917565 ]
+						} 
+
+						evaluation 2/4 {
+
+							point #98 (  3  0 )
+							mesh index : 3
+
+							cache hit: #98 --> #0
+							extended poll unsuccessful point #0 [ h=0 f=19.27048564 ]
+						} 
+
+						evaluation 3/4 {
+
+							point #99 ( 423  0 )
+							mesh index : 3
+
+							cache hit: #99 --> #11
+							extended poll unsuccessful point #11 [ h=0 f=71.7121892 ]
+						} 
+
+						evaluation 4/4 {
+
+							point #100 ( 523  0 )
+							mesh index : 3
+
+							cache hit: #100 --> #12
+							extended poll unsuccessful point #12 [ h=0 f=42.02533245 ]
+						} 
+
+					} end of evaluations
+
+
+					sorted ext poll pts {
+
+						point #1/4 : (     3     0 )
+						point #2/4 : (   523     0 )
+						point #3/4 : (     2     0 )
+						point #4/4 : (   423     0 )
+
+					} 
+
+
+				} end of ext poll pts sorting
+
+
+				extended poll point eval {
+
+					extended poll point = (     3     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #101 (  3  0 )
+							mesh index : 3
+
+							cache hit: #101 --> #0
+							extended poll unsuccessful point #0 [ h=0 f=19.27048564 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (     3     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 5
+					 blackbox eval.  = 15
+					      mesh index = 3
+					ext. poll center = (     3     0 ) f=19.27048564 h=0
+
+
+					MADS run {
+
+						15+BBE	OBJ	(ext-poll)
+
+						15+ 0	19.2704856396	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 0
+					best feasible solution  : ( 3 0 ) h=0 f=19.27048564
+
+				} end of extended poll descent (unsuccessful)
+
+
+				extended poll point eval {
+
+					extended poll point = (   523     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #102 ( 523  0 )
+							mesh index : 3
+
+							cache hit: #102 --> #12
+							extended poll unsuccessful point #12 [ h=0 f=42.02533245 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (   523     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 5
+					 blackbox eval.  = 15
+					      mesh index = 3
+					ext. poll center = (   523     0 ) f=42.02533245 h=0
+
+
+					MADS run {
+
+						15+BBE	OBJ	(ext-poll)
+
+						15+ 0	42.0253324509	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 0
+					best feasible solution  : ( 523 0 ) h=0 f=42.02533245
+
+				} end of extended poll descent (unsuccessful)
+
+
+				extended poll point eval {
+
+					extended poll point = (     2     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #103 (  2  0 )
+							mesh index : 3
+
+							cache hit: #103 --> #9
+							extended poll unsuccessful point #9 [ h=0 f=67.13917565 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (     2     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 5
+					 blackbox eval.  = 15
+					      mesh index = 3
+					ext. poll center = (     2     0 ) f=67.13917565 h=0
+
+
+					MADS run {
+
+						15+BBE	OBJ	(ext-poll)
+
+						15+ 0	67.1391756535	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 0
+					best feasible solution  : ( 2 0 ) h=0 f=67.13917565
+
+				} end of extended poll descent (unsuccessful)
+
+
+				extended poll point eval {
+
+					extended poll point = (   423     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #104 ( 423  0 )
+							mesh index : 3
+
+							cache hit: #104 --> #11
+							extended poll unsuccessful point #11 [ h=0 f=71.7121892 ]
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+				extended poll center: (   423     0 )
+
+				perform extended poll descent ...... yes
+
+				extended poll descent {
+
+					       iteration = 5
+					 blackbox eval.  = 15
+					      mesh index = 3
+					ext. poll center = (   423     0 ) f=71.7121892 h=0
+
+
+					MADS run {
+
+						15+BBE	OBJ	(ext-poll)
+
+						15+ 0	71.7121891975	(ext-poll)
+
+					} end of run (max mesh index)
+
+					blackbox evaluations    : 0
+					best feasible solution  : ( 423 0 ) h=0 f=71.7121892
+
+				} end of extended poll descent (unsuccessful)
+
+
+			} end of extended poll
+
+		} end of poll
+
+		Mesh update {
+			previous mesh index: 3
+			new mesh index     : 4
+		} 
+
+
+		terminate MADS       : yes
+		termination cause    : max mesh index
+		iteration status     : unsuccessful
+		new feas. incumbent  : none
+		new infeas. incumbent: none
+
+	} end of iteration 5
+
+} end of run (max mesh index)
+
+NOMAD final display {
+
+	cache {
+		number of cache points: 15
+		size in memory        : 2.1 KB
+		cache file            : -
+	} 
+
+	stats {
+		MADS iterations                 : 6
+		blackbox evaluations            : 15
+		simulated blackbox evaluations  : 0
+		evaluations                     : 114
+		failed evaluations              : 10
+		interrupted sequences of eval.  : 1
+		cache hits                      : 99
+		number of poll searches         : 6
+		poll successes                  : 1
+		poll points                     : 12
+		number of extended polls        : 6
+		number of ext. poll descents    : 20
+		number of ext. poll successes   : 1
+		number of ext. poll points      : 104
+		number of ext. poll bb eval     : 10
+		number of speculative searches  : 1
+		speculative search successes    : 0
+		speculative search points       : 0
+		number of user searches         : 0
+		number of LH searches           : 0
+		number of cache searches        : 0
+		number of VNS searches          : 0
+		no model has been constructed
+		wall-clock time                 : 6m 2s
+	} 
+
+	miscellaneous {
+		mesh index      : min=-1, max=4, last=3
+		best feas. sol  : ( 1 0 ) h=0 f=12.36747766
+		best infeas. sol: none
+	} 
+} 

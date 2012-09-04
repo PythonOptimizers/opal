@@ -1,0 +1,1244 @@
+
+NOMAD - version 3.5.1 - www.gerad.ca/nomad
+
+Copyright (C) 2001-2012 {
+	Mark A. Abramson     - The Boeing Company
+	Charles Audet        - Ecole Polytechnique de Montreal
+	Gilles Couture       - Ecole Polytechnique de Montreal
+	John E. Dennis, Jr.  - Rice University
+	Sebastien Le Digabel - Ecole Polytechnique de Montreal
+	Christophe Tribes    - Ecole Polytechnique de Montreal
+} 
+
+Funded in part by AFOSR and Exxon Mobil.
+
+License   : '$NOMAD_HOME/src/lgpl.txt'
+User guide: '$NOMAD_HOME/doc/user_guide.pdf'
+Examples  : '$NOMAD_HOME/examples'
+Tools     : '$NOMAD_HOME/tools'
+
+Please report bugs to nomad@gerad.ca
+
+parameters {
+
+	problem directory    : ./
+	dimension            : n=2
+	blackbox input types : (   cat(C)   int(I) )
+	extended poll trigger: 0.10000000000000000555 (relative)
+	neighbors executable : $python neighbors.py
+	variable groups {
+		group #0 {
+			indexes: { 0 }
+			no directions (categorical variables)
+		} 
+		group #1 {
+			indexes: { 1 }
+			directions {
+				n             : 1
+				types         : { [Ortho-MADS 2n] }
+				sec poll types: { }
+				halton_seed   : 3
+			} 
+		} 
+	} 
+	blackbox outputs (m=1) {
+		#0          OBJ	$python blackbox.py	$python surrogate.py
+	} 
+	signature                       : standard
+	has surrogate                   : yes
+	sort trial points with surrogate: yes
+	surrogate cost                  : none
+	add seed to output file names   : yes
+	solution file                   : nomad-solution.19172.txt
+	history file                    : none
+	stats file                      : none
+	cache file                      : none
+	x0                              : ( 444224224422422    0 )
+	directions         : Ortho-MADS 2n
+	user halton seed   : 3
+	mesh {
+		update basis       :   4
+		coarsening exponent:   1
+		refining exponent  :  -1
+		initial mesh index :   0
+		max mesh index     :   2
+		initial mesh size  : (    1    1 )
+		min poll size      : (  NaN    1 )
+	} 
+	snap to bounds                   : yes
+	opportunistic evaluations        : yes
+	use models                       : no
+	speculative search               : yes
+	VNS search                       : no
+	Latin-Hypercube (LH) search      : no
+	cache search                     : no
+	random seed / run id             : 19172
+	epsilon                          : 1.0000000000000000304e-13
+	undefined string                 : NaN
+	infinity string                  : inf
+	display degrees {
+		general  : full (3)
+		search   : full (3)
+		poll     : full (3)
+		iterative: full (3)
+	} 
+	display stats                : EVAL BBE [ SOL, ] BBO TIME
+	display all evaluations      : no
+	point display limit          : no limit
+	max number of blackbox eval. : 100
+	max cache memory             : 2000 MB
+} 
+
+MADS run {
+
+	starting point evaluation {
+
+		x0 eval point: ( 444224224422422  0 )
+
+		list of points evaluation (x0 evaluation) {
+
+			evaluation 1/1 {
+
+				point #0 ( 444224224422422  0 )
+
+
+				x0 evaluation dominating point #0 {
+					x    = ( 444224224422422  0 )
+					F(x) = [ 0.013058204650899999169 ]
+					h    = 0
+					f    = 0.013058204650899999169
+				} 
+			} 
+
+		} end of evaluations
+
+
+		terminate MADS       : no
+		iteration status     : dominating
+		new feas. incumbent  : #0 {
+			x    = ( 444224224422422  0 )
+			F(x) = [ 0.013058204650899999169 ]
+			h    = 0
+			f    = 0.013058204650899999169
+		} 
+		new infeas. incumbent: none
+
+	} end of starting point evaluation
+
+	MADS iteration 0 {
+
+		blackbox evaluations : 1
+		best feas. solution  : ( 444224224422422  0 ) h=0 f=0.013058204650899999169
+		best infeas. solution: none
+		poll center          : ( 444224224422422  0 )
+		mesh size            : (  1  1 )
+		poll size            : (  1  1 )
+		mesh index           : 0
+		h_max                : inf
+
+		MADS search {
+		} end of search
+
+		MADS poll {
+
+			poll center: ( 444224224422422  0 )
+
+			poll directions (include mesh size parameter) {
+				dir 0 : (  0 -1 ) Ortho-MADS 2n
+				dir 1 : (  0  1 ) Ortho-MADS 2n
+			} 
+
+			re-ordered list of 2 poll trial points {
+				#1 : ( 444224224422422 -1 ) (dir 0)
+				#2 : ( 444224224422422  1 ) (dir 1)
+			} 
+
+			list of points evaluation (poll) {
+
+				surrogate evaluation 1/2 {
+
+					point #1 ( 444224224422422 -1 )
+					direction  : (  0 -1 ) Ortho-MADS 2n
+					mesh index : 0
+
+
+					point #1 sgte eval: failed
+				} 
+
+				surrogate evaluation 2/2 {
+
+					point #2 ( 444224224422422  1 )
+					direction  : (  0  1 ) Ortho-MADS 2n
+					mesh index : 0
+
+
+					point #2 sgte eval: failed
+				} 
+
+			} end of evaluations
+
+			re-ordered list of 2 poll trial points {
+
+				#3: ( 444224224422422 -1 ) (dir 0)
+				#4: ( 444224224422422  1 ) (dir 1)
+			} 
+
+			list of points evaluation (poll) {
+
+				evaluation 1/2 {
+
+					point #3 ( 444224224422422 -1 )
+					direction  : (  0 -1 ) Ortho-MADS 2n
+					mesh index : 0
+
+					poll unsuccessful point #3: evaluation failed
+				} 
+
+				evaluation 2/2 {
+
+					point #4 ( 444224224422422  1 )
+					direction  : (  0  1 ) Ortho-MADS 2n
+					mesh index : 0
+
+					poll unsuccessful point #4: evaluation failed
+				} 
+
+			} end of evaluations
+
+
+			MADS extended poll {
+
+
+				extended poll pts sorting (on surrogates) {
+
+
+					list of points evaluation (extended poll) {
+
+						surrogate evaluation 1/47 {
+
+							point #5 ( 544224224422422  0 )
+							mesh index : 0
+
+
+							point #5 sgte eval: h=0 f=0.014079475402799999234
+						} 
+
+						surrogate evaluation 2/47 {
+
+							point #6 ( 454224224422422  0 )
+							mesh index : 0
+
+
+							point #6 sgte eval: h=0 f=0.014859223365799999195
+						} 
+
+						surrogate evaluation 3/47 {
+
+							point #7 ( 445224224422422  0 )
+							mesh index : 0
+
+
+							point #7 sgte eval: h=0 f=0.012881278991699999376
+						} 
+
+						surrogate evaluation 4/47 {
+
+							point #8 ( 4424224422422  0 )
+							mesh index : 0
+
+
+							point #8 sgte eval: h=0 f=0.012878704071000000517
+						} 
+
+						surrogate evaluation 5/47 {
+
+							point #9 ( 4424224422422  0 )
+							mesh index : 0
+
+							surrogate cache hit: #9 --> #8
+
+							point #8 sgte eval: h=0 f=0.012878704071000000517
+						} 
+
+						surrogate evaluation 6/47 {
+
+							point #10 ( 444124224422422  0 )
+							mesh index : 0
+
+
+							point #10 sgte eval: h=0 f=0.01321682929990000005
+						} 
+
+						surrogate evaluation 7/47 {
+
+							point #11 ( 444324224422422  0 )
+							mesh index : 0
+
+
+							point #11 sgte eval: h=0 f=0.015981197357200001286
+						} 
+
+						surrogate evaluation 8/47 {
+
+							point #12 ( 44441324224422424  0 )
+							mesh index : 0
+
+
+							point #12 sgte eval: h=0 f=0.012128567695599999296
+						} 
+
+						surrogate evaluation 9/47 {
+
+							point #13 ( 44451324224422424  0 )
+							mesh index : 0
+
+
+							point #13 sgte eval: h=0 f=0.012060141563400000181
+						} 
+
+						surrogate evaluation 10/47 {
+
+							point #14 ( 444214224422422  0 )
+							mesh index : 0
+
+
+							point #14 sgte eval: h=0 f=0.013275551796000000307
+						} 
+
+						surrogate evaluation 11/47 {
+
+							point #15 ( 444234224422422  0 )
+							mesh index : 0
+
+
+							point #15 sgte eval: h=0 f=0.016468119621300000843
+						} 
+
+						surrogate evaluation 12/47 {
+
+							point #16 ( 44424134224422424  0 )
+							mesh index : 0
+
+
+							point #16 sgte eval: h=0 f=0.012136578559899999924
+						} 
+
+						surrogate evaluation 13/47 {
+
+							point #17 ( 44425134224422424  0 )
+							mesh index : 0
+
+
+							point #17 sgte eval: h=0 f=0.012053942680400000012
+						} 
+
+						surrogate evaluation 14/47 {
+
+							point #18 ( 444225224422422  0 )
+							mesh index : 0
+
+
+							point #18 sgte eval: h=0 f=0.012842154502899999144
+						} 
+
+						surrogate evaluation 15/47 {
+
+							point #19 ( 4442224422422  0 )
+							mesh index : 0
+
+
+							point #19 sgte eval: h=0 f=0.012790107727100000212
+						} 
+
+						surrogate evaluation 16/47 {
+
+							point #20 ( 4442224422422  0 )
+							mesh index : 0
+
+							surrogate cache hit: #20 --> #19
+
+							point #19 sgte eval: h=0 f=0.012790107727100000212
+						} 
+
+						surrogate evaluation 17/47 {
+
+							point #21 ( 444224124422422  0 )
+							mesh index : 0
+
+
+							point #21 sgte eval: h=0 f=0.013175797462499999613
+						} 
+
+						surrogate evaluation 18/47 {
+
+							point #22 ( 444224324422422  0 )
+							mesh index : 0
+
+
+							point #22 sgte eval: h=0 f=0.016445803642299999803
+						} 
+
+						surrogate evaluation 19/47 {
+
+							point #23 ( 44422441324422424  0 )
+							mesh index : 0
+
+
+							point #23 sgte eval: h=0 f=0.012042188644399999184
+						} 
+
+						surrogate evaluation 20/47 {
+
+							point #24 ( 44422451324422424  0 )
+							mesh index : 0
+
+
+							point #24 sgte eval: h=0 f=0.01216166019440000079
+						} 
+
+						surrogate evaluation 21/47 {
+
+							point #25 ( 444224214422422  0 )
+							mesh index : 0
+
+
+							point #25 sgte eval: h=0 f=0.014353609085099999776
+						} 
+
+						surrogate evaluation 22/47 {
+
+							point #26 ( 444224234422422  0 )
+							mesh index : 0
+
+
+							point #26 sgte eval: h=0 f=0.013649582862900000099
+						} 
+
+						surrogate evaluation 23/47 {
+
+							point #27 ( 44422424134422424  0 )
+							mesh index : 0
+
+
+							point #27 sgte eval: h=0 f=0.012190079689000000648
+						} 
+
+						surrogate evaluation 24/47 {
+
+							point #28 ( 44422425134422424  0 )
+							mesh index : 0
+
+
+							point #28 sgte eval: h=0 f=0.012594914436300000057
+						} 
+
+						surrogate evaluation 25/47 {
+
+							point #29 ( 444224225422422  0 )
+							mesh index : 0
+
+
+							point #29 sgte eval: h=0 f=0.013008117675800000626
+						} 
+
+						surrogate evaluation 26/47 {
+
+							point #30 ( 444224224522422  0 )
+							mesh index : 0
+
+
+							point #30 sgte eval: h=0 f=0.012936258315999999563
+						} 
+
+						surrogate evaluation 27/47 {
+
+							point #31 ( 4442242242422  0 )
+							mesh index : 0
+
+
+							point #31 sgte eval: h=0 f=0.012824082374600000861
+						} 
+
+						surrogate evaluation 28/47 {
+
+							point #32 ( 4442242242422  0 )
+							mesh index : 0
+
+							surrogate cache hit: #32 --> #31
+
+							point #31 sgte eval: h=0 f=0.012824082374600000861
+						} 
+
+						surrogate evaluation 29/47 {
+
+							point #33 ( 444224224412422  0 )
+							mesh index : 0
+
+
+							point #33 sgte eval: h=0 f=0.016086888313300001102
+						} 
+
+						surrogate evaluation 30/47 {
+
+							point #34 ( 444224224432422  0 )
+							mesh index : 0
+
+
+							point #34 sgte eval: h=0 f=0.013802385330199999636
+						} 
+
+						surrogate evaluation 31/47 {
+
+							point #35 ( 44422422444132424  0 )
+							mesh index : 0
+
+
+							point #35 sgte eval: h=0 f=0.012209010124200000286
+						} 
+
+						surrogate evaluation 32/47 {
+
+							point #36 ( 44422422445132424  0 )
+							mesh index : 0
+
+
+							point #36 sgte eval: h=0 f=0.01222925186159999969
+						} 
+
+						surrogate evaluation 33/47 {
+
+							point #37 ( 444224224421422  0 )
+							mesh index : 0
+
+
+							point #37 sgte eval: h=0 f=0.014162254333499999306
+						} 
+
+						surrogate evaluation 34/47 {
+
+							point #38 ( 444224224423422  0 )
+							mesh index : 0
+
+
+							point #38 sgte eval: h=0 f=0.0137744665146000006
+						} 
+
+						surrogate evaluation 35/47 {
+
+							point #39 ( 44422422442413424  0 )
+							mesh index : 0
+
+
+							point #39 sgte eval: h=0 f=0.012151074409499999437
+						} 
+
+						surrogate evaluation 36/47 {
+
+							point #40 ( 44422422442513424  0 )
+							mesh index : 0
+
+
+							point #40 sgte eval: h=0 f=0.012233591079700000329
+						} 
+
+						surrogate evaluation 37/47 {
+
+							point #41 ( 444224224422522  0 )
+							mesh index : 0
+
+
+							point #41 sgte eval: h=0 f=0.015128803253200000592
+						} 
+
+						surrogate evaluation 38/47 {
+
+							point #42 ( 4442242244222  0 )
+							mesh index : 0
+
+
+							point #42 sgte eval: h=0 f=0.012766718864399999311
+						} 
+
+						surrogate evaluation 39/47 {
+
+							point #43 ( 4442242244222  0 )
+							mesh index : 0
+
+							surrogate cache hit: #43 --> #42
+
+							point #42 sgte eval: h=0 f=0.012766718864399999311
+						} 
+
+						surrogate evaluation 40/47 {
+
+							point #44 ( 444224224422412  0 )
+							mesh index : 0
+
+
+							point #44 sgte eval: h=0 f=0.013190531730700000637
+						} 
+
+						surrogate evaluation 41/47 {
+
+							point #45 ( 444224224422432  0 )
+							mesh index : 0
+
+
+							point #45 sgte eval: h=0 f=0.016174793243400001352
+						} 
+
+						surrogate evaluation 42/47 {
+
+							point #46 ( 44422422442244128  0 )
+							mesh index : 0
+
+
+							point #46 sgte eval: h=0 f=0.013624811172499999221
+						} 
+
+						surrogate evaluation 43/47 {
+
+							point #47 ( 44422422442245136  0 )
+							mesh index : 0
+
+
+							point #47 sgte eval: h=0 f=0.016235017776500000608
+						} 
+
+						surrogate evaluation 44/47 {
+
+							point #48 ( 444224224422421  0 )
+							mesh index : 0
+
+
+							point #48 sgte eval: h=0 f=0.01396882534030000067
+						} 
+
+						surrogate evaluation 45/47 {
+
+							point #49 ( 444224224422423  0 )
+							mesh index : 0
+
+
+							point #49 sgte eval: h=0 f=0.01371338367459999999
+						} 
+
+						surrogate evaluation 46/47 {
+
+							point #50 ( 44422422442242416  0 )
+							mesh index : 0
+
+
+							point #50 sgte eval: h=0 f=0.01324653625490000014
+						} 
+
+						surrogate evaluation 47/47 {
+
+							point #51 ( 44422422442242512  0 )
+							mesh index : 0
+
+
+							point #51 sgte eval: h=0 f=0.013088965415999999353
+						} 
+
+					} end of evaluations
+
+
+					sorted ext poll pts {
+
+						point # 1/43 : ( 44422441324422424     0 )
+						point # 2/43 : ( 44425134224422424     0 )
+						point # 3/43 : ( 44451324224422424     0 )
+						point # 4/43 : ( 44441324224422424     0 )
+						point # 5/43 : ( 44424134224422424     0 )
+						point # 6/43 : ( 44422422442413424     0 )
+						point # 7/43 : ( 44422451324422424     0 )
+						point # 8/43 : ( 44422424134422424     0 )
+						point # 9/43 : ( 44422422444132424     0 )
+						point #10/43 : ( 44422422445132424     0 )
+						point #11/43 : ( 44422422442513424     0 )
+						point #12/43 : ( 44422425134422424     0 )
+						point #13/43 : ( 4442242244222     0 )
+						point #14/43 : ( 4442224422422     0 )
+						point #15/43 : ( 4442242242422     0 )
+						point #16/43 : ( 444225224422422     0 )
+						point #17/43 : ( 4424224422422     0 )
+						point #18/43 : ( 445224224422422     0 )
+						point #19/43 : ( 444224224522422     0 )
+						point #20/43 : ( 444224225422422     0 )
+						point #21/43 : ( 44422422442242512     0 )
+						point #22/43 : ( 444224124422422     0 )
+						point #23/43 : ( 444224224422412     0 )
+						point #24/43 : ( 444124224422422     0 )
+						point #25/43 : ( 44422422442242416     0 )
+						point #26/43 : ( 444214224422422     0 )
+						point #27/43 : ( 44422422442244128     0 )
+						point #28/43 : ( 444224234422422     0 )
+						point #29/43 : ( 444224224422423     0 )
+						point #30/43 : ( 444224224423422     0 )
+						point #31/43 : ( 444224224432422     0 )
+						point #32/43 : ( 444224224422421     0 )
+						point #33/43 : ( 544224224422422     0 )
+						point #34/43 : ( 444224224421422     0 )
+						point #35/43 : ( 444224214422422     0 )
+						point #36/43 : ( 454224224422422     0 )
+						point #37/43 : ( 444224224422522     0 )
+						point #38/43 : ( 444324224422422     0 )
+						point #39/43 : ( 444224224412422     0 )
+						point #40/43 : ( 444224224422432     0 )
+						point #41/43 : ( 44422422442245136     0 )
+						point #42/43 : ( 444224324422422     0 )
+						point #43/43 : ( 444234224422422     0 )
+
+					} 
+
+
+				} end of ext poll pts sorting (on surrogates)
+
+
+				extended poll point eval {
+
+					extended poll point = ( 44422441324422424     0 )
+
+					list of points evaluation (extended poll) {
+
+						evaluation 1/1 {
+
+							point #52 ( 44422441324422424  0 )
+							mesh index : 0
+
+
+							extended poll dominating point #52 {
+								x    = ( 44422441324422424  0 )
+								F(x) = [ 0.012113850116699999282 ]
+								h    = 0
+								f    = 0.012113850116699999282
+							} 
+						} 
+
+					} end of evaluations
+
+
+				} 
+
+
+			} end of extended poll
+
+		} end of poll
+
+		Mesh update {
+			previous mesh index: 0
+			new mesh index     : -1
+		} 
+
+
+		terminate MADS       : no
+		iteration status     : dominating
+		new feas. incumbent  : #52 {
+			x    = ( 44422441324422424  0 )
+			F(x) = [ 0.012113850116699999282 ]
+			h    = 0
+			f    = 0.012113850116699999282
+		} 
+		new infeas. incumbent: none
+
+	} end of iteration 0
+
+	MADS iteration 1 {
+
+		blackbox evaluations : 4
+		best feas. solution  : ( 44422441324422424  0 ) h=0 f=0.012113850116699999282
+		best infeas. solution: none
+		poll center          : ( 44422441324422424  0 )
+		mesh size            : (  1  1 )
+		poll size            : (  2  2 )
+		mesh index           : -1
+		h_max                : inf
+
+		MADS search {
+
+			speculative search {
+
+			} end of speculative search (unsuccessful)
+
+		} end of search
+
+		MADS poll {
+
+			poll center: ( 44422441324422424  0 )
+
+			poll directions (include mesh size parameter) {
+				dir 0 : (  0 -1 ) Ortho-MADS 2n
+				dir 1 : (  0  1 ) Ortho-MADS 2n
+			} 
+
+			re-ordered list of 2 poll trial points {
+				#95 : ( 44422441324422424 -1 ) (dir 0)
+				#96 : ( 44422441324422424  1 ) (dir 1)
+			} 
+
+			list of points evaluation (poll) {
+
+				surrogate evaluation 1/2 {
+
+					point #95 ( 44422441324422424 -1 )
+					direction  : (  0 -1 ) Ortho-MADS 2n
+					mesh index : -1
+
+
+					point #95 sgte eval: failed
+				} 
+
+				surrogate evaluation 2/2 {
+
+					point #96 ( 44422441324422424  1 )
+					direction  : (  0  1 ) Ortho-MADS 2n
+					mesh index : -1
+
+
+					point #96 sgte eval: failed
+				} 
+
+			} end of evaluations
+
+			re-ordered list of 2 poll trial points {
+
+				#97: ( 44422441324422424 -1 ) (dir 0)
+				#98: ( 44422441324422424  1 ) (dir 1)
+			} 
+
+			list of points evaluation (poll) {
+
+				evaluation 1/2 {
+
+					point #97 ( 44422441324422424 -1 )
+					direction  : (  0 -1 ) Ortho-MADS 2n
+					mesh index : -1
+
+					poll unsuccessful point #97: evaluation failed
+				} 
+
+				evaluation 2/2 {
+
+					point #98 ( 44422441324422424  1 )
+					direction  : (  0  1 ) Ortho-MADS 2n
+					mesh index : -1
+
+					poll unsuccessful point #98: evaluation failed
+				} 
+
+			} end of evaluations
+
+
+			MADS extended poll {
+
+
+				extended poll pts sorting (on surrogates) {
+
+
+					list of points evaluation (extended poll) {
+
+						surrogate evaluation 1/47 {
+
+							point #99 ( 54422441324422424  0 )
+							mesh index : -1
+
+
+							point #99 sgte eval: h=0 f=0.014542007446299999585
+						} 
+
+						surrogate evaluation 2/47 {
+
+							point #100 ( 45422441324422424  0 )
+							mesh index : -1
+
+
+							point #100 sgte eval: h=0 f=0.012373304367099999604
+						} 
+
+						surrogate evaluation 3/47 {
+
+							point #101 ( 44522441324422424  0 )
+							mesh index : -1
+
+
+							point #101 sgte eval: h=0 f=0.012371110916100000812
+						} 
+
+						surrogate evaluation 4/47 {
+
+							point #102 ( 442441324422424  0 )
+							mesh index : -1
+
+
+							point #102 sgte eval: h=0 f=0.012158346176099999597
+						} 
+
+						surrogate evaluation 5/47 {
+
+							point #103 ( 442441324422424  0 )
+							mesh index : -1
+
+							surrogate cache hit: #103 --> #102
+
+							point #102 sgte eval: h=0 f=0.012158346176099999597
+						} 
+
+						surrogate evaluation 6/47 {
+
+							point #104 ( 44412441324422424  0 )
+							mesh index : -1
+
+
+							point #104 sgte eval: h=0 f=0.016627621650699999506
+						} 
+
+						surrogate evaluation 7/47 {
+
+							point #105 ( 44432441324422424  0 )
+							mesh index : -1
+
+
+							point #105 sgte eval: h=0 f=0.013647818565400000185
+						} 
+
+						surrogate evaluation 8/47 {
+
+							point #106 ( 4444132441324422656  0 )
+							mesh index : -1
+
+
+							point #106 sgte eval: h=0 f=0.015520954132099999342
+						} 
+
+						surrogate evaluation 9/47 {
+
+							point #107 ( 4445132441324422656  0 )
+							mesh index : -1
+
+
+							point #107 sgte eval: h=0 f=0.01657669544220000124
+						} 
+
+						surrogate evaluation 10/47 {
+
+							point #108 ( 44421441324422424  0 )
+							mesh index : -1
+
+
+							point #108 sgte eval: h=0 f=0.012581968307500000087
+						} 
+
+						surrogate evaluation 11/47 {
+
+							point #109 ( 44423441324422424  0 )
+							mesh index : -1
+
+
+							point #109 sgte eval: h=0 f=0.012955737114000000568
+						} 
+
+						surrogate evaluation 12/47 {
+
+							point #110 ( 4442413441324422656  0 )
+							mesh index : -1
+
+
+							point #110 sgte eval: h=0 f=0.015619277954099999514
+						} 
+
+						surrogate evaluation 13/47 {
+
+							point #111 ( 4442513441324422656  0 )
+							mesh index : -1
+
+
+							point #111 sgte eval: h=0 f=0.015585184097299999845
+						} 
+
+						surrogate evaluation 14/47 {
+
+							point #112 ( 44422541324422424  0 )
+							mesh index : -1
+
+
+							point #112 sgte eval: h=0 f=0.012101054191599999732
+						} 
+
+						surrogate evaluation 15/47 {
+
+							point #113 ( 44422451324422424  0 )
+							mesh index : -1
+
+							surrogate cache hit: #113 --> #24
+
+							point #24 sgte eval: h=0 f=0.01216166019440000079
+						} 
+
+						surrogate evaluation 16/47 {
+
+							point #114 ( 444224124422424  0 )
+							mesh index : -1
+
+
+							point #114 sgte eval: h=0 f=0.011725807189899999788
+						} 
+
+						surrogate evaluation 17/47 {
+
+							point #115 ( 444224324422424  0 )
+							mesh index : -1
+
+
+							point #115 sgte eval: h=0 f=0.016477251052899998668
+						} 
+
+						surrogate evaluation 18/47 {
+
+							point #116 ( 44422442324422424  0 )
+							mesh index : -1
+
+
+							point #116 sgte eval: h=0 f=0.011947774887100000643
+						} 
+
+						surrogate evaluation 19/47 {
+
+							point #117 ( 44422443324422424  0 )
+							mesh index : -1
+
+
+							point #117 sgte eval: h=0 f=0.012696385383599999991
+						} 
+
+						surrogate evaluation 20/47 {
+
+							point #118 ( 4442244423324422656  0 )
+							mesh index : -1
+
+
+							point #118 sgte eval: h=0 f=0.014926934242200000716
+						} 
+
+						surrogate evaluation 21/47 {
+
+							point #119 ( 4442244523324422656  0 )
+							mesh index : -1
+
+
+							point #119 sgte eval: h=0 f=0.014923810958900000229
+						} 
+
+						surrogate evaluation 22/47 {
+
+							point #120 ( 44422441124422424  0 )
+							mesh index : -1
+
+
+							point #120 sgte eval: h=0 f=0.01173624992370000085
+						} 
+
+						surrogate evaluation 23/47 {
+
+							point #121 ( 44422441224422424  0 )
+							mesh index : -1
+
+
+							point #121 sgte eval: h=0 f=0.011818575859100000774
+						} 
+
+						surrogate evaluation 24/47 {
+
+							point #122 ( 4442244141224422400  0 )
+							mesh index : -1
+
+
+							point #122 sgte eval: h=0 f=0.036156010627699998461
+						} 
+
+						surrogate evaluation 25/47 {
+
+							point #123 ( 4442244151224422400  0 )
+							mesh index : -1
+
+
+							point #123 sgte eval: h=0 f=0.03315491676329999915
+						} 
+
+						surrogate evaluation 26/47 {
+
+							point #124 ( 44422441314422424  0 )
+							mesh index : -1
+
+
+							point #124 sgte eval: h=0 f=0.012614607810999999699
+						} 
+
+						surrogate evaluation 27/47 {
+
+							point #125 ( 44422441334422424  0 )
+							mesh index : -1
+
+
+							point #125 sgte eval: h=0 f=0.01312820911410000034
+						} 
+
+						surrogate evaluation 28/47 {
+
+							point #126 ( 4442244134134422528  0 )
+							mesh index : -1
+
+
+							point #126 sgte eval: h=0 f=0.015482711792000000001
+						} 
+
+						surrogate evaluation 29/47 {
+
+							point #127 ( 4442244135134422528  0 )
+							mesh index : -1
+
+
+							point #127 sgte eval: h=0 f=0.013374900817899999794
+						} 
+
+						surrogate evaluation 30/47 {
+
+							point #128 ( 44422441325422424  0 )
+							mesh index : -1
+
+
+							point #128 sgte eval: h=0 f=0.012842965125999999954
+						} 
+
+						surrogate evaluation 31/47 {
+
+							point #129 ( 44422441324522424  0 )
+							mesh index : -1
+
+
+							point #129 sgte eval: h=0 f=0.015219736099199999979
+						} 
+
+						surrogate evaluation 32/47 {
+
+							point #130 ( 444224413242424  0 )
+							mesh index : -1
+
+
+							point #130 sgte eval: h=0 f=0.012612366676300000232
+						} 
+
+						surrogate evaluation 33/47 {
+
+							point #131 ( 444224413242424  0 )
+							mesh index : -1
+
+							surrogate cache hit: #131 --> #130
+
+							point #130 sgte eval: h=0 f=0.012612366676300000232
+						} 
+
+						surrogate evaluation 34/47 {
+
+							point #132 ( 44422441324412424  0 )
+							mesh index : -1
+
+
+							point #132 sgte eval: h=0 f=0.014800572395300000753
+						} 
+
+						surrogate evaluation 35/47 {
+
+							point #133 ( 44422441324432424  0 )
+							mesh index : -1
+
+
+							point #133 sgte eval: h=0 f=0.01308360099789999953
+						} 
+
+						surrogate evaluation 36/47 {
+
+							point #134 ( 4442244132444132352  0 )
+							mesh index : -1
+
+
+							point #134 sgte eval: h=0 f=0.018149209022500001343
+						} 
+
+						surrogate evaluation 37/47 {
+
+							point #135 ( 4442244132445132288  0 )
+							mesh index : -1
+
+
+							point #135 sgte eval: h=0 f=0.017068791389500001521
+						} 
+
+						surrogate evaluation 38/47 {
+
+							point #136 ( 44422441324421424  0 )
+							mesh index : -1
+
+
+							point #136 sgte eval: h=0 f=0.012628722190899999145
+						} 
+
+						surrogate evaluation 39/47 {
+
+							point #137 ( 44422441324423424  0 )
+							mesh index : -1
+
+
+							point #137 sgte eval: h=0 f=0.012977385520899999485
+						} 
+
+						surrogate evaluation 40/47 {
+
+							point #138 ( 4442244132442413568  0 )
+							mesh index : -1
+
+
+							point #138 sgte eval: h=0 f=0.015314126014700000719
+						} 
+
+						surrogate evaluation 41/47 {
+
+							point #139 ( 4442244132442513408  0 )
+							mesh index : -1
+
+
+							point #139 sgte eval: h=0 f=0.023405694961499998868
+						} 
+
+						surrogate evaluation 42/47 {
+
+							point #140 ( 44422441324422528  0 )
+							mesh index : -1
+
+
+							point #140 sgte eval: h=0 f=0.012973189353899999138
+						} 
+
+						surrogate evaluation 43/47 {
+
+							point #141 ( 44422441324422416  0 )
+							mesh index : -1
+
+
+							point #141 sgte eval: h=0 f=0.014704012870800000495
+						} 
+
+						surrogate evaluation 44/47 {
+
+							point #142 ( 44422441324422432  0 )
+							mesh index : -1
+
+
+							point #142 sgte eval: h=0 f=0.015263938903799999583
+						} 
+
+						surrogate evaluation 45/47 {
+
+							point #143 ( 4442244132442244096  0 )
+							mesh index : -1
+

@@ -67,6 +67,7 @@ def insertionsort(l):
         l[j] = save
     return l
 
+
 def quicksort(a):
     # From http://www.daniweb.com/software-development/python/code/216689
     if len(a) <= 1: return a
@@ -75,6 +76,24 @@ def quicksort(a):
     after = [x for x in a if x > pivot]
     return quicksort(before) + [pivot] + quicksort(after)
 
+def quicksort0(a):
+    # non-recursive
+    if len(a) <= 1: return a
+    stack = []
+    sortedList = []
+    stack.append(a)
+    while len(stack) > 0:
+        currentList = stack.pop()
+        if len(currentList) <= 1:
+            sortedList.extend(currentList)
+        else:
+            pivot = currentList.pop()
+            before = [x for x in currentList if x <= pivot]
+            after = [x for x in currentList if x > pivot]
+            stack.append(after)
+            stack.append([pivot])
+            stack.append(before)
+    return sortedList
 
 def quicksort2(a):
     # From http://www.daniweb.com/software-development/python/code/216689
@@ -82,6 +101,74 @@ def quicksort2(a):
             quicksort([x for x in a[1:] if x <= a[0]]) + \
             [a[0]] + quicksort([x for x in a[1:] if x > a[0]])
 
+
+def quicksort3(a):
+    # From http://www.daniweb.com/software-development/python/code/216689
+    if len(a) <= 1: return a
+    pivot = a.pop()
+    before = [x for x in a if x <= pivot]
+    after = [x for x in a if x > pivot]
+    try:
+        ll = quicksort3(before)
+    except:
+        ll = insertionsort(before)
+
+    try:
+        rl = quicksort3(after)
+    except:
+        rl = insertionsort(after)      
+    return ll + [pivot] + rl
+
+def quicksort4(a):
+    # From http://www.daniweb.com/software-development/python/code/216689
+    if len(a) <= 1: return a
+    pivot = a.pop()
+    before = [x for x in a if x <= pivot]
+    after = [x for x in a if x > pivot]
+    try:
+        ll = quicksort4(before)
+    except:
+        ll = bubblesort(before)
+
+    try:
+        rl = quicksort4(after)
+    except:
+        rl = bubblesort(after)      
+    return ll + [pivot] + rl
+
+def quicksort5(a):
+    # From http://www.daniweb.com/software-development/python/code/216689
+    if len(a) <= 1: return a
+    pivot = a.pop()
+    before = [x for x in a if x <= pivot]
+    after = [x for x in a if x > pivot]
+    try:
+        ll = quicksort5(before)
+    except:
+        ll = radixsort(before)
+
+    try:
+        rl = quicksort5(after)
+    except:
+        rl = radixsort(after)      
+    return ll + [pivot] + rl
+
+def quicksort6(a):
+    # From http://www.daniweb.com/software-development/python/code/216689
+    if len(a) <= 1: return a
+    pivot = a.pop()
+    before = [x for x in a if x <= pivot]
+    after = [x for x in a if x > pivot]
+    try:
+        ll = quicksort6(before)
+    except:
+        ll = quicksort0(before)
+
+    try:
+        rl = quicksort6(after)
+    except:
+        rl = quicksort0(after)      
+    return ll + [pivot] + rl
 
 # From
 # http://www.koders.com/python/fid6939480467E643A066728A16534C72A951D012A4.aspx?s=mergesort#L3
@@ -112,7 +199,7 @@ def radixsort(l, r=8, k=0):
     if k==0:
         k=2**r
     mask = int('1'*r, 2)
-    for i in range(0, 32/r):
+    for i in range(0, 64/r):
         counter = [0]*k
         for x in l:
             counter[(x>>(i*r)) & mask] += 1

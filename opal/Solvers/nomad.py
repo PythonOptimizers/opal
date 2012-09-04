@@ -93,6 +93,7 @@ class NOMADCommunicator(Agent):
         map(lambda l: inputValues.extend(l.strip('\n').strip(' ').split(' ')),
                                          f.readlines())
         f.close()
+        self.logger.log('Input: ' + str(inputValues))
         return inputValues
 
     def write_model_value(self, info):
@@ -134,12 +135,15 @@ class NOMADCommunicator(Agent):
         """
         neighbors = info['proposition']['values']
         outputStr = ''
+        logOutputStr = ''
         for neighbor in neighbors:
             for coordinate in neighbor:
                 outputStr = outputStr + str(coordinate) + ' '
+                logOutputStr = logOutputStr + str(coordinate) + ','
             outputStr = outputStr + '\n'
+            logOutputStr = logOutputStr + ';  '
         self.outputStream.write(outputStr)
-        self.logger.log('Neighbors: ' + outputStr)
+        self.logger.log('Neighbors: ' + logOutputStr)
         self.stop()
         return
     
