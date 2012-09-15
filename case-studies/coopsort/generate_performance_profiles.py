@@ -44,25 +44,27 @@ coopTrees["merge sort"] = sort.mergesort
 ## #                                                          methodSequence=[0])
 
 coopTrees["radix sort"] = sort.radixsort
-## coopTrees["coopsort 3"] = coopTreeFactory.createTree(name="radix sort",
-##                                                       methodSequence=[3])
+#coopTrees["coopsort 3"] = coopTreeFactory.createTree(name="radix sort",
+#                                                     methodSequence=[3])
 
 ## #coopTrees['coop sort 1'] = coopTreeFactory.createTree(name='tree 1',
 ## #                                                      methodSequence=[4,1,2])
-## coopTrees['coopsort 4422422'] = coopTreeFactory.createTree(name='coopsort',
-##                                                       methodSequence=[4,4,2,2,4,2,2])
-## coopTrees['coopsort 444224224422422'] = coopTreeFactory.createTree(name='coopsort',
-##                                                       methodSequence=[4,4,4,2,2,4,2,2,4,4,2,2,4,2,2])
-## coopTrees['coopsort 12601260014_6'] = coopTreeFactory.createTreeFromEncodedNumber(name='coopsort 12601260014',
+#coopTrees['coopsort 4422422'] = coopTreeFactory.createTree(name='coopsort 220910',
+#                                                           methodSequence=[4,4,2,2,4,2,2])
+coopTrees['coopsort 44224422422'] = coopTreeFactory.createTree(name='coopsort 286315502',
+                                                               methodSequence=[4,4,2,2,4,4,2,2,4,2,2])
+## Cooptrees['coopsort 12601260014_6'] = coopTreeFactory.createTreeFromEncodedNumber(name='coopsort 12601260014',
 ##                                                                                 encodedNumber=12601260014,
 ##                                                                                 radix=6)
 ## coopTrees['coopsort 5442224422422-1'] = coopTreeFactory.createTree(name='coopsort 1260126001',
 ##                                                                  methodSequence=[5,4,4,2,2,2,4,4,2,2,4,2,2])
-coopTrees['coopsort 5442224422422'] = coopTreeFactory.createTree(name='coopsort 1260126001',
-                                                                 methodSequence=[5,4,4,2,2,2,4,4,2,2,4,2,2])
+#coopTrees['coopsort 44224522522'] = coopTreeFactory.createTree(name='coopsort 286323314',
+#                                                               methodSequence=[4,4,2,2,4,5,2,2,5,2,2])
 
-coopTrees['coopsort 54422312'] = coopTreeFactory.createTree(name='coopsort 270116',
-                                                                 methodSequence=[5,4,4,2,3,1,2])
+#coopTrees['coopsort 442242422'] = coopTreeFactory.createTree(name='coopsort 7952846',
+#                                                             methodSequence=[4,4,2,2,4,2,4,2,2])
+## coopTrees['coopsort 54422312'] = coopTreeFactory.createTree(name='coopsort 270116',
+##                                                                 methodSequence=[5,4,4,2,3,1,2])
 #n = 8
 #listType = 4
 cpuTime = {}

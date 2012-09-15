@@ -104,9 +104,10 @@ def get_neighbors(parameters):
     return neighbors
 
 problems = []
-listSpecIndices = [1]
+#listSpecs = [(8,1), (8,0.0125)]
+listSpecIndices = [0]
 numberOfList = 1
-listLengthStep = 4000
+listLengthStep = 10000
 numberOfRepetition = 100
 for listSpecIndex in listSpecIndices:
     for k in range(numberOfList):

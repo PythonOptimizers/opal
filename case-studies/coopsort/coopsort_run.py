@@ -60,7 +60,7 @@ def run(param_file, problem):
             sortingTime = sortingTime + (te - tb)
             del l1[:]
             del l1
-    meanTime = meanTime + sortingTime
+        meanTime = meanTime + sortingTime
     #l = coopsort(l, coopTree.getRoot())
     measures = {'TIME': meanTime/numberOfRepeat}
     return measures

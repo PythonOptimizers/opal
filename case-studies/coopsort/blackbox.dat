@@ -57,7 +57,7 @@ sS'bound'
 p28
 NsS'value'
 p29
-S'220910'
+S'256472'
 p30
 sS'dimension'
 p31
@@ -230,7 +230,7 @@ p87
 S'classify_string'
 p89
 Nsg8
-S'1-4000-100'
+S'0-10000-100'
 p90
 sg39
 NsbasS'running_options'
@@ -273,7 +273,7 @@ S'sum_time'
 p110
 sbsS'lower_bound'
 p111
-F0.00010978937149000001
+F0.021882677078200002
 sg8
 g96
 sS'upper_bound'
