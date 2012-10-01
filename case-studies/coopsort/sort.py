@@ -228,10 +228,10 @@ if __name__ == '__main__':
     print quicksort([1, 3, 5, 7, 9, 2, 4, 6, 8, 0])
     print quicksort2([1, 3, 5, 7, 9, 2, 4, 6, 8, 0])
     l = [1, 3, 5, 7, 9, 2, 4, 6, 8, 0]
-    selection_sort(l)
+    selectionsort(l)
     print l
     l = [1, 3, 5, 7, 9, 2, 4, 6, 8, 0]
-    insertion_sort(l)
+    insertionsort(l)
     print l
     print mergesort([1, 3, 5, 7, 9, 2, 4, 6, 8, 0])
     print heapsort([1, 3, 5, 7, 9, 2, 4, 6, 8, 0])

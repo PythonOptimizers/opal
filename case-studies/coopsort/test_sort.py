@@ -14,11 +14,13 @@ for fcn in fcns:
     l = [i for i in xrange(N)]
     #l = [N - i for i in xrange(N)]
     args = ()
-    ignoredAlgorithms = ['bubblesort',  'insertionsort',  'selectionsort', 'quicksort2', 'quicksort3', 'quicksort4', 'quicksort5', 'quicksort' ]
+    ignoredAlgorithms = ['bubblesort',  'insertionsort',  'selectionsort',
+                         'quicksort2', 'quicksort3', 'quicksort4',
+                         'quicksort5', 'quicksort']
     if fcn.__name__ in ignoredAlgorithms:
         continue
     if fcn.__name__ == 'countsort':
-        args = (1+max(l),)
+        args = (1 + max(l),)
     t = time.time()
     fcn(l, *args)
     t = time.time() - t
