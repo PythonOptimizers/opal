@@ -1,0 +1,14 @@
+#!/bin/bash
+
+rm *.log 2> /dev/null
+rm *.dat* 2> /dev/null
+rm nomad*.txt 2> /dev/null
+rm blackbox.py 2> /dev/null
+rm neighbors.py 2> /dev/null
+rm surrogate.py 2> /dev/null
+
+if [[ $# > 0 && $1 == '-a' ]]
+then
+  rm *.pyc 2> /dev/null
+  rm iterations*.txt 2> /dev/null
+fi
