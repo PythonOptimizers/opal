@@ -14,6 +14,7 @@ coopsort.set_executable_command('python coopsort_run.py')
 coopsort.add_param(Parameter(name='coopTree',
                              kind='categorical',
                              default=275378,
+                             #default=284354431,
                              description='Encoded cooperation tree'))
 
 # This dummy parameter is just there to circumvent a bug in NOMAD
