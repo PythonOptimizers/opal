@@ -51,10 +51,10 @@ class CooperationTreeFactory:
             self._mapping[0] = (0, sort.insertionsort)
             self._mapping[1] = (0, sort.mergesort)
             self._mapping[2] = (0, sort.quicksort6)
-            self._mapping[6] = (0, sort.radixsort)
+            self._mapping[3] = (0, sort.radixsort)
             self._mapping[4] = (1, split)
             self._mapping[5] = (1, decompose)
-            self._mapping[3] = (0, sort.heapsort)
+            self._mapping[6] = (0, sort.heapsort)
             self._mapping[7] = (0, sort.selectionsort)
             self._mapping[8] = (0, sort.timsort)
         else:
