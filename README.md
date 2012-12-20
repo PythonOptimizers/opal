@@ -37,8 +37,11 @@ Assuming your `PYTHONPATH` is set correctly, you should be able to do:
 
 ## References
 
-+ [Optimization of Algorithms with
-  OPAL](http://www.gerad.ca/~orban/_static/opalpaper.pdf)
++ [Optimization of Algorithms with OPAL](http://www.gerad.ca/~orban/_static/opalpaper.pdf)
 + [Templating and Automatic Code Generation for Performance with Python](http://www.gerad.ca/~orban/_static/templating.pdf)
 + [Taking Advantage of Parallelism in Algorithmic Parameter Optimization](http://dx.doi.org/10.1007/s11590-011-0428-6)
 + [Algorithmic Parameter Optimization of the DFO Method with the OPAL Framework](http://dx.doi.org/10.1007/978-1-4419-6935-4_15)
+
+## Licensing
+
+[![LGPL-3.0](http://www.gnu.org/graphics/lgplv3-88x31.png)](http://www.gnu.org/licenses/lgpl-3.0.html)
