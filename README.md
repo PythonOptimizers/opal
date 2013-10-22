@@ -45,3 +45,7 @@ Assuming your `PYTHONPATH` is set correctly, you should be able to do:
 ## Licensing
 
 [![LGPL-3.0](http://www.gnu.org/graphics/lgplv3-88x31.png)](http://www.gnu.org/licenses/lgpl-3.0.html)
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/dpo/opal/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
