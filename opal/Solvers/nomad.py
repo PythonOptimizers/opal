@@ -316,7 +316,7 @@ class NOMADSolver(Solver):
         comment = '# '
         envName = dataFile.strip('.dat')
         bb = open(execFile, 'w')
-        # Import the neccessary modules
+        # Import the necessary modules
         bb.write('import os' + endl)
         bb.write('import sys' + endl)
         bb.write('import string' + endl)
@@ -354,7 +354,7 @@ class NOMADSolver(Solver):
         comment = '# '
         envName = dataFile.strip('.dat')
         bb = open(execFile, 'w')
-        # Import the neccessary modules
+        # Import the necessary modules
         bb.write('import os' + endl)
         bb.write('import sys' + endl)
         bb.write('import string' + endl)

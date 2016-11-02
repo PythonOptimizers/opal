@@ -18,7 +18,7 @@ consists in three steps:
 
 Pratically, we need create an executable wrapper, and one or more Python files for
 declaring, defining parameter optimization problem and activating solving session.
-The contents of wrapper is easily seperated from the others, and
+The contents of wrapper is easily separated from the others, and
 can be written in any programming language and satisfies some simple restrictions
 relating input and output. The target algorithm declartion, parameter optimization
 problem definition, session provoking are written in Python and follow the OPAL
@@ -57,15 +57,15 @@ Creating of wrapper
 -------------------
 
 A wrapper is actually a description of communication between the target algorithm
-and OPAL. This shoulds show at least the follwoing information:
+and OPAL. This shoulds show at least the following information:
 
-#. How the parameter values are transfered from OPAL to the target algorithm and how
+#. How the parameter values are transferred from OPAL to the target algorithm and how
    they are set as ready to execute algorithm.
 
 #. How the algorithm is invoked to solve a problem whose name is provided by OPAL.
 
 #. How the elemetary measure values are collected from the executtion result and
-   transfered to OPAL.
+   transferred to OPAL.
 
 There are two options to create a wrapper. The first case demands an :ref:`executable
 wrapper<creating_of_wrapper>` and some :ref:`statements to declare this to OPAL<declaration_to_opal>`.

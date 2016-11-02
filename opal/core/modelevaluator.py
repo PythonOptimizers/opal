@@ -71,7 +71,7 @@ class ModelEvaluator(Agent):
         if self.model is None:
             return
         
-        # Find the neccessary collaborators. If could find it, create the
+        # Find the necessary collaborators. If could find it, create the
         # predefinded collaborators
         
         if self.find_collaborator('data generator', environment) is None:

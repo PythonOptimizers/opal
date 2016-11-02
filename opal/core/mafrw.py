@@ -58,7 +58,7 @@ class Message:
         """
         
         Return a string representing the message. This string is used 
-        in message transfering or message delivering 
+        in message transferring or message delivering 
         """
         return ''
 
@@ -201,7 +201,7 @@ class Agent(threading.Thread):
     def parse_message(self, message):
         '''
 
-        This method try to get neccessary information from the message
+        This method try to get necessary information from the message
         by the suitable way. This means that with the same message, two agents
         can get different information.
     
@@ -318,7 +318,7 @@ class ManagementService:
     def create_id(self, obj):
         '''
 
-        This function is overriden for each sub-class. It shows how the
+        This function is overridden for each sub-class. It shows how the
         id of new object is generated. 
         '''
         return None
@@ -367,7 +367,7 @@ class Query:
         return
 
     def match(self, obj):
-        # This method will be overriden by the sub-class
+        # This method will be overridden by the sub-class
         return True
     
 class MessageQuery(Query):

@@ -135,7 +135,7 @@ class Algorithm:
     def read_measure(self, fileName):
         """
 
-        Ths virtual method determines how to  measure value from the
+        This virtual method determines how to  measure value from the
         output of the algorithm.
 
         :parameters:

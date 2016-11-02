@@ -51,7 +51,7 @@ class LSFTask(Task):
         serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         socketIsBound = 0
         #-----------------
-        # Choose an availble port to avoid conflit with the other routine
+        # Choose an available port to avoid conflit with the other routine
         # Particularly, the other parameter optimization
         while socketIsBound == 0:
             try:

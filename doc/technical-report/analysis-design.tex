@@ -51,8 +51,8 @@
 \chapter{Backgrounds}
 \par The principles are built basing on the three observations
 \begin{itemize}
-\item The Optimization of Algorithmic parameters framework can be analyzed as either a proccessing data system or black-box optimization problem solving. 
-\item We can decompose any data proccessing to the elementary things by Data-Operator principle
+\item The Optimization of Algorithmic parameters framework can be analyzed as either a processing data system or black-box optimization problem solving. 
+\item We can decompose any data processing to the elementary things by Data-Operator principle
 \item Problem solving is can be decomposed by Data-Operator principle.
 \end{itemize}
 
@@ -82,7 +82,7 @@
   \end{enumerate}
 \item The relations between two Operators are:
   \begin{enumerate}
-  \item Dependence: A manipulator depends on the others if it used the others to proccess 
+  \item Dependence: A manipulator depends on the others if it used the others to process 
     the Data
   \item Independence.
   \item Inclusion A manipulator can be decomposed as combinations of the others
@@ -90,7 +90,7 @@
   \end{enumerate}
 \end{itemize}
 
-\section{Analyse solving proccess by Data-Operator principle}
+\section{Analyse solving process by Data-Operator principle}
 \par A solving process for an optimization problem is defined by the following diagram:
 \begin{figure}[htpb]
   % We need layers to draw the block diagram
@@ -129,7 +129,7 @@ We apply the principle above to describe the framework in a typical use-case. So
   proccesses as well the other supporting components.
 \end{enumerate}
 
-\section{Parameter Optimization is Data proccessing}
+\section{Parameter Optimization is Data processing}
 \begin{figure}[htpb]
   \centering
   \begin{tikzpicture}[node distance = 2cm, auto]
@@ -387,7 +387,7 @@ the users build up a process from a sub-process and an evaluator
     \path (solving.south -| solving.east) + (-1.0, 0.1) node (a) {};
     \draw[belongs] (solver.north) -- (a);
   \end{tikzpicture}
-  \caption{Manipulator hierachy}
+  \caption{Manipulator hierarchy}
   \label{fig:manipulator-hierachy}
 \end{figure}
 \section{Problem and solver}
@@ -396,10 +396,10 @@ the users build up a process from a sub-process and an evaluator
 \item Problem includes a data set and one or many evaluator. For example, an optimization problem we need 
   an initial point and one or many evaluators representing for its model like objective 
   function computing, constraints computing, objective function gradient. Note the structure such as linearity, 
-  is embeded as the structure 
+  is embedded as the structure 
 \item Solver is specified with a searching process that created by combining the model computing process in 
   problem definition with an evaluator that compute new point from the information of current point (or model value).
-  Search proccess is a loop process having the state, and the input is data (for example initial point) of 
+  Search process is a loop process having the state, and the input is data (for example initial point) of 
   problem definition.
 \end{itemize}
 

@@ -45,7 +45,7 @@ class MeasureFunction(SavableFunction):
 class Objective:
     """
 
-    A funciton objective with internal dynamically updated bound
+    A function objective with internal dynamically updated bound
     """
     def __init__(self,
                  function=None,

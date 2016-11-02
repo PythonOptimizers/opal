@@ -111,7 +111,7 @@ class DataGenerator(Agent):
             param.set_value(val)
         # Update parameter set stored in algorithm. In the case that
         # parameters of model data point actually to algorithm's parameter set,
-        # the following updating is not neccessary.
+        # the following updating is not necessary.
         self.algorithm.update_parameters(self.parameters)
         return 
 
