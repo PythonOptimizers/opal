@@ -17,14 +17,14 @@ __docformat__ = 'restructuredtext'
 
 
 class ModelEvaluator(Agent):
-    def __init__(self, 
+    def __init__(self,
                  name='model evaluator',
-                 model=None, 
+                 model=None,
                  modelFile=None,
                  options={},
                  logHandlers=[]):
         Agent.__init__(self, name=name, logHandlers=logHandlers)
-        self.options = {'platform': 'LINUX', 
+        self.options = {'platform': 'LINUX',
                         'synchronized': False,
                         'interruptible': True}
         self.options.update(options)
@@ -36,12 +36,12 @@ class ModelEvaluator(Agent):
                 f = open(modelFile)
                 model = pickle.load(f)
                 f.close()
-           
+
         self.model = model
         self.model_file = modelFile
         self.options.update(self.model.evaluating_options)
-       
-        # if platform option is provided by a string representing the name of 
+
+        # if platform option is provided by a string representing the name of
         # a OPAL-supported platform
 
         self.message_handlers['cfp-evaluate-point'] = \
@@ -57,23 +57,23 @@ class ModelEvaluator(Agent):
     def register(self, environment):
         '''
 
-        After adding his name in the environment database, it will look for     
+        After adding his name in the environment database, it will look for
         the agents that work as data manager, experiment manager and structure
         computer.
-        If it could not find one of these agents within environment, it will 
+        If it could not find one of these agents within environment, it will
         create them and let them register to environment
 
         The find process is realized by sending a test message to environment
         and wait for replying.
         '''
         Agent.register(self, environment)
-        
+
         if self.model is None:
             return
-        
+
         # Find the necessary collaborators. If could find it, create the
         # predefinded collaborators
-        
+
         if self.find_collaborator('data generator', environment) is None:
             dataGenerator =\
                    DataGenerator(algorithm=self.model.get_algorithm(),
@@ -90,7 +90,7 @@ class ModelEvaluator(Agent):
             structureEvaluator.register(environment)
 
         return
-    
+
     def find_collaborator(self, name, environment):
         return None
 
@@ -99,7 +99,7 @@ class ModelEvaluator(Agent):
         for coordinate in point:
             valuesStr = valuesStr + str(coordinate) + '_'
         return hashlib.sha1(valuesStr).hexdigest()
-  
+
     # Message handlers
 
     def activate_parameter_evaluation(self, info):
@@ -148,10 +148,10 @@ class ModelEvaluator(Agent):
                                    })
         self.send_message(message)
         return
-        
+
     def stop(self, info=None):
         '''
-        
+
         Message handlers for STOP signal
         '''
         # the model is saved back to file
@@ -160,5 +160,5 @@ class ModelEvaluator(Agent):
         f.close()
         Agent.stop(self, info)
         return
-  
-   
+
+

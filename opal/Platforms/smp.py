@@ -13,10 +13,10 @@ from ..core import log
 
 class SMPTask(Task):
     """
-    
+
     Each task run on this platform need to
     some stubs to communicate with the platform
-    
+
     """
     def __init__(self, name=None, taskId=None, command=None, sessionTag=None):
         Task.__init__(self,
@@ -50,19 +50,19 @@ class SMPPlatform(Platform):
         #self.logger = log.OPALLogger(name='smpPlatform', handlers=logHandlers)
         self.message_handlers['cfp-execute'] = self.create_task
         pass
-   
+
     def set_config(self, parameterName, parameterValue):
-        self.configuration[parameterName] = parameterValue 
+        self.configuration[parameterName] = parameterValue
         return
 
-    
-    def initialize(self, testId):      
+
+    def initialize(self, testId):
         #self.children = []
         #self.logger.log('Platform is initialized for the test ' + testId)
         return
 
     # Message handlers
-    
+
     def create_task(self, info):
         '''
 
@@ -84,9 +84,9 @@ class SMPPlatform(Platform):
                        command=command,
                        sessionTag=proposition['tag'])
         self.submit(task, queue=queueTag)
-        return 
-  
-        
-  
+        return
+
+
+
 
 SMP = SMPPlatform()

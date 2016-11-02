@@ -22,7 +22,7 @@ Some notes on special problems:
   and reduced model (40 test problems). Actually, it has impact on the
   clustering, ATNSSSSL is not counted in reduced model. This make reduced model
   can be improved easily but it not the same behavior on original model.
-  
+
 '''
 query = CUTErQuery(constraintType='BNLQO')
 # Select tiny unconstrained HS problems.

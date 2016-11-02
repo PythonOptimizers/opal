@@ -25,7 +25,7 @@ class Parameter(Data):
       1.0e-3
 
     The bounds on a parameter may be a tuple indicating the lower and upper
-    bounds if the parameter has an ordered kind, such as integer or real. 
+    bounds if the parameter has an ordered kind, such as integer or real.
     Otherwise, `bound` is a set of feasible values.
     """
 
@@ -64,7 +64,7 @@ class Parameter(Data):
                 self._default = True
             else:
                 self._default = 'something'
-        
+
         Data.__init__(self,
                       name=name,
                       description=description,
@@ -78,7 +78,7 @@ class Parameter(Data):
     def get_default(self):
         "Return default value"
         return self._default
-    
+
     def set_default(self,value):
         "Set default value."
         if self.is_real:
@@ -141,7 +141,7 @@ class Parameter(Data):
         Return bounds on the parameter.
         """
         return self.bound
-    
+
     def is_valid(self, value=None):
         """
 
@@ -149,7 +149,7 @@ class Parameter(Data):
         range for this parameter. If `value` is None, the current value of
         the parameter is used.
         """
-       
+
         if value is not None:
             valueToVerify = value
         else:
@@ -159,7 +159,7 @@ class Parameter(Data):
         if self.is_categorical:
             return valueToVerify in self.bound
         # There is the error in transforming from string to int or float
-        # For example, the value 0.0010000000 (in string in input file) is 
+        # For example, the value 0.0010000000 (in string in input file) is
         # 0.00100000000001 after forcing it as real number
         # Pay attention to verify the bound at bounded point
         if self.bound[0] is not None:
@@ -207,7 +207,7 @@ class ParameterConstraint:
 def _test():
     import doctest
     return doctest.testmod()
-            
+
 
 def test_parameter_class():
     p = Parameter(name='real_param')

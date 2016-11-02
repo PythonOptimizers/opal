@@ -19,31 +19,31 @@ from ..Platforms import supported_platforms
 
 from .. import config
 
-        
+
 class DataGenerator(Agent):
-    """ 
-    
+    """
+
     This class represents a data generator for a parameter optimization
     problem. The data is the values of the elementary measures that are needed
     to formulate the problem. To specify a data generator, we need provide:
 
     1. The algorithm wrapper
-    2. the set of elementary measures concerned 
+    2. the set of elementary measures concerned
     3. the set of parameters to control
     4. the test problems set.
     """
 
-    def __init__(self, 
+    def __init__(self,
                  name='data generator',
-                 algorithm=None, 
+                 algorithm=None,
                  parameters=None,
                  measures=None,
                  problems=[],
                  platform=None,
-                 logHandlers=[], 
+                 logHandlers=[],
                  options={},
                  **kwargs):
-        
+
         # The core variables
         Agent.__init__(self, name=name, logHandlers=logHandlers)
         self.algorithm = algorithm
@@ -55,38 +55,38 @@ class DataGenerator(Agent):
 
         #log.debugger.log(str([(param.name, param.kind) \
         #                      for param in self.parameters]))
-            
+
         if measures is None: # No measure subset is specified
             self.measures = algorithm.measures # All measures of algorithm is
                                              # is considered
         else:
             self.measures = measures
 
-        if (problems is None) or (len(problems) == 0): # No test problem is 
+        if (problems is None) or (len(problems) == 0): # No test problem is
                                                        # is specified,
-                                                       # algorithm can be run 
-                                                       # without 
+                                                       # algorithm can be run
+                                                       # without
                                                        # indicating problem
-            self.problems = [TestProblem(name='TESTPROB')] # A list of one 
+            self.problems = [TestProblem(name='TESTPROB')] # A list of one
                                                            # one problem is
                                                            # is created
         else:
             self.problems = problems
 
         self.platform_description = platform
-        
+
         self.options = {'interruptible':True}
         if options is not None:
             self.options.update(options)
         self.options.update(kwargs)
 
         #self.platform = platform
-        
-        
+
+
         # By default, logger is Logger object of Python's logging module
         # Logger is set name to modeldata, level is info.
         # self.logger = log.OPALLogger(name='modelData', handlers=logHandlers)
-      
+
         self.experiments = {} # List of all experiements in executions
         self.message_handlers['cfp-evaluate-parameter'] = self.run_experiment
         self.message_handlers['cfp-collect-result'] = self.get_result
@@ -103,7 +103,7 @@ class DataGenerator(Agent):
             platform.register(environment)
         return
 
-  
+
     #  Private method
     def update_parameter(self, values):
         for (param, val) in zip(self.parameters, values):
@@ -113,14 +113,14 @@ class DataGenerator(Agent):
         # parameters of model data point actually to algorithm's parameter set,
         # the following updating is not necessary.
         self.algorithm.update_parameters(self.parameters)
-        return 
+        return
 
     def create_tag(self):
         valuesStr = '_'
         for param in self.parameters:
             valuesStr = valuesStr + param.name + ':' + str(param.value) + '_'
         return hashlib.sha1(valuesStr).hexdigest()
-  
+
     def find_platform(self, platformName, environment):
         return None
 
@@ -144,7 +144,7 @@ class DataGenerator(Agent):
         self.logger.log('A general platform is created with setting ' +\
                         str(platform.settings))
         return platform
-        
+
     # Message handlers
     def run_experiment(self, info=None):
         '''
@@ -154,7 +154,7 @@ class DataGenerator(Agent):
         '''
         if info is None:
             return
-        
+
         parameterValues = info['proposition']['parameter']
         self.update_parameter(parameterValues)
         if 'tag' in info['proposition'].keys():
@@ -209,13 +209,13 @@ class DataGenerator(Agent):
                           )
         self.send_message(message)
         return
-    
+
     def get_result(self, info=None):
         '''
 
         Handle the message that informs a solving session is terminated.
         The content message contains information of identifying the
-        terminated session 
+        terminated session
         '''
         if 'proposition' not in info.keys():
             return
@@ -272,5 +272,5 @@ class DataGenerator(Agent):
         if os.path.exists(outputFile):
             os.remove(outputFile)
         return
-        
-        
+
+

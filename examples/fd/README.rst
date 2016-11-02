@@ -19,9 +19,9 @@ arithmetic, this value is around 1.0e-8.
 Below is the output of a run on a i386 Intel Core2 Duo running OSX 10.5.8::
 
     MADS run{
-    
+
      EVAL BBE [ SOL, ] OBJ TIME \\
-    
+
      1 1 [ 0.5  ] 0.2022210836    0 \\
      2 2 [ 0.4  ] 0.1582516709    0 \\
      3 3 [ 0.1  ] 0.03650380828    1 \\
@@ -46,7 +46,7 @@ Below is the output of a run on a i386 Intel Core2 Duo running OSX 10.5.8::
      134 57 [ 1.407570378e-08  ] 8.138155705e-10   22 \\
      157 78 [ 1.407861414e-08  ] 3.433888729e-10   30 \\
      170 87 [ 1.407861414e-08  ] 3.433888729e-10   33 \\
-    
+
     }end of run (mesh size reached NOMAD precision)
 
 The outcome of the run is that the final value of the stepsize found is

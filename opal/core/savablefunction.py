@@ -17,10 +17,10 @@ class SavableFunction:
         # We concentrate on a property called possitively-additive.
         # A function objective is called possitively-additive if function value
         # of partial data is always less than or equal to the data-full one
-        
+
         self.information = {}
         self.information.update(kwargs)
-        # It's important to define a function with two arguments: 
+        # It's important to define a function with two arguments:
         #the parameter and the measure
         # We check if the given function sastifies this constraint:
 
@@ -42,7 +42,7 @@ class SavableFunction:
         #del self.func
         #self.func = None # Keep self.func is None for the next pickling
         #return value
-    
+
     def __getstate__(self):
         content = {}
         content['code'] = marshal.dumps(self.func.__code__)
@@ -55,8 +55,8 @@ class SavableFunction:
         self.information = content['information']
         self.name = content['name']
         return
-        
+
     def __call__(self,*args,**kwargs):
         return self.evaluate(*args,**kwargs)
 
-   
+

@@ -12,7 +12,7 @@ class Task(Agent):
                  logHandlers=[]):
         '''
 
-        Each task object correspond to an application of the target 
+        Each task object correspond to an application of the target
         algorithm on a test problem.
 
         '''
@@ -77,7 +77,7 @@ class QueueSystem:
             if queue in self.tasks.keys():
                 self.tasks[queue].append(task)
             else:
-                self.tasks[queue] = [task]         
+                self.tasks[queue] = [task]
         return
 
     def pop(self, queue=None):
@@ -88,7 +88,7 @@ class QueueSystem:
                 if queue is not 'default':
                     return self.tasks[queue].pop()
             raise Exception('The task queue is empty')
-        
+
         if queue in self.tasks.keys():
             task = self.tasks[queue].pop()
             # Remove the queue if it is empty
@@ -97,7 +97,7 @@ class QueueSystem:
             return task
         raise Exception('The task queue does not exist')
 
-    
+
     def remove_tasks(self, queue=None):
         if (queue is None) or (queue is 'default'):
             del self.tasks['default'][0:]
@@ -106,7 +106,7 @@ class QueueSystem:
             del self.tasks[queue]
             return
         return
-    
+
 class Platform(Agent):
     def __init__(self,
                  name='platform',
@@ -141,14 +141,14 @@ class Platform(Agent):
             self.settings.update(settings)
         self.settings.update(kwargs)
         return
-    
+
     def submit(self, task, queue=None):
         # A task is created by each platform
         task.register(self.environment)
         self.queue_system.append(task, queue)
         #self.logger.log('Task ' + task.name + ' is added to queue')
         return task.id
-   
+
     def finalize_task(self, info):
         taskName = info['proposition']['who']
         del self.running[taskName]
@@ -156,7 +156,7 @@ class Platform(Agent):
 
     def run(self):
         while self.working :
-            if not self.settings['SYNCHRONOUS'] or len(self.running) == 0: 
+            if not self.settings['SYNCHRONOUS'] or len(self.running) == 0:
                 # Submit task when there is no
                 # running task
                 #self.logger.log('Begin a launching session, we have ' + \
@@ -183,5 +183,5 @@ class Platform(Agent):
             queueTag = None
         self.queue_system.remove_tasks(queue=queueTag)
         return
-    
-    
+
+

@@ -1,10 +1,10 @@
 '''
 
-This file for provoking a serie of tests relating all basic componnents 
-in OPAL. It is used to provoke as well as the simple examples that are 
+This file for provoking a serie of tests relating all basic componnents
+in OPAL. It is used to provoke as well as the simple examples that are
 in the `examples` directory.
 
-The `nose` package is required to run the tests.  
+The `nose` package is required to run the tests.
 
 For testing OPAL installation, just launch at shell prompt a command:
 
@@ -16,7 +16,7 @@ For running a examples, for example the `finite-difference` examples:
 '''
 
 if __name__ == '__main__':
-    try: 
+    try:
         from nose import main
         main()
     except NameError:

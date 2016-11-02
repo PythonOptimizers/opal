@@ -1,5 +1,5 @@
 def avg_time(parameters, measures):
-    n = len(measures['CPU']) 
+    n = len(measures['CPU'])
     if n == 0:
         return 0.0
     return (sum(measures["CPU"]) + 0.0)/(n + 0.0)
@@ -38,4 +38,4 @@ def sum_unsolvability(parameters, measures):
 
 def sum_iteration(parameters, measures):
     return sum(measures['NITER'])
-               
+

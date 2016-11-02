@@ -19,7 +19,7 @@ class SunGridTask(Task):
                      options + ' ' +\
                      '-b y ' + command + \
                      ' > /dev/null'
-        
+
         Task.__init__(self,
                       name=name,
                       taskId=taskId,
@@ -84,7 +84,7 @@ class SunGridTask(Task):
         f.write('s.send("'+ keyStr + '")\n')
         f.write('s.close()\n')
         f.close()
-        
+
         #ltime = time.localtime()
         #timeStr = str(ltime.tm_year) + '-' + str(ltime.tm_mon) + '-' + \
         #          str(ltime.tm_mday) + ' ' + str(ltime.tm_hour) + ':' + \
@@ -165,17 +165,17 @@ class SunGridPlatform(Platform):
             queueTag = info['proposition']['queue']
         else:
             queueTag = None
-            
+
         # str(ltime.tm_year) +  str(ltime.tm_mon) + str(ltime.tm_mday) + \
             # str(ltime.tm_hour) + str(ltime.tm_min) + str(ltime.tm_sec)
-        
+
         optionStr = self.settings['OPTIONS']
-            
+
         task = SunGridTask(name=tag,
                            taskId='SGE_' + tag,
                            command=execCmd,
                            options=optionStr)
         self.submit(task, queue=queueTag)
-        return 
+        return
 
 SunGrid= SunGridPlatform()

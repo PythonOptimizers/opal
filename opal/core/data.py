@@ -15,7 +15,7 @@ class Data:
 
     Data is one of two elementary entities. It has a name, value type and value.
     The most important methods of this class are `set` and `get`.
-    The type of data may be a scalar of type integer, floating number, or 
+    The type of data may be a scalar of type integer, floating number, or
     a vector, a matrix.
     """
     def __init__(self, name='',
@@ -42,8 +42,8 @@ class Data:
 
     def identify(self):
         '''
-        
-        The method provide the identity of a Data object. By default, 
+
+        The method provide the identity of a Data object. By default,
         the name is considered as the identity
         '''
         return self.name
@@ -54,7 +54,7 @@ class Data:
 
     def get(self):
         return self.value
-    
+
     def get_type(self):
         return self.type
 
@@ -71,7 +71,7 @@ class DataSet(Set):
     a Set object, the set_values() method. This method to update value of the
     elements belong to set
     """
-    def __init__(self,name="", elements=[], 
+    def __init__(self,name="", elements=[],
                  *argv,**kwargv):
         self.name = name
         self.indices = {}
@@ -86,19 +86,19 @@ class DataSet(Set):
 
     def set_values(self, values=None, *args, **kwargs):
         """
-        
+
         Use the arguments {\sf values}, {\sf args} and {\sf kwargs} to build
-        up a mapping 
-        from the name to value. After that, the {\sf set_value} method of each 
+        up a mapping
+        from the name to value. After that, the {\sf set_value} method of each
         element is provoked to set value for them.
-        
-        This method pemits to set values for a set by the following statements: 
-        >>> dataSet.set_values(1, 2, 3)           
+
+        This method pemits to set values for a set by the following statements:
+        >>> dataSet.set_values(1, 2, 3)
         >>> dataSet.set_values([1, 2, 3])
         >>> dataSet.set_values([1, 2], 3)
             Assign three first elements to 1, 2 and 3.
         >>> dataSet.set_values(values=[1, 2, 3], elem4=4)
-            Set first three element to 1, 2 and 3 correspondingly. And set the 
+            Set first three element to 1, 2 and 3 correspondingly. And set the
             element whose name is elem4 to 4.
         >>> dataSet.set_values(elem5=5)
             Assign 5 to the {\sf elem5} element.
@@ -113,19 +113,19 @@ class DataSet(Set):
             if type(values) == type([]) or type(values) == type((1,)) :
                 valueList.extend(values)
             elif type(values) == type({}): # values are provided in form of
-                                           # a mapping between identity and 
+                                           # a mapping between identity and
                                            # value
                 valueDict.update(values)
             else: # values is an value
                 valueList.append(values)
         else:
             valueDict.update(kwargs)
-        
+
         if (len(valueList) <= 0) and (len(valueDict) <= 0):
             # Set value to the default
             for elem in self.db.values():
                 elem.set_value(None)
-        else:    
+        else:
             # Set the values in the list first
             for elem, value in itertools.izip(self.db, valueList):
                 elem.set(value)
@@ -161,7 +161,7 @@ class DataTable:
         self.column_identities = columnIdentities
         #log.debugger.log('Row identities: ' + str(self.row_identities))
         #log.debugger.log('Column identities: ' + str(self.column_identities))
-                         
+
         # We store only the valid values like a dense matrix
         # The table is a dictionary of dictionary-column.
         # This means that the coordination of a cell is formed
@@ -170,7 +170,7 @@ class DataTable:
         # the access through the column or row is equivalent
         self.table = {}
 
-        
+
         return
 
     def __len__(self):
@@ -194,7 +194,7 @@ class DataTable:
         Return a tuple of which each element is the size of a dimension
         '''
         return (len(self.row_identities), len(self.column_identities))
-            
+
     def __getitem__(self, key):
         if (type(key) == type(('a','tuple'))) or \
            (type(key) == type(['a list'])):
@@ -222,7 +222,7 @@ class DataTable:
         #                 )
         ratio =  (self.__len__() + 0.0)/(self.get_formal_length() + 0.0)
         return ratio
-       
+
     # Row-related operations
     def get_row(self, rowId):
         valueDict = {}
@@ -235,7 +235,7 @@ class DataTable:
             Return an empty dictionary
             '''
             return valueDict
-        
+
         for col in self.column_identities:
             if col in self.table[rowId].keys():
                 valueDict[col] = self.table[rowId][col]
@@ -243,7 +243,7 @@ class DataTable:
 
     def get_row_keys(self):
         return self.row_identities
-    
+
     def add_row(self, rowId):
         if rowId in self.row_identities:
             '''
@@ -253,7 +253,7 @@ class DataTable:
             return
         self.row_identities.append(rowId)
         return
-    
+
     def update_row(self, rowId, values=None, **kwargs):
         if rowId not in self.row_identities:
             raise KeyError, 'Could identify a row of ID ' + str(rowId)
@@ -272,7 +272,7 @@ class DataTable:
         return
 
     # Column-related operations
-    
+
     def get_column(self, colId):
         '''
 
@@ -288,10 +288,10 @@ class DataTable:
                    (colId in self.table[row].keys()):
                 valueDict[row] = self.table[row][colId]
         return valueDict
-    
+
     def get_column_keys(self):
         return self.column_identities
-    
+
     def add_column(self, colId):
         if colId in self.column_identities:
             return
@@ -308,7 +308,7 @@ class DataTable:
                 valueDict[row] = val
         if type(values) is type({'key':'value'}):
             valueDict.update(values)
-            
+
         valueDict.update(kwargs)
 
         for row, val in valueDict.iteritems():
@@ -316,9 +316,9 @@ class DataTable:
                 self.table[row] = {}
             self.table[row][colId] = val
         return
-        
-        
 
 
- 
-   
+
+
+
+

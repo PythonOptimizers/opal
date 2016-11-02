@@ -7,7 +7,7 @@ setup(name='OPAL - OPtimization of ALgorithm',
       author_email='cong-kien.dang@polymtl.ca',
       url='http://www.gerad.ca/~kiendc/build/hmtl',
       packages=['opal',
-                'opal.core', 
+                'opal.core',
                 'opal.Platforms',
                 'opal.Solvers',
                 'opal.TestProblemCollections']

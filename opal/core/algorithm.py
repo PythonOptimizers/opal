@@ -9,24 +9,24 @@ from measure import Measure
 
 
 __docformat__ = 'restructuredtext'
-  
+
 class Algorithm:
     """
-    
-    An abstract class to define the specifics of a wrapper of an algorithm. 
-    An object of this class represents to an executable 
+
+    An abstract class to define the specifics of a wrapper of an algorithm.
+    An object of this class represents to an executable
     wrapper of target algorithm. It provokes the target
     algorithm to solve a problem and collects the elementary
     measures
 
-    An object of this class works as an interface of the target algorithm 
+    An object of this class works as an interface of the target algorithm
     with OPAL. It contains at least three informations:
-    
+
     1. What are the parammeters
     2. How to invoke the algorithm to solve a problem
     3. What are the measures we get after running algorithm
 
-    
+
     :parameters:
         :name:  Name of the algorithm (string)
         :purpose: Synopsis of purpose (string)
@@ -57,14 +57,14 @@ class Algorithm:
     """
 
     def __init__(self, name=None, description=None, **kwargs):
-       
+
         # Algorithmic description
         self.name = name
         self.description = description
-        self.parameters = DataSet(name='Parameter set')  # List of parameters 
+        self.parameters = DataSet(name='Parameter set')  # List of parameters
                                                          # (of type Parameter)
-        self.measures = DataSet(name='Measure set')  # List of measures 
-                                                     # (the observation of the 
+        self.measures = DataSet(name='Measure set')  # List of measures
+                                                     # (the observation of the
                                                      # algorithm)
         self.constraints = []
 
@@ -80,7 +80,7 @@ class Algorithm:
         else:
             raise TypeError, 'param must be a Parameter'
         return
-    
+
     def add_measure(self, measure):
         "Add a measure to an algorithm"
         if isinstance(measure, Measure):
@@ -89,36 +89,36 @@ class Algorithm:
             raise TypeError, 'measure must be a Measure object'
         return
 
-   
+
     def update_parameters(self, parameters):
         """
-        
-        This method return an unique identity for the 
+
+        This method return an unique identity for the
         test basing on the parameter values
 
-        The identity obtains by hashing the parameter values string. 
-        This is an inversable function. It means that we can get 
+        The identity obtains by hashing the parameter values string.
+        This is an inversable function. It means that we can get
         the parameter_values form the id
 
 
         This virtual method determines how values for the parameters of the
-        algorithm are written to intermediated file that are read after by 
-        algorithm driver. 
-        
-        The format of intermediated file depend on this method. By default, 
+        algorithm are written to intermediated file that are read after by
+        algorithm driver.
+
+        The format of intermediated file depend on this method. By default,
         the parameter set are written by pickle.
-       
+
         """
         values = dict((param.name,param.value) for param in parameters)
         # Fill the values to parameter set
         self.parameters.set_values(values)
-        # Write the values to a temporary parameter file 
-        # for communicating with an executable wrapper 
-        return 
-    
+        # Write the values to a temporary parameter file
+        # for communicating with an executable wrapper
+        return
+
 
     def create_tag(self, problem):
-        return 
+        return
 
     def set_executable_command(self, command):
         self.executable = command
@@ -147,7 +147,7 @@ class Algorithm:
         By default, the algorithm returns the measure values to the standard
         output. In the `run()` method, the output is redirected to file.
         """
-        
+
         f = open(fileName)
         lines = f.readlines()
         f.close()
@@ -188,11 +188,11 @@ class Algorithm:
 
         :returns: The command for executing the algorithm.
 
-        By default, the algorithm is called by the command 
+        By default, the algorithm is called by the command
 
             `./algorithm paramfile problem`
         """
-        
+
         if parameters is not None:
             self.update_parameters(parameters)
 
@@ -205,7 +205,7 @@ class Algorithm:
         parameterFile = algoName + '_' +\
                         str(sessionTag) +\
                         '.param'
-                                                        
+
         outputFile = algoName + '_' +\
                      str(sessionTag) +\
                      '.measure'
@@ -215,12 +215,12 @@ class Algorithm:
         cmd = self.executable + ' ' +\
               parameterFile + ' ' +\
               problem.name + ' ' +\
-              outputFile        
-       
-            
+              outputFile
+
+
         return cmd, parameterFile, outputFile, sessionTag
 
-    
+
     def add_parameter_constraint(self, paramConstraint):
         """
         Specify the domain of a parameter.
@@ -247,4 +247,4 @@ class Algorithm:
             if not param.is_valid():
                 return False
         return True
-    
+

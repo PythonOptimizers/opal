@@ -38,10 +38,10 @@ class NOMADSpecification:
         else:
             self.values = [value]
         return
-    
+
     def identify(self):
         return self.name
-    
+
     def str(self):
         if (self.name is not None) and (len(self.values) > 0):
             resultStr = ''
@@ -58,11 +58,11 @@ class NOMADCommunicator(Agent):
     NOMAD solver and an executable blackbox.
     It handles two messages:
 
-    - Input message whose content contains the name of input file. 
+    - Input message whose content contains the name of input file.
       The point coordinates will be extracted from the file and are
       used to form an evaluation request
-    - Output message whose content contains the model values. There 
-      values are shown up to the standard output as expectation of 
+    - Output message whose content contains the model values. There
+      values are shown up to the standard output as expectation of
       NOMAD solver
     '''
 
@@ -75,7 +75,7 @@ class NOMADCommunicator(Agent):
         self.message_handlers['inform-model-value'] = self.write_model_value
         self.message_handlers['inform-neighborhood'] = self.write_neighbors
         return
-    
+
     def read_input(self, inputFile=None):
         """
         .. warning::
@@ -109,12 +109,12 @@ class NOMADCommunicator(Agent):
             self.outputStream.write('1e+20\n')
             self.stop()
             return
-        
+
         objValue, consValues = info['proposition']['values']
         outputStr = ''
         self.outputStream.write(str(objValue) + '\n')
         outputStr = outputStr + str(objValue) + ' '
-     
+
         for cons in consValues:
             if cons[0] is not None:
                 self.outputStream.write(str(cons[0]) + ' ')
@@ -123,15 +123,15 @@ class NOMADCommunicator(Agent):
                 self.outputStream.write(str(cons[1]))
                 outputStr = outputStr + str(cons[1]) + ' '
         self.outputStream.write('\n')
-        self.logger.log('Output: ' + outputStr) 
+        self.logger.log('Output: ' + outputStr)
         self.stop()
-        
+
         return
 
     def write_neighbors(self, info):
         """
         Message handlers that write function values of a function evaluation.
-    
+
         """
         neighbors = info['proposition']['values']
         outputStr = ''
@@ -146,7 +146,7 @@ class NOMADCommunicator(Agent):
         self.logger.log('Neighbors: ' + logOutputStr)
         self.stop()
         return
-    
+
     def  run(self):
         if self.inputFile is not None:
             inputValues = self.read_input(inputFile=self.inputFile)
@@ -160,33 +160,33 @@ class NOMADCommunicator(Agent):
         self.sent_request_id = self.send_message(msg)
         Agent.run(self)
         return
-   
+
 
 class NOMADBlackbox(Environment):
     """
 
     NOMADBlackbox object represent a NOMAD blackbox that is kind of an interface
-    between the NOMAD solver and model (problem). Because of the fact that the 
-    used NOMAD solver require that an blackbox is an executable with three 
+    between the NOMAD solver and model (problem). Because of the fact that the
+    used NOMAD solver require that an blackbox is an executable with three
     properties:
-    
+
     #. Accept a file containing inputed point as only argument
-    
+
     #. Evaluate model with the given point
 
     #. Show the model values to standard output
 
-    we design in such a way that the executable will initialize an NOMADBlackbox 
+    we design in such a way that the executable will initialize an NOMADBlackbox
     object too. The advantage that we minimize the generated code of the
     executable
-    
-    NOMADBlackbox object is an application that contains two agents: an 
-    NOMADCommunicator worker and a ModelEvaluator broker. A session is 
-    activated by sending a message to NOMADCommunicator worker and finished 
+
+    NOMADBlackbox object is an application that contains two agents: an
+    NOMADCommunicator worker and a ModelEvaluator broker. A session is
+    activated by sending a message to NOMADCommunicator worker and finished
     as this NOMADCommunicator worker shows the model values
     """
 
-    def __init__(self, 
+    def __init__(self,
                  name='nomad blackbox',
                  logHandlers=[],
                  worker=None,
@@ -196,29 +196,29 @@ class NOMADBlackbox(Environment):
         Environment.__init__(self, name=name, logHandlers=logHandlers)
         # Create the default agent of this environment
         self.communicator = NOMADCommunicator(name='communicator',
-                                              input=input, 
+                                              input=input,
                                               output=output)
         self.worker = worker
         # Register the agnets
         self.communicator.register(self)
         self.worker.register(self)
         return
-            
+
 
     def run(self):
         self.logger.log('Begin of a session')
         self.initialize()
-        # Wait the comnunicator finishes its work. This happends when 
-        # the communicator get a message containing the model values 
+        # Wait the comnunicator finishes its work. This happends when
+        # the communicator get a message containing the model values
         # (evaluator replies)
         self.communicator.join()
         self.finalize()
         self.logger.log('End of a session')
-        return 
-   
-    
+        return
 
- 
+
+
+
 
 class NOMADSolver(Solver):
     """
@@ -244,7 +244,7 @@ class NOMADSolver(Solver):
         The solving process consist of three steps:
 
         #. Generate the executable to evaluate model
-        
+
         #. Generate the specification corresponding model
 
         #. Execute command nomad with the generated specificaton file
@@ -270,14 +270,14 @@ class NOMADSolver(Solver):
             suppInfo["neighborhood"] = None
         #   surrogate.save()
         self.create_specification_file(model=blackbox,
-                                       modelExecutable='$python blackbox.py', 
+                                       modelExecutable='$python blackbox.py',
                                        surrogate=surrogate,
                                        surrogateExecutable=\
                                        '$python surrogate.py',
                                        neighborhood=suppInfo["neighborhood"],
                                        neighborhoodExecutable=\
                                        "$python neighbors.py")
-        
+
         self.run()
         # Clean up the temporary file
         ## if os.path.exists('blackbox.py'):
@@ -307,7 +307,7 @@ class NOMADSolver(Solver):
                                      execFile='blackbox.py',
                                      dataFile='blackbox.dat'):
         """
-        
+
         Generate Python code to play the role of black box executable.
         """
 
@@ -336,7 +336,7 @@ class NOMADSolver(Solver):
         bb.write(comment + 'Wait for environement finish his life time' + endl)
         bb.write('env.join()' + endl)
         bb.close()
-        
+
         # Dump model to the file so that the executable blackbox can load it as
         # blackbox data
 
@@ -383,8 +383,8 @@ class NOMADSolver(Solver):
         pickle.dump(neighborsFunction, f)
         f.close()
         return
-    
-    def create_specification_file(self, 
+
+    def create_specification_file(self,
                                   model=None,
                                   modelExecutable=None,
                                   surrogate=None,
@@ -395,7 +395,7 @@ class NOMADSolver(Solver):
 
         if model is None:
             return
-        
+
         self.set_parameter(name='DIMENSION',
                            value=str(model.get_n_variable()))
         bbInputType = '( '
@@ -409,15 +409,15 @@ class NOMADSolver(Solver):
         bbInputType = bbInputType + ')'
         self.set_parameter(name='BB_INPUT_TYPE',
                            value=bbInputType)
-        
+
         self.set_parameter(name='BB_EXE',
                            value='"' +  modelExecutable + '"')
         bbTypeStr = 'OBJ'
         for i in range(model.get_n_constraints()):
-            bbTypeStr = bbTypeStr + ' PB'  
+            bbTypeStr = bbTypeStr + ' PB'
         self.set_parameter(name='BB_OUTPUT_TYPE',
                            value=bbTypeStr)
-      
+
         if surrogate is not None:
             self.set_parameter(name='SGTE_EXE',
                                value='"' + surrogateExecutable + '"')
@@ -430,7 +430,7 @@ class NOMADSolver(Solver):
             self.set_parameter(name='X0',
                                value= pointStr.replace(',',' '),
                                multiplicity=True)
-            
+
         #print self.parameter_settings['X0'].str()
         if model.bounds is not None:
             lowerBoundStr = str([bound[0] for bound in model.bounds \
@@ -446,7 +446,7 @@ class NOMADSolver(Solver):
                 self.set_parameter(name='UPPER_BOUND',
                                    value=upperBoundStr)
         # Write other settings.
-    
+
         if self.solution_file is not None:
             self.set_parameter(name='SOLUTION_FILE',
                                value=self.solution_file)

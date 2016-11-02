@@ -7,11 +7,11 @@ from tools import TableFormatter
 
 class Measure(Data):
     '''
-    
-    A Measure object represent for an observation from output of 
+
+    A Measure object represent for an observation from output of
     algorithm running. It has two aspect
-    - Data: its value is value of an observation 
-    - Functionality: It encapsulates the way to extract measure value 
+    - Data: its value is value of an observation
+    - Functionality: It encapsulates the way to extract measure value
       from the output.
     '''
 
@@ -20,4 +20,4 @@ class Measure(Data):
         return
 
 
-    
+

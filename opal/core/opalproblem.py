@@ -19,7 +19,7 @@ class BlackBox:
         self.solver = solver
         self.model = model
         pass
-    
+
     def run(self, *args, **kwargs):
         inputValues = []
         paramValues = []
@@ -47,9 +47,9 @@ class BlackBoxModel:
                  logHandlers=[], **kwargs):
         """
 
-        A `BlackBoxModel` encapsulates the 
+        A `BlackBoxModel` encapsulates the
         information of a parameter optimization problem.
-        From the parameter problem point of view, this class has 
+        From the parameter problem point of view, this class has
         two components: model data and model struture.
 
         Example::
@@ -68,26 +68,26 @@ class BlackBoxModel:
         self.data_file = dataFile
         self.logger = log.OPALLogger(name='opalBlackboxModel',
                                      handlers=logHandlers)
-        
-      
+
+
         activeParameters = self.model_data.get_parameters()
-        
+
         self.n_var = len(activeParameters)
         self.m_con = len(self.model_structure.constraints)
         self.initial_points = [param.value for param in activeParameters]
-       
+
         self.bounds = [param.bound for param in activeParameters]
         # The "simple constraints" that contain only the function of
-        # parameters. This constraints will be verified before running 
+        # parameters. This constraints will be verified before running
         # the test.
         # In the futre, the bound constraints will be considered as
         # simple_constraints too
         self.simple_constraints = []
 
-        
-        #self.solver = None 
+
+        #self.solver = None
         #self.surrogate = None
-        # if no solver is specified, the blackbox is a general 
+        # if no solver is specified, the blackbox is a general
         # executable file with two arguments: input file and parameter file
         # The output is standard screen
         self.save()
@@ -95,14 +95,14 @@ class BlackBoxModel:
 
     #def set_options(self,**kwargs):
     #    return
-    
+
     #def has_surrogate(self):
     #    return self.surrogate is not None
 
     #def get_surrogate(self):
     #    return self.surrogate
 
- 
+
     def evaluate(self, inputValues):
         """
         Evaluate the model at given point
@@ -123,7 +123,7 @@ class BlackBoxModel:
         #print constraints
         self.logger.log('End of blackbox evaluation')
         return (funcObj, constraints)
-    
+
     def save(self):
         #try:
         blackboxDataFile = open(self.data_file, "w")
@@ -132,14 +132,14 @@ class BlackBoxModel:
         #except TypeError:
         #    print "Error in saving"
         return
-    
+
     #def log(self):
     #    if self.model_data.log != None:
     #        self.model_data.log(self.logFileName)
     #    if self.model_structure.log != None:
     #        self.model_structure.log(self.logFileName)
     #    return
-    
+
     def get_iniitial_points(self):
         return self.initial_points
 

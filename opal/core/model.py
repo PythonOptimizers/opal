@@ -12,17 +12,17 @@ from ..Platforms import LINUX
 __docformat__ = 'restructuredtext'
 
 
-class Model: 
-    def __init__(self, modelData=None, 
+class Model:
+    def __init__(self, modelData=None,
                  modelStructure=None,
                  evaluatingOptions=None,
                  dataFile='blackbox.dat',
                  **kwargs):
         """
 
-        A `BlackBoxModel` encapsulates the 
+        A `BlackBoxModel` encapsulates the
         information of a parameter optimization problem.
-        From the parameter problem point of view, this class has 
+        From the parameter problem point of view, this class has
         two components: model data and model struture.
 
         Example::
@@ -41,9 +41,9 @@ class Model:
         self.data_file = dataFile
         # The evaluating_options attribute accepts only
         # the options of simple type like boolean, integer
-        # or string. In general, it accepts the options 
+        # or string. In general, it accepts the options
         # of picklable data type.
-            
+
         self.evaluating_options = {}
         # Update the running options from data
         self.evaluating_options.update(modelData.running_options)
@@ -57,7 +57,7 @@ class Model:
         # is not be picklable, So we try to get the information to save
         # along with the model data, and use it to reconstruct the platform
         # object in run-time.
-        # By default, LINUX is used 
+        # By default, LINUX is used
         self.platform_description = {'name':'LINUX',
                                      'settings':{}}
         if 'platform' in self.evaluating_options.keys():
@@ -72,7 +72,7 @@ class Model:
             del self.evaluating_options['platform'] # Remove platform setting
         self.initialize()
         return
-    
+
     def initialize(self):
         # Transformation to information of an optimization model
         # The variables are the parameters
@@ -88,15 +88,15 @@ class Model:
                     self.inequality_constraints.append(constraint)
                 if constraint.upper_bound is not None:
                     self.inequality_constraints.append(constraint)
-        
+
         self.bounds = [var.bound for var in self.variables]
-        
+
         # Initial points has at least one point that is the default values
         # of the parameters.
         self.initial_points = [[var.value for var in self.variables]]
-        
+
         # The "simple constraints" that contain only the function of
-        # parameters. This constraints will be verified before running 
+        # parameters. This constraints will be verified before running
         # the test.
         # In the futre, the bound constraints will be considered as
         # simple_constraints too
@@ -127,7 +127,7 @@ class Model:
             else: # Convert automatically to the corresponding type
                 initialPoint.append(converters[param.kind](val))
         self.initial_points.append(initialPoint)
-        
+
     def get_bound_constraints(self):
         return self.bounds
 
@@ -138,7 +138,7 @@ class Model:
 
     def get_parameters(self):
         return self.data.get_parameters()
-    
+
     def get_problems(self):
         return self.data.get_problems()
 
@@ -148,6 +148,6 @@ class Model:
     def get_structure(self):
         return self.structure
 
-   
-    
+
+
 

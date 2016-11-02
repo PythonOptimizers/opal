@@ -63,7 +63,7 @@ struct = ModelStructure(objective=MeasureFunction(sum_heval,
                                       0)])  # One constraint get_error(p) <= 0
 
 
-prob = Model(modelData=data, 
+prob = Model(modelData=data,
              modelStructure=struct,
              platform='SMP',
              synchoronized=False,

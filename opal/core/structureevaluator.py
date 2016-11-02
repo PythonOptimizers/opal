@@ -15,7 +15,7 @@ from data import DataTable
 class DataCacheEntry(DataTable):
     '''
 
-    A data cache entry is a data table plus the paremeter values. 
+    A data cache entry is a data table plus the paremeter values.
     '''
     def __init__(self, name, parameters, problems, measures):
         self.parameters = parameters
@@ -45,7 +45,7 @@ class DataCache(Set):
 
     Data cache is set of data table. Each element in set is identified by
     parameter tag
-    
+
     '''
     def __init__(self, name, problems, measures):
         self.problems = problems
@@ -61,7 +61,7 @@ class DataCache(Set):
                                measures=[measure.identify() \
                                          for measure in self.measures])
         self.append(entry)
-        
+
     def get_parameters(self, paramTag):
         entry = self.__getitem__(paramTag)
         return entry.parameters
@@ -77,16 +77,16 @@ class DataCache(Set):
         for measureId in measureIds:
             measures[measureId] = entry.get_measure_vector(measureId)
         return entry.get_storage_ratio(), measures
-       
-    
+
+
 
 class StructureEvaluator(Agent):
     """
-    
-    An object of this class represent for the model structure that is 
-    described in Python language. The evaluator accept only ModelStructure 
-    object as structure of model. Any structure modeled by other language 
-    such as AMPL has to be rewritten as a ModelStructure object. This 
+
+    An object of this class represent for the model structure that is
+    described in Python language. The evaluator accept only ModelStructure
+    object as structure of model. Any structure modeled by other language
+    such as AMPL has to be rewritten as a ModelStructure object. This
     can be done by the interpreters.
     """
     def __init__(self,
@@ -100,13 +100,13 @@ class StructureEvaluator(Agent):
                        name=name,
                        logHandlers=logHandlers)
         self.structure = structure
-        
+
         # Data cache is a map from a parameter tag with an ExperimentResult
         # object
         self.data_cache = DataCache(name='data-cache',
                                     problems=problems,
                                     measures=measures)
-        
+
 
         self.message_handlers['inform-measure-values'] = self.evaluate
         self.message_handlers['cfp-evaluate-parameter'] = \
@@ -126,9 +126,9 @@ class StructureEvaluator(Agent):
                 'real-length':realLength,
                 'new-problem':problem,
                 'new-measure':measureValues}
-      
-    
-    
+
+
+
     # Message handlers
     def create_cache_entry(self, info):
         paramTag = info['proposition']['tag']
@@ -136,10 +136,10 @@ class StructureEvaluator(Agent):
         self.data_cache.create_entry(paramTag, parameterValues)
         return
 
-    
+
     def evaluate(self, info):
         # Update the cache
-        
+
         paramTag = info['proposition']['parameter-tag']
         problem = info['proposition']['problem']
         measureValues = info['proposition']['values']
@@ -159,7 +159,7 @@ class StructureEvaluator(Agent):
                           )
             self.send_message(msg)
             return
-        
+
         storageInfo = self.update_data_cache(paramTag, problem, measureValues)
         # Compute the model values
         parameters = self.data_cache.get_parameters(paramTag)
@@ -172,7 +172,7 @@ class StructureEvaluator(Agent):
         if storageRatio < 1.0: # A partial data is obtained
             # Check if there is violation of objective function before
             # computing the constraint
-            
+
             if self.structure.objective.is_partially_exceed(objVal):
                 msg = Message(performative='inform',
                               sender=self.id,
@@ -221,7 +221,7 @@ class StructureEvaluator(Agent):
         consVals = []
         for cons in self.structure.constraints:
             consVals.append(cons.evaluate(parameters, measures))
-    
+
         msg = Message(performative='inform',
                           sender=self.id,
                           content={'proposition':{'what':'model-value',
@@ -229,13 +229,13 @@ class StructureEvaluator(Agent):
                                                   'parameter-tag':paramTag
                                                   }
                                    })
-        self.send_message(msg)    
+        self.send_message(msg)
         return
 
 
 class FunctionEvaluator(Agent):
     """
-    An agent that has responsibility to 
+    An agent that has responsibility to
     """
     def __init__(self,
                  name='function evaluator',
@@ -256,11 +256,11 @@ class FunctionEvaluator(Agent):
                 f.close()
         if function is None:
             raise Exception("Error in creating an evaluator")
-        
+
         self.function = function
 
         self.message_handlers['cfp-evaluate-point'] =  self.evaluate
-                                                        
+
         return
      # Message handlers
     def evaluate(self, info):
@@ -268,7 +268,7 @@ class FunctionEvaluator(Agent):
             inputTag = info["proposition"]['input-tag']
         else:
             inputTag = None
-        
+
         inputValue =  info['proposition']['point']
         outputValue = self.function(inputValue)
         msg = Message(performative='inform',
@@ -278,5 +278,5 @@ class FunctionEvaluator(Agent):
                                               'input-tag':inputTag
                                               }
                                })
-        self.send_message(msg)   
+        self.send_message(msg)
 

@@ -20,29 +20,29 @@ class Set:
                 self.db.append(elem)
                 index = index + 1
         return
-    
+
     def __getitem__(self, id):
         '''
 
         A data set object provide two ways to access an element: by order or by
-        identity that provided by methode {\sf identify()} 
+        identity that provided by methode {\sf identify()}
         '''
         if (type(id) == type(0)):
             return self.db[id]
         else:
             return self.db[self.indices[id]]
-      
+
     def __len__(self):
         return len(self.db)
 
     def __contains__(self, elem):
         '''
 
-        There are two way to verify the existence of an element in a DataSet 
+        There are two way to verify the existence of an element in a DataSet
         object.
         Either element or its identity can be provided for the verification.
         '''
-        # if this is an empty DataSet object the False signal is returned 
+        # if this is an empty DataSet object the False signal is returned
         # immediately
         if len(self.indices) <= 0:
             return False
@@ -64,7 +64,7 @@ class Set:
         '''
         # An element with the same name is in the set. Nothing to add
         if elem.identify() in self.indices:
-            return 
+            return
         self.indices[elem.identify()] = len(self.db)
         self.db.append(elem)
         return
@@ -97,7 +97,7 @@ class Set:
         id = self.db[index].identify()
         self.db.remove(self.db[index])
         del self.indices[id]
-        return 
+        return
 
     def select(self, query):
         queryResult = Set(name='query-result')

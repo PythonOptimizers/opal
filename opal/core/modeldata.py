@@ -16,21 +16,21 @@ from .. import config
 
 # =============================
 class ModelData:
-    """ 
+    """
     This class represents a data generator for a parameter optimization
     problem. The data is the values of the elementary measures that are needed
     to formulate the problem. To specify a data generator, we need provide:
 
-    1. The algorithm 
-    2. the set of elementary measures concerned 
+    1. The algorithm
+    2. the set of elementary measures concerned
     3. the set of parameters to control
     4. the test problems set.
     """
 
-    def __init__(self, 
-                 algorithm, 
+    def __init__(self,
+                 algorithm,
                  problems=[],
-                 parameters=None, 
+                 parameters=None,
                  measures=None,
                  neighborhoods=[],
                  **kwargs):
@@ -45,7 +45,7 @@ class ModelData:
             self.parameters = algorithm.parameters
         else:
             self.parameters = parameters
-        
+
         if measures is None:
             self.measures = algorithm.measures
         else:
@@ -53,7 +53,7 @@ class ModelData:
         # The information of parameter space can be provided by definitions
         # of neighborhood.
         self.neighborhoods = neighborhoods
-        
+
         self.running_options = {}
         self.running_options.update(kwargs)
         return
@@ -66,10 +66,10 @@ class ModelData:
 
     def get_parameters(self):
         return self.parameters
-    
+
     def get_measures(self):
         return self.measures
-    
+
     def save(self, fileName):
         return
 

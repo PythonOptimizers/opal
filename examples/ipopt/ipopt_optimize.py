@@ -8,7 +8,7 @@ params = [param for param in IPOPT.parameters
           if param.name in ['tau_min', 's_theta', 's_phi', 'delta',
                              'max_soc', 'kappa_soc']]
 
-# Choose all solvable problems 
+# Choose all solvable problems
 #from ipopt_test_problems import ipopt_solvable_problems as problems
 #from ipopt_test_problems import test_problems as problems
 from ipopt_test_problems import CUTEr_constrained_problems, test_problems
@@ -54,7 +54,7 @@ from opal.Solvers import NOMAD
 #NOMAD.set_parameter(name='MAX_BB_EVAL', value=100)
 #NOMAD.set_parameter(name='SCALING', value='scaling.txt')
 NOMAD.set_parameter(name='INITIAL_MESH_SIZE',
-                    value='(0.05 5 5 1 4 0.05)') 
+                    value='(0.05 5 5 1 4 0.05)')
 #NOMAD.set_parameter(name='MIN_MESH_SIZE', value=1.0e-6)
 NOMAD.set_parameter(name='MAX_MESH_INDEX', value=6)
 NOMAD.set_parameter(name='DISPLAY_DEGREE', value=4)

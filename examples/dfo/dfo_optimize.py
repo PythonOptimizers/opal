@@ -7,7 +7,7 @@ from dfo_declaration import DFO
 from opal.Solvers import NOMAD
 
 def avg_time(parameters,measures):
-    n = len(measures['CPU']) 
+    n = len(measures['CPU'])
     if n == 0:
         return 0.0
     return (sum(measures["CPU"]) + 0.0)/(n + 0.0)

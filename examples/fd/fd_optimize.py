@@ -1,4 +1,4 @@
-# Define a parameter optimization problem in relation to the 
+# Define a parameter optimization problem in relation to the
 # FD algorithm.
 from fd_declaration import FD
 

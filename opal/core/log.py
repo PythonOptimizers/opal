@@ -13,29 +13,29 @@ class HandlerDescription:
 
 class OPALLogger:
     '''
-    
-    We specialize logging facility of Python by this class to support 
-    the ability of pickling an logger with handlers that are the streamming 
+
+    We specialize logging facility of Python by this class to support
+    the ability of pickling an logger with handlers that are the streamming
     objects
     '''
-    
+
     def __init__(self, name=None, handlers=[]):
         self.name = name
         self.initialize()
-        # Initialize an empty list of descriptions 
+        # Initialize an empty list of descriptions
         # of the user-required handlers
         self.handler_descriptions = []
         # Get the description of the user-required handlers
         # and add it to logger
-        for hdlr in handlers: 
+        for hdlr in handlers:
             self.handler_descriptions.append(HandlerDescription(hdlr))
             self.logger.addHandler(hdlr)
         return
-    
+
     def initialize(self):
         self.logger = logging.getLogger(self.name)
-        self.logger.setLevel(logging.DEBUG)  # Set level to highest level so 
-                                             # that actual level depends on the 
+        self.logger.setLevel(logging.DEBUG)  # Set level to highest level so
+                                             # that actual level depends on the
                                              # handler level
         # A default handler is created for logging to file with INFO level
         handler = logging.FileHandler(filename='/var/tmp/opal.log')
@@ -43,9 +43,9 @@ class OPALLogger:
         handler.setLevel(logging.INFO)
         self.logger.addHandler(handler)
         return
-    
+
     def __getstate__(self):
-        # To serialize a OPALLogger object, we save only 
+        # To serialize a OPALLogger object, we save only
         # the name and the descriptions of the user-required handlers
         dict = {}
         dict['handler_descriptions'] = self.handler_descriptions
@@ -55,7 +55,7 @@ class OPALLogger:
     def __setstate__(self, dict):
         # The expected dict is two-element dictionary.
         # The first element of dict has key is 'handler_descriptions'
-        # and has value is a list of description of handlers. The 
+        # and has value is a list of description of handlers. The
         # second one is the name of logger.
         self.name = dict['name']
         # Initialize the logger with the specified name
@@ -67,7 +67,7 @@ class OPALLogger:
             handler = desc.generate_handler()
             self.logger.addHandler(handler)
         return
-        
+
     def log(self, message, level=logging.INFO):
         self.logger.log(level, message + '\n')
         return
@@ -90,4 +90,4 @@ class Debugger:
 
 debugger = Debugger()
 
-    
+

@@ -98,7 +98,7 @@ class CUTErQuery:
         return True
 
 #==========
-    
+
 class CUTErFactory:
     def __init__(self,classifyFile=None,**kwargs):
         self.classifyFile = classifyFile
@@ -141,13 +141,13 @@ class CUTErFactory:
             if prob is not None:
                 CUTEr.add_problem(prob)
         return CUTEr
-    
-    def generate_problem(self,problem_name,classify_string=None,param=None):  
+
+    def generate_problem(self,problem_name,classify_string=None,param=None):
         decode_cmd = self.decoder
         if param is None:
             decode_cmd = decode_cmd + ' ' + problem_name
         else:
-            decode_cmd = decode_cmd + ' -param ' + param + ' ' + problem_name 
+            decode_cmd = decode_cmd + ' -param ' + param + ' ' + problem_name
         f = os.popen(decode_cmd)
         decode_log = f.read()
         f.close()
@@ -172,4 +172,4 @@ class CUTErFactory:
                                    classifyStr=classify_string,
                                    nvar=nvar,
                                    ncon=ncon)
-        return problem          
+        return problem

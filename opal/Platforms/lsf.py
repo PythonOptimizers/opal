@@ -11,7 +11,7 @@ class LSFTask(Task):
                  command=None,
                  lsfOptions=None,
                  logHandlers=[]):
-        self.output = "-N -oo /tmp/lsf-output.log" 
+        self.output = "-N -oo /tmp/lsf-output.log"
         lsfCmd = "bsub " + \
                  "  -J " + taskId + lsfOptions + command
         Task.__init__(self,
@@ -76,7 +76,7 @@ class LSFTask(Task):
         f.write('s.send("'+ keyStr + '")\n')
         f.write('s.close()\n')
         f.close()
-        
+
         #ltime = time.localtime()
         #timeStr = str(ltime.tm_year) + '-' + str(ltime.tm_mon) + '-' + \
         #          str(ltime.tm_mday) + ' ' + str(ltime.tm_hour) + ':' + \
@@ -143,7 +143,7 @@ class LSFPlatform(Platform):
             queueTag = info['proposition']['queue']
         else:
             queueTag = None
-            
+
         # str(ltime.tm_year) +  str(ltime.tm_mon) + str(ltime.tm_mday) + \
             # str(ltime.tm_hour) + str(ltime.tm_min) + str(ltime.tm_sec)
         optionStr = " "
@@ -157,6 +157,6 @@ class LSFPlatform(Platform):
                        command=execCmd,
                        lsfOptions=optionStr)
         self.submit(task, queue=queueTag)
-        return 
+        return
 
 LSF = LSFPlatform()

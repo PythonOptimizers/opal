@@ -2,7 +2,7 @@ import sys
 import os.path
 import marshal
 import new
-import types 
+import types
 import log
 
 
@@ -14,7 +14,7 @@ class MeasureFunction(SavableFunction):
     built up from the parameter and elementary measure \varphi(p,\mu)
     """
     def __init__(self, function=None, **kwargs):
-       
+
         SavableFunction.__init__(self, function, **kwargs)
         if function.__code__.co_argcount < 2:
             raise Exception("A measure function has at least two arguments")
@@ -27,7 +27,7 @@ class MeasureFunction(SavableFunction):
                             'convexity':0 # Undetermined
                             }
         self.information.update(kwargs)
-       
+
         pass
 
     # Because measure function is kind of special for our
@@ -35,7 +35,7 @@ class MeasureFunction(SavableFunction):
     # positively-additvie
     def add_information(self, **kwargs):
         self.information.update(kwargs)
-        
+
     def is_positively_additive(self):
         return self.information['additivity'] > 0
 
@@ -62,7 +62,7 @@ class Objective:
         self.lower_bound = lowerBound
         self.upper_bound = upperBound
         return
-    
+
     def evaluate(self, *args, **kwargs):
         funcVal = self.function(*args, **kwargs)
         return funcVal
@@ -91,20 +91,20 @@ class Objective:
             return False
         if self.lower_bound is not None: # A bound exists
             return (val > self.lower_bound)
-        return False 
-      
+        return False
 
-        
+
+
 class Constraint:
     """
 
     This class is a description constraint. A constraint is defined in form
        lower_bound <= measure_function <= upper_boun
-    if lower_bound is None, the constraint is consider as 
-       measure_function <= upper_bound  
+    if lower_bound is None, the constraint is consider as
+       measure_function <= upper_bound
     The same principle is applied to upper_bound
 
-    To define a constraint, there is at least a bound is not None. 
+    To define a constraint, there is at least a bound is not None.
     """
 
     def __init__(self,
@@ -120,7 +120,7 @@ class Constraint:
             self.function = function
             self.function.add_information(**kwargs)
         else:
-            self.function = MeasureFunction(function, **kwargs)      
+            self.function = MeasureFunction(function, **kwargs)
         self.n_size = 2
         self.lower_bound = lowerBound
         if self.lower_bound is None:
@@ -129,7 +129,7 @@ class Constraint:
         if self.upper_bound is None:
             self.n_size = self.n_size - 1
         return
-    
+
     def evaluate(self, *args, **kwargs):
         funcVal = self.function(*args,**kwargs)
         values = []
@@ -162,16 +162,16 @@ class Constraint:
 
 class ModelStructure:
     """
-    
-    An object of this class represent for the model structure that is 
-    described in Python language. The evaluator accept only ModelStructure 
-    object as structure of model. Any structure modeled by other language 
-    such as AMPL has to be rewritten as a ModelStructure object. This 
+
+    An object of this class represent for the model structure that is
+    described in Python language. The evaluator accept only ModelStructure
+    object as structure of model. Any structure modeled by other language
+    such as AMPL has to be rewritten as a ModelStructure object. This
     can be done by the interpreters.
     """
     def __init__(self,
                  name='modelstruct',
-                 objective=None, 
+                 objective=None,
                  constraints=[],
                  **kwargs):
         self.name = name
@@ -185,7 +185,7 @@ class ModelStructure:
                 if isinstance(cons, Constraint):
                     self.constraints.append(cons)
                 else:
-                    constraint = Constraint(lowerBound=cons[0], 
+                    constraint = Constraint(lowerBound=cons[0],
                                             function=cons[1],
                                             upperBound=cons[2])
                     self.constraints.append(constraint)
@@ -204,4 +204,4 @@ class ModelStructure:
                 self.informations[infoName] = SavableFunction(function=info,
                                                               name=infoName)
         return
-        
+

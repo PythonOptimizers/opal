@@ -4,8 +4,8 @@ def test_multi_agent_framework():
 
     agent = Agent()
     env = Environment()
-    
-    agent.register(env)
-    
 
-    
+    agent.register(env)
+
+
+

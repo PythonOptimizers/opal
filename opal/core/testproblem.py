@@ -89,7 +89,7 @@ class ProblemSet(Set):
     def remove_problem(self, problem):
         self.remove(problem)
 
-    
+
     def select(self, query):
         """
         Return the list of problems matching the given query.
@@ -176,7 +176,7 @@ class ProblemCollection(ProblemSet):
             if result is not None:
                 return result
         return None # No subcollection can be found
-            
+
     def add_subcollection(self, collection):
         "Add a subcollection to this collection."
         if isinstance(collection, ProblemCollection):
@@ -184,10 +184,10 @@ class ProblemCollection(ProblemSet):
         else:
             raise TypeError, 'Collection must be a ProblemCollection object'
 
-        
+
 def _test():
     import doctest
     return doctest.testmod()
-            
+
 if __name__ == "__main__":
     _test()

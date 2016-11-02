@@ -16,21 +16,21 @@ from .. import config
 
 class DataManager(Agent):
     """
-    
-    An object of this class is responsable to collect data, 
-    support access to data of a test corresponding to one set 
+
+    An object of this class is responsable to collect data,
+    support access to data of a test corresponding to one set
     of parameter
 
-    During a session working of data generator, it is activated 
+    During a session working of data generator, it is activated
     at first, wait for signal of a task to collect the data and
-    store data following its rules. Normally, the data is stored 
-    in external memory (for example a file) but a part can be loaded 
+    store data following its rules. Normally, the data is stored
+    in external memory (for example a file) but a part can be loaded
     into memory (a variable of DataController object).
 
-    The other components needing data sends to this object a 
+    The other components needing data sends to this object a
     request and get the data.
     """
-    def __init__(self, 
+    def __init__(self,
                  name='data manager',
                  rows=None,
                  columns=None,
@@ -57,7 +57,7 @@ class DataManager(Agent):
         paramTag = info['proposition']['parameter-tag']
         prob = info['proposition']['problem']
         data = info['proposition']['values']
-        # Update the entry 
+        # Update the entry
         self.update(parameterTag=paramTag,
                     problem=prob,
                     data=data)
@@ -82,15 +82,15 @@ class DataManager(Agent):
                       )
         self.send_message(msg)
         return
-            
+
     def find_data(self, info):
-        
+
         (paramValues, problem) = message.content['proposition']
         measureValues = self.query_data(parameters=paramValues,
                                         problem=problem)
         # If getting data is successful
         if measureValues is not None:
-            # Create a reply message whose content contains the 
+            # Create a reply message whose content contains the
             # measure values
             msgCont = self.encrypt(measureValues)
             msg = Message(sender=self.id,
@@ -98,7 +98,7 @@ class DataManager(Agent):
                           performative='inform',
                           reference=message.id)
         return
-        
+
     def collect_data(self, message):
         (paramValues, problem, measureFile) = message.content['proposition']
         f = open(measureFile)

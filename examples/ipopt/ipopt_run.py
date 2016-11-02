@@ -35,7 +35,7 @@ def write_specfile(parameter_file, loc='.', name='ipopt.opt'):
     # Read parameters into a dictionary
     #parms = read_params_from_file(parameter_file)
     parms = {}
-    
+
     # Write out ipopt.opt
     f = open(os.path.join(loc, name), 'w')
     for pName in parms:
@@ -90,7 +90,7 @@ def get_measures(stats_file, weight=1.0):
         dem='\.+:\s+',
         name='NITER',
         valueType='int')
-  
+
     measures['FEVAL'] = extract_measure(
         content=content,
         description='Number of objective function evaluations',
@@ -146,7 +146,7 @@ def run(param_file, problem, keep=False):
         workDir = os.path.join(curDir,problem)
         if not os.path.exists(workDir):
             os.mkdir(workDir)
-            
+
     os.chdir(workDir)
     write_specfile(param_file)
     os.system('sifdecode ' + problem + ' > /dev/null')

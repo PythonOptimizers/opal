@@ -45,7 +45,7 @@ class LINUXPlatform(Platform):
 
         proposition = info['proposition']
         command = proposition['command']
-        
+
         name = proposition['tag']
         if 'queue' in proposition.keys():
             queueTag = proposition['queue']
@@ -56,7 +56,7 @@ class LINUXPlatform(Platform):
                          command=command,
                          sessionTag=proposition['tag'])
         self.submit(task, queue=queueTag)
-        return 
+        return
 
     def cancel_tasks(self, info):
         '''
@@ -64,8 +64,8 @@ class LINUXPlatform(Platform):
         Handle message terminate experiment
         '''
         return
-    
-  
+
+
     def test_a(self):
         print 'Hello'
 
